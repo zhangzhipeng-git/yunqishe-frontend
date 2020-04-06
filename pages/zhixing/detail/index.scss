@@ -1,0 +1,18 @@
+$side-menu-width: 14rem;
+#id-ui-doc-detail {
+    position: absolute;
+    top:0;
+    bottom:$app-footer-height;
+    // 左侧菜单
+    .ui-side-nav{
+        width:$side-menu-width;
+    }
+    // 文档内容
+    .ui-main-comtent {
+        width:$app-width - $side-menu-width;
+        margin-left: $side-menu-width;
+        padding: 0 1rem;
+        background-color: $white;
+        overflow: auto;
+    }
+}
