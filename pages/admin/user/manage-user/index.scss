@@ -1,0 +1,50 @@
+#id-manage-user {
+  // 用户头像
+  .user-avator {
+    width: 2rem;
+    border-radius: 50%;
+  }
+  // 用户状态选择下拉框
+  .select-status {
+    vertical-align: middle;
+    /deep/ input {
+      height: 1.5rem;
+      width: 6rem;
+      padding-left: 0.5rem;
+      line-height: 1.5rem;
+    }
+    /deep/ ul {
+      top: 1.5rem;
+      max-height: 9rem;
+    }
+  }
+
+  // 样式穿透提取到全局[不影响其他样式，因为添加了本组件的样式属性data-v-hash]
+  @at-root #id-manage-user-window {
+    & /deep/ {
+      // scale  放大（进入） -> 缩小（离开）
+      .scale {
+        &-enter {
+          top: 10%;
+          transform: scale(0);
+          opacity: 0;
+          filter: alpha(opacity=0);
+        }
+
+        &-active {
+          top: 10%;
+          transform: scale(1);
+          opacity: 1;
+          filter: alpha(opacity=100);
+        }
+
+        &-leave {
+          top: 10%;
+          transform: scale(0);
+          opacity: 0;
+          filter: alpha(opacity=0);
+        }
+      }
+    }
+  }
+}

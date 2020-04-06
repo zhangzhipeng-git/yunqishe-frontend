@@ -1,0 +1,221 @@
+/*
+ * Filename: d:\frontend\vue\nuxt-ssr\components\commons\filter-spread\_filter-spread.scss
+ * Path: d:\frontend\vue\nuxt-ssr
+ * Created Date: Sunday, December 22nd 2019, 1:30:56 pm
+ * Author: zzp-dog
+ * 展开式过滤器样式
+ * Copyright (c) 2019 Your Company
+ */
+
+$z-index:1;
+.wd-filter-spread {
+    position: relative;
+    background-color: $white;
+    border-bottom: 1PX solid $gray-light-s;
+    @extend %clearfix;
+    // 标题和提示
+    .wd-list-tip {
+        color: $gray;
+        font-size: $font-size-small;
+
+        h4 {
+            display: inline;
+            margin: 0 2rem 0 .5rem;
+            font-size: $font-size-normal;
+            line-height: 3rem;
+            font-weight: bold;
+        }
+    }
+
+    // 最多只能排列8个分类，即所有分类最多为8个
+    //  关注,推荐
+    .wd-list-concern,
+    .wd-list-recommend {
+        width: 8 * 4.5rem + 1rem; // 最多8个分类标签，每个标签算上左右外边距宽度为4.5rem；
+        // 分类item容器
+        ul {
+            @extend %clearfix;
+            background-color: $white
+        }
+        // 分类item
+        li {
+            float: left;
+            height: 2rem;
+            width: 3.5rem;
+            margin: .5rem;
+            text-align: center;
+            font-size: $font-size-min;
+            line-height: 2rem;
+            background-color: $gray-light-s;
+            cursor: pointer;
+            a {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                color: $black-light;
+                @extend %onerow-ellipsis;
+            }
+        }
+    }
+
+    // 关注
+    .wd-list-concern {
+        h4 {
+            padding-left:1rem;
+        }
+        ul {
+            position: absolute;
+            z-index:$z-index + 1;
+            width:100%;
+            padding-left:1rem;
+        }
+        height:3rem;
+    }
+    
+    // 更多推荐分类敬请期待
+    #filter-list-recommend-more { 
+        width:8rem;
+        cursor: default;
+        border-radius: .3rem;
+    }
+
+    // 展开或收起按钮
+    .wd-spread-close {
+        position: absolute;
+        z-index:$z-index + 1;
+        right: 1rem;
+        top: .75rem;
+        font-size: $font-size-small;
+
+        a {
+            line-height: 1.5rem;
+            padding: 0 .5rem;
+        }
+
+        // 图标
+        i {
+            display: inline-block;
+            transition: transform .2s;
+        }
+    }
+
+    // display: inline-block;!!!!
+    .ui-rotate-z0 {
+        transform: rotateZ(0deg);
+    }
+
+    // display: inline-block;!!!!
+    .ui-rotate-z180 {
+        transform: rotateZ(180deg);
+    }
+
+    // 所有分类与推荐分类的面板
+    .wd-list-pannel {
+        position: absolute;
+        z-index:$z-index;
+        left: 0rem;
+        top: 6rem;
+        width:100%;
+        padding-left: 1rem;
+        transition: height .2s;
+        background-color: $white;
+        overflow: hidden;
+    }
+
+    // 高度 -> 0
+    .ui-height-0 {
+        height: 0;
+        top: 3rem;
+    }
+
+    // 高度 -> 15rem
+    .ui-height-15rem {
+        height: 9rem;
+        box-shadow: 0 2PX 2PX $gray-light-s;
+    }
+
+    // 取消和确认
+    .wd-action-choose {
+        position: absolute;
+        width:100%;
+        bottom:0;
+        left:0;
+        height: 3rem;
+        line-height: 3rem;
+        text-align: right;
+
+        button {
+            height: 2rem;
+            width: 4rem;
+            border-radius: .3rem;
+        }
+
+        button:first-child {
+            margin-right: .6rem;
+            background-color: $white;
+        }
+
+        button:last-child {
+            color: $white;
+            margin-right: 1rem;
+        }
+    }
+}
+
+
+
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $title: map-get($colors, title); // 标题色
+    $text: map-get($colors, text); // 文字色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $main-deep: map-get($colors, main-deep); // 深主色
+    $main-light: map-get($colors, main-light); // 浅主色
+    $main-light-s: map-get($colors, main-light-s); // 超浅主色
+
+    .#{$theme} {
+        .wd-filter-spread {
+            // 标题
+            .wd-list-title {
+                h4 {
+                    color: $title
+                }
+            }
+
+            // 展开或收起按钮
+            .wd-spread-close {
+                a {
+                    color: $main;
+                }
+
+                border: 1PX solid $main;
+                border-radius: 3rem;
+            }
+
+            // 点击关注激活
+            .wd-list-concern {
+                .ui-concern-active a {
+                    color: $main;
+                    background-color: $main-light-s;
+                }
+            }
+
+            // 取消和确认
+            .wd-action-choose {
+                button:first-child {
+                    color: $main-light;
+                    border:1px solid $main
+                }
+                button:last-child {
+                    background-color: $main;
+                    &:hover {
+                        background-color: $main-deep;
+                    }
+                }
+            }
+        }
+    }
+}

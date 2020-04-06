@@ -1,0 +1,87 @@
+#id-wd-pop {
+    // 遮罩
+    .wd-mask {
+        background-color: #3a3434;
+        opacity: .3;
+        filter: alpha(opacity=20);
+    }
+    // 弹出层pop
+    .wd-pop,.wd-pop-for-scale {
+        position: absolute;
+        z-index:999999;
+        left:50%;
+        min-width: 8rem;
+        padding:1rem .8rem .7rem .8rem;
+        line-height: 1;
+        text-align: center;
+        color:$gray;
+        border-radius: .3rem;
+        background-color: white;
+    }
+    .wd-pop{
+        transform: translateX(-50%);
+    }
+    // 顶部关闭按钮
+    .wd-close {
+        position: absolute;
+        height: 1.5rem;
+        width:1.5rem;
+        line-height: 1.5rem;
+        top:-.75rem;
+        left:50%;
+        margin-left:-.75rem;
+        color:red;
+        background-color: white;
+        border-radius: 100%;
+        .icomoon{
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    }
+    // 动画
+    // trans1 - 从下往上（进入） -> 从下到上（离开）
+    .trans1 {
+        &-enter{
+            top:100%;
+        }
+        &-active {
+            top:40%;
+        }
+        &-leave {
+            top:100%;
+        }
+    }
+    // trans2 从下到上（进入） -> 从下往上（离开）
+    .trans2 {
+        &-enter{
+            top:-100%;
+        }
+        &-active {
+            top:40%;
+        }
+        &-leave {
+            top:-100%;
+        }
+    }
+    // scale 放大（进入） -> 缩小（离开）
+    .scale {
+        &-enter{
+            top: 50%;
+            opacity: 0;
+            transform: translate(-50%,-50%) scale(0);
+            filter: alpha(opacity=0);
+        }
+        &-active {
+            top: 50%;
+            transform: translate(-50%,-50%) scale(1);
+            opacity: 1;
+            filter: alpha(opacity=100);
+        }
+        &-leave {
+            top: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+    }
+}

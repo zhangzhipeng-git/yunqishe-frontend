@@ -1,0 +1,258 @@
+$opacity: 0.8;
+$wd-main-right: 40rem;
+$wd-main-left: 18.5rem;
+// 左侧方块尺寸
+$size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
+#id-user {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: url("../../assets/images/background/carton-girl-bg.jpg") left top no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    // 用户封面遮罩
+    .user-mask {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: black;
+        opacity: 0.1;
+    }
+    // 用户详情
+    .user-detail {
+        position: absolute;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        overflow-y: auto;
+    }
+    // 用户基本xinxi
+    .user-info {
+        margin: 5rem auto 3rem;
+        p {
+            margin: 1rem 0;
+            color: $white;
+        }
+    }
+    // 用户头像
+    .user-avator {
+        display: inline-block;
+        border: 2px solid white;
+        transition: all 1s;
+        border-radius: 50%;
+        overflow: hidden;
+        img {
+            display: inline-block;
+            width: 8rem;
+            height: 8rem;
+        }
+        &:hover {
+            border-color: skyblue;
+            transform: rotate(360deg);
+        }
+    }
+    // 音频
+    audio {
+        display: none;
+    }
+    // 昵称、性别和等级
+    .user-nickname,
+    .user-sex,
+    .user-level {
+        display: inline-block;
+        margin: 0 0.2rem;
+        color: $white;
+    }
+    // 用户昵称
+    .user-nickname {
+        text-shadow: 4px 4px 4px $gray;
+        font-weight: bold;
+    }
+    // 用户性别
+    .user-sex {
+        width: 1.2rem;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+    // 女性
+    .icon-venus {
+        background-color: $red-warm;
+    }
+    // 男性
+    .icon-mars {
+        background-color: $blue-sky;
+    }
+    // 用户等级
+    .user-level {
+        height: 1.2rem;
+        line-height: 1.2rem;
+        width: 3rem;
+    }
+    // 用户标签,会员、身份、排位称号
+    .user-label {
+        display: inline-block;
+        width: auto;
+        padding: 0 0.4rem;
+        margin: 0 0.25rem;
+        border-radius: 0.3rem;
+        font-size: $font-size-normal;
+    }
+    // 留言
+    .user-say {
+        text-shadow: 2px 2px 0px black;
+    }
+    // tab条
+    .user-action-nav {
+        margin: 0 3px 0.5rem;
+        line-height: 2.5rem;
+        border-radius: 0.3rem;
+        background-color: $white;
+        opacity: $opacity;
+        li {
+            display: inline-block;
+            margin: 0 2rem;
+        }
+        a {
+            display: inline-block;
+        }
+    }
+    // 用户详情主体
+    .user-detail-main {
+        margin: 0 3px;
+        @extend %clearfix;
+    }
+    // 用户详情主体左侧
+    .user-main-left {
+        width: $wd-main-left;
+        border-radius: 0.3rem;
+        left: 0;
+        background-color: transparent;
+        @extend %no-scrollbar;
+    }
+    // 用户主体详情右侧
+    .user-main-right {
+        width: $wd-main-right;
+        border-radius: 0.3rem;
+        float: right;
+        background-color: $white;
+        opacity: $opacity;
+        border-radius: 0.3rem;
+    }
+    // 用户人气等等
+    .user-evaluate {
+        margin-bottom: $app-gap;
+        background-color: $white;
+        opacity: $opacity;
+        border-radius: 0.3rem;
+        li {
+            display: inline-block;
+            padding: 0.3rem 0.4rem;
+            div {
+                padding: .2rem 0
+            }
+        }
+    }
+    .user-evaluate-k {
+        color: $black-light;
+    }
+    .user-evaluate-v {
+        font-weight: bold;
+    }
+    // 侧边栏标题公共样式
+    .wd-sidebar-ctn-title {
+        text-align: left;
+    }
+    // 用户基本信息
+    .user-introduce {
+        padding: 0.5rem 1rem;
+        text-align: left;
+        background-color: $white;
+        opacity: $opacity;
+        border-radius: 0.3rem;
+        li {
+            padding: 0.5rem 0;
+        }
+    }
+    .user-introduce-k {
+        display: inline-block;
+        width: 4rem;
+        color: $black-light;
+    }
+    .user-introduce-v {
+        color: black;
+        font-weight: bold;
+    }
+}
+
+// 用户捕捉
+// 用户礼物
+// 用户最近访客
+// 用户收集
+.user-collects,
+.user-captures,
+.user-gifts,
+.user-visitors {
+    position: relative;
+    margin: .5rem 0;
+    // 透明度的遮罩
+    .item-mask {
+        position: absolute;
+        z-index: 1;
+        opacity: $opacity;
+        width: 100%;
+        height: 100%;
+        border-radius: 0.3rem;
+        background-color: $white;
+    }
+    ul {
+        position: relative;
+        padding: .5rem;
+        z-index: 2;
+        @extend %clearfix;
+    }
+    li {
+        float: left;
+        margin: 0.25rem;
+        background-color: $white;
+        border-radius: .2rem;
+        a {
+            display: inline-block;
+            width: $size;
+            height: $size;
+            border-radius: 0.2rem;
+        }
+    }
+}
+
+.user-visitors {
+    margin-bottom: 0;
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors,
+    #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主题主色
+    $warm-title: map-get($colors, warm-title); // 醒目标题色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    .#{$theme} {
+        #id-user {
+            .user-action-nav {
+                .active {
+                    border-bottom: 3px solid $main;
+                }
+            }
+            .item-mask+ul a:hover {
+                border: 1px solid $red-warm;
+            }
+        }
+    }
+}

@@ -1,0 +1,68 @@
+#id-ui-login {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: url("../../../assets/images/background/cp-bg.jpg") top left
+    no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  .ui-login {
+    position: absolute;
+    background-color: $white;
+    opacity: 0.8;
+    top: 50%;
+    left: 50%;
+    width: 24rem;
+    padding: 1rem 2rem 2rem;
+    border-radius: 0.3rem;
+    transform: translate(-50%, -50%);
+  }
+
+  // 登录或安装
+  .ui-action-tab {
+    text-align: center;
+    padding-bottom: 0.5rem;
+    a {
+      font-weight: bold;
+    }
+  }
+
+  // 登录安装按钮
+  .ui-button {
+    display: block;
+    margin-top: 1rem;
+  }
+}
+
+// 主题相关
+@each $theme in $themes {
+  $colors: map-get($theme-colors, #{$theme}); // 颜色map
+  $main-light-s: map-get($colors, main-light-s); // 超浅主色
+  $main-light: map-get($colors, main-light); // 浅主色
+  $main-deep: map-get($colors, main-deep); // 深主色
+  $main: map-get($colors, main); // 主色
+  $tip: map-get($colors, tip); // 提示色
+  $text: map-get($colors, text); // 字体颜色
+  $title: map-get($colors, title); // 标题颜色
+  $warm-title: map-get($colors, warm-title); // 醒目标题
+  $nav: map-get($colors, nav); // 导航字体颜色
+  $btn: map-get($colors, btn); // 按钮类颜色
+  $hover: map-get($colors, hover); // 悬浮类颜色
+  $active: map-get($colors, active); // 激活类颜色
+  $bg: map-get($colors, bg); // 页面背景色
+  $bc: map-get($colors, bc); // 输入类边框色
+  $vip: map-get($colors, vip); // vip标识色
+  $reverse: map-get($colors, reverse); // 反衬色
+  $help: map-get($colors, help); // 辅助色
+  $common: map-get($colors, common); // 通用色
+  $warn: map-get($colors, warn); // 警示色
+
+  .#{$theme} {
+    #id-ui-login {
+      // 登录或安装
+      .ui-action-tab {
+        border-bottom: 2px solid $main;
+      }
+    }
+  }
+}

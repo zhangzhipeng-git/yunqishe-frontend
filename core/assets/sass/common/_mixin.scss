@@ -1,0 +1,78 @@
+@charset "utf-8";
+
+/**
+ * 混合
+ * 在scss文件中写入 @include 混合名称 或 @include 混合名称(参数列表)
+ */
+
+// 聚焦链接底部样式
+@mixin link-active($color: red, $arrow: false) {
+    & {
+        position: relative;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 5%;
+        height: 2PX;
+        width: 90%;
+        background-color: $color;
+    }
+
+    @if $arrow {
+        &:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            margin-left: -.2rem;
+            border-top: none;
+            border-bottom: .4rem solid $color;
+            border-left: .2rem solid transparent;
+            border-right: .2rem solid transparent;
+        }
+    }
+}
+
+// 多行文本显示省略号，需要传入行数 - 默认3行
+@mixin multirow-ellipsis($row: 3) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $row;
+    overflow: hidden;
+}
+
+// 关键帧
+@mixin keyframes($animationName) {
+    @-webkit-keyframes #{$animationName} {
+        @content;
+    }
+
+    @-moz-keyframes #{$animationName} {
+        @content;
+    }
+
+    @-o-keyframes #{$animationName} {
+        @content;
+    }
+
+    @keyframes #{$animationName} {
+        @content;
+    }
+}
+
+
+// 动画width 0 => x ,display: inline-block/block
+@mixin width-0tox($x: 100%) {
+    @include keyframes(width-0tox) {
+        from {
+            width: 0
+        }
+
+        to {
+            width: $x
+        }
+    }
+}

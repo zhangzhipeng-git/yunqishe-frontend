@@ -1,0 +1,149 @@
+@charset "utf-8";
+
+#id-app-header {
+    position: relative;
+    z-index:9999;
+    height: 3rem;
+
+    .wd-header-bar {
+        position: fixed;
+        top: 0;
+        z-index: 9999;
+        width: 100%;
+        min-width:55rem;
+        text-align: center;
+        background-color: $white;
+        box-shadow: 0 1PX 2PX 0 $gray-light;
+        overflow-x: auto;
+        @extend %clearfix;
+    }
+
+    // 站名
+    .wd-site-name {
+        float: left;
+        width: 6rem;
+        float: left;
+        padding-left: 1rem;
+        h2 {
+            line-height: 3rem;
+            cursor: pointer;
+        }
+    }
+
+    // 根导航条
+    .wd-app-root-nav {
+        float: left;
+        position: relative;
+        height: 3rem;
+        z-index: 2;
+    }
+
+    .wd-app-root-nav ul {
+        margin: 0 1rem;
+        text-align: center;
+        @extend %clearfix;
+    }
+
+    .wd-app-root-nav li {
+        float: left;
+        line-height: 3rem;
+        margin-right:.2rem;
+    }
+
+    // 导航链接
+    .wd-app-root-nav a {
+        display: inline-block;
+        height:2rem;
+        margin-top:.5rem;
+        padding: 0rem .6rem;
+        line-height: 2rem;
+        font-size: $font-size-normal;
+        border-radius: .3rem;
+        transition: background-color .1s;
+    }
+
+    // 搜索组件样式
+    .wd-ui-serach-component {
+        float: left;
+        width:13rem;
+    }
+
+    // 用户信息
+    .wd-user-info {
+        float: right;
+        margin-right: 1rem;
+        line-height: 3rem;
+    }
+    // 用户详情
+    .ui-user-detail{
+        display: inline-block;
+        position: relative;
+    }
+    // 用户头像
+    .wd-user-info img {
+        display: inline-block;
+        width:2rem;
+        height: 2rem;
+        margin-bottom:.4rem;
+        // margin-right: 1rem;
+        line-height: 3rem;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    // 头像右侧链接
+    .wd-user-info a {
+        display: inline-block;
+        margin: 0rem .5rem;
+    }
+
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $main-deep: map-get($colors, main-deep); // 主色
+    $main-light: map-get($colors, main-light); // 主色
+    $tip: map-get($colors, tip); // 提示色
+    $text: map-get($colors, text); // 字体颜色
+    $title: map-get($colors, title); // 标题颜色
+    $warm-title: map-get($colors, warm-title); // 醒目标题
+    $nav: map-get($colors, nav); // 导航字体颜色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    $hover: map-get($colors, hover); // 悬浮类颜色
+    $active: map-get($colors, active); // 激活类颜色
+    $bg: map-get($colors, bg); // 页面背景色
+    $bc: map-get($colors, bc); // 输入类边框色
+    $vip: map-get($colors, vip); // vip标识色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $help: map-get($colors, help); // 辅助色
+    $common: map-get($colors, common); // 通用色
+    $warn: map-get($colors, warn); // 警示色
+
+    .#{$theme} {
+        #id-app-header {
+
+            // 站名
+            .wd-site-name {
+                color: $main-deep;
+            }
+
+            // 导航链接 - 鼠标悬浮和路由选中样式
+            .wd-app-root-nav a {
+                color: $main;
+                &:hover {
+                    color:$main-deep;
+                }
+            }
+            a.nuxt-link-active {
+                color:$main-deep;
+                @include link-active($main-deep, false)
+            }
+            // 用户信息
+            .wd-user-info a { 
+                color: $main;
+            }
+        }
+    }
+}

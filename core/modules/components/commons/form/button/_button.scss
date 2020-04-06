@@ -1,0 +1,33 @@
+.wd-button {
+  display: inline-block;
+  border-radius: .3rem;
+  &.disabled {
+    opacity: .7;
+    cursor: not-allowed;
+  }
+  button {
+    width: 100%;
+    padding:.5rem;
+    text-align: center;
+    color: $white;
+    border-radius: .3rem;
+    background-color: transparent;
+    &:disabled, &[disabled], &.disabled {
+        opacity: .7;
+        cursor: not-allowed;
+    }
+  }
+}
+
+// 主题相关
+@each $theme in $themes {
+  // @debug $theme; 
+  $colors: map-get($theme-colors, #{$theme});
+  $main: map-get($colors, main);
+
+  .#{$theme} {
+    .wd-button {
+        background-color: $main;
+    }
+  }
+}

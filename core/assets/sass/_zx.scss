@@ -1,0 +1,9 @@
+
+
+/* 每个组件样式和公用样式的公用变量，函数等 ！！！不能有具体的样式，否则造成样式冗余！！！ */
+
+@import "./common/theme"; // theme已经引入了variables.scss!!!
+
+@import "./common/%";
+
+@import "./common/mixin";

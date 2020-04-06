@@ -1,0 +1,43 @@
+.wd-tree {
+  display: inline-block;
+  position: relative;
+  height: auto;
+  line-height: 2rem;
+  // 节点容器
+  li {
+    overflow: hidden;
+    transition: height .3s;
+  }
+  // checkbox组件
+  .checkbox{
+    vertical-align: top;
+  }
+  // 描述值文字
+  span {
+    margin-left:.5rem;
+    vertical-align: middle;
+  }
+  // 箭头和空白占位i元素（用于调节叶子节点的左间距）
+  .icon-caret-down,
+  .icon-caret-right{
+    cursor: pointer;
+  }
+  .icon-caret-down,
+  .icon-caret-right,
+  .blank {
+    display: inline-block;
+    width: 1rem;
+    line-height: 2rem;
+    text-align: center;
+    font-size: $font-size-normal;
+    vertical-align: middle;
+  }
+  // 列表li高度2rem
+  .height-y {
+    height: 2rem;
+  }
+  // 列表li高度0
+  .height-n {
+    height: 0;
+  }
+}

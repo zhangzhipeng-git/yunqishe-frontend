@@ -1,0 +1,78 @@
+@charset 'utf-8';
+
+/*********************板块/帖子头部板块信息 -- start ****************/
+// 板块头部信息
+.wd-content-head {
+    height: 7rem;
+    padding: 0 1rem;
+    margin-bottom:.5rem;
+    background-color: $white;
+}
+
+// 版块信息和右侧信息
+.wd-content-head-left,
+.wd-content-head-right {
+    float: left;
+}
+
+// 版块信息
+.wd-content-head-left {
+    text-align: center;
+    padding: .5rem 0;
+
+    // 板块封面
+    img {
+        height: 6rem;
+        width: 6rem;
+    }
+}
+
+// 关注按钮
+.wd-content-concern {
+    display: inline-block;
+    height: 2rem;
+    width: 6rem;
+    color: $white;
+    line-height: 2rem;
+    text-align: center;
+    border-radius: 2rem;
+    background-color: $red-warm;
+    cursor: pointer;
+}
+
+// 板块标题
+.wd-content-name {
+    font-size: 2rem;
+    color: $blue-sky;
+}
+
+// 右侧信息上部
+.wd-content-head-right-up {
+    margin-top: .5rem;
+    height: 4rem;
+    padding: 0 2rem;
+    line-height: 4rem;
+
+    span {
+        vertical-align: middle;
+    }
+}
+
+// 右侧信息下部
+.wd-to-you {
+    height: 2rem;
+    margin: 0 2rem;
+    color: gray;
+}
+
+// 内容和关注
+.wd-content-info {
+    font-size: .9rem;
+}
+
+// 数字 (内容和关注数量等)
+.wd-number-red {
+    color: $red-warm;
+}
+
+/*********************板块/帖子头部板块信息 -- end ****************/

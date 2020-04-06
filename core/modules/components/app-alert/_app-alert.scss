@@ -1,0 +1,76 @@
+@charset 'utf-8';
+$alert-button-border: rgb(180, 201, 247);
+$alert-border-shadow: rgba(128, 128, 128, 0.123);
+.app-alert {
+    user-select: none;
+    .mask {
+        position: fixed;
+        height:100%;
+        width: 100%;
+        top:0;
+        z-index: 99999;
+    }
+    .alert {
+        position: fixed;
+        width: 240px;
+        height: auto;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        margin-top: -80px;
+        margin-left: -120px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 1px 1px rgba(181, 197, 240, 0.589);
+        z-index: 999999;
+    }
+    
+    .alert h4 {
+        margin: 15px;
+    }
+    
+    .alert p {
+        padding: 1.5rem .8rem;
+        color:$common;
+        font-size: $font-size-small;
+    }
+    
+    .buttons {
+        display: flex;
+        width:100%;
+        font-size: $font-size-normal;
+        border-top: 1px solid $alert-button-border;
+    
+        div {
+            flex: 1;
+            text-align: center;
+            line-height: 40px;
+            border-right: 1px solid $alert-button-border;
+        }
+    
+        & > div:last-child{
+            border-right: none;
+        }
+
+        .left {
+            color:$gray;
+        }
+    }
+}
+
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main-deep: map-get($colors, main-deep);
+  
+    .#{$theme} {
+        .wd-alert {
+            .right {
+                color: $main-deep;
+            }
+        }
+    }
+  }
+  

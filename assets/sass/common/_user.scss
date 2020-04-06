@@ -1,0 +1,134 @@
+@charset "utf-8";
+
+/**
+ * 用户相关
+ */
+
+// 用户标识
+.wd-user-vip,
+.wd-user-description,
+.wd-user-designation,
+.wd-user-level {
+    margin: 0 auto;
+    width: 5rem;
+    height: 1.4rem;
+    font-size: .8rem;
+    line-height: 1.4rem;
+    border-radius: 1.5rem;
+}
+
+.wd-user-vip {
+    // vip
+    color: $white;
+    background-color: $yellow-light;
+}
+
+.wd-user-description {
+    // 身份
+    color: $white;
+    background-color: $red-deep;
+}
+
+.wd-user-designation {
+    // 称号
+    color: $white;
+    background-color: $blue-sky;
+}
+
+.wd-user-level {
+    // 等级
+    color: $white;
+    background-color: $green-deep;
+}
+
+// 图像右下角vip标识
+.wd-user-img-square-vip {
+    position: absolute;
+    z-index: 2;
+    bottom: -0rem;
+    right: -.2rem;
+    height: 1rem;
+    width: 1rem;
+    color: $white;
+    font-size: $font-size-min;
+    line-height: 1rem;
+    // font-weight: bold;
+    text-align: center;
+    border-radius: 100%;
+    background-color: $yellow-light;
+}
+
+// 方形用户图像 - 带用户标志身份 应用 右侧边栏
+.wd-user-img-square {
+    position: relative;
+    float: left;
+    margin: .2rem;
+    border-radius: .3rem;
+    cursor: pointer;
+    border: 1PX solid $gray-light;
+    img {
+        width: 4rem;
+        height: 4rem;
+        border-radius: .3rem;
+    }
+}
+
+// 方形用户图像左上角尊贵身份
+.wd-user-img-square-honor {
+    position: absolute;
+    top: -1PX;
+    left: 0;
+    height: .9rem;
+    width: 2rem;
+    padding-left: .3rem;
+    color: $white;
+    line-height: .8rem;
+    font-size: $font-size-min;
+    border-radius: .3rem 0 2rem 0;
+}
+
+// 方形用户图像下方neck
+.wd-user-img-square-nickname {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    bottom: 0;
+    height: 1rem;
+    width: 100%;
+    padding: 0 .5rem;
+    color: red;
+    text-align: center;
+    line-height: 1rem;
+    font-size: $font-size-min;
+    border-radius: .3rem;
+    background-color: $white;
+    opacity: .7;
+    @extend %onerow-ellipsis;
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $tip: map-get($colors, tip); // 提示色
+    $text: map-get($colors, text); // 字体颜色
+    $title: map-get($colors, title); // 标题颜色
+    $warm-title: map-get($colors, warm-title); // 醒目标题
+    $nav: map-get($colors, nav); // 导航字体颜色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    $hover: map-get($colors, hover); // 悬浮类颜色
+    $active: map-get($colors, active); // 激活类颜色
+    $bg: map-get($colors, bg); // 页面背景色
+    $bc: map-get($colors, bc); // 输入类边框色
+    $vip: map-get($colors, vip); // vip标识色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $help: map-get($colors, help); // 辅助色
+    $common: map-get($colors, common); // 通用色
+    $warn: map-get($colors, warn); // 警示色
+    .#{$theme} {
+        // 方形用户图像左上角尊贵身份
+        .wd-user-img-square-honor {
+            background-color: $warn;
+        }
+    }
+}

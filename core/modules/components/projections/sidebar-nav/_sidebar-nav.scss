@@ -1,0 +1,19 @@
+/*
+ * Filename: d:\frontend\vue\nuxt-ssr\components\projections\sidebar-nav\_sidebar-nav.scss
+ * Path: d:\frontend\vue\nuxt-ssr
+ * Created Date: Sunday, December 29th 2019, 2:11:17 pm
+ * Author: zzp-dog
+ * 导航式侧边栏容器样式-配合side-menu组件使用
+ * Copyright (c) 2019 Your Company
+ */
+#id-wd-sidebar-nav {
+    position: absolute;
+    top:0;
+    bottom:0;
+    width:100%;
+    background-color: $white;
+    border-right:1PX solid $gray-light-m;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 9998;
+}

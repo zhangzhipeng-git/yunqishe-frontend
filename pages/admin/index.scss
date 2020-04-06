@@ -1,0 +1,17 @@
+#id-admin-index {
+     .about-user{
+        @extend %clearfix;
+    }
+     .pie{
+        float: left;
+        width:33.33%;
+        height:15rem;
+        border:1PX solid $gray-light-s;
+        background-color: $white;
+    }
+     .site-visit,.site-profit{
+        border-top:1PX solid $gray-light-s;
+        background-color: $white;
+        height: 15rem;
+    }
+}

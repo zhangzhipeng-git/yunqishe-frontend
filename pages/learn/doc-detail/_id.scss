@@ -1,0 +1,12 @@
+$side-menu-width: 14rem;
+#id-ui-doc-detail {
+    margin-top:-.7rem;    // 去顶部间隙
+    margin-bottom: -1rem; // 去顶部间隙
+    // 文档内容
+    .ui-main-comtent {
+        width:$app-width - $side-menu-width;
+        margin-left: $side-menu-width;
+        padding: 0 1rem;
+        background-color: $white;
+    }
+}

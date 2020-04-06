@@ -1,0 +1,73 @@
+/*
+ * Filename: d:\frontend\vue\nuxt-ssr\components\commons\reply\reply.scss
+ * Path: d:\frontend\vue\nuxt-ssr
+ * Created Date: Sunday, December 15th 2019, 9:02:00 pm
+ * Author: zzp-dog
+ * 回复组件
+ * Copyright (c) 2019 Your Company
+ */
+
+@charset "utf-8";
+.wd-component-reply {
+    .reply-textarea {
+        width: 100%;
+        height: 5rem;
+        padding:.2rem .5rem;
+        resize: none;
+        font-size:$font-size-min;
+        font-family: $font-family-m;
+        border:1PX solid $gray-light;
+        border-radius: .3rem;
+    }
+
+    .btn {
+        color:$white;
+        width:2.8rem;
+        text-align: center;
+        font-size: $font-size-min;
+        line-height: 1.4rem;
+        border-radius: .2rem;
+    }
+    .reply-btn {
+        float:right;
+    }
+
+    // 暗锚点,因为要调整跳转后锚点的距离顶部的位置，所以需要传入锚点参数name使用一个隐藏的a锚点进行回复组件的跳转定位
+    .anchorPoint{
+        display: block;
+        position: relative;
+        z-index:-999999;
+        height:1px;
+        opacity: 0;
+    }
+}
+
+// 禁用时
+.reply-disabled{
+    padding: 1rem 0;
+    background-color: $gray-light-s;
+    text-align: center;
+    font-size: $font-size-min;
+    border-radius: .4rem;
+    // 未登录提示登录
+    p {
+        color:$common;
+        margin-bottom: .5rem;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors , #{$theme});
+    .#{$theme} {
+        .wd-component-reply {
+            .reply-textarea {
+                font-family:map-get($theme-font-familys, #{$theme});
+            }
+            .btn { 
+                background-color: map-get($colors, main);
+            }
+        }
+    }
+}

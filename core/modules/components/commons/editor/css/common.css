@@ -1,0 +1,292 @@
+/** 元素去边距，元素内边距与边框的厚度计入盒子整体大小 */
+a,
+i,
+p,
+ol,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+ul,
+li,
+em,
+tr,
+td,
+div,
+img,
+pre,
+html,
+body,
+span,
+table,
+label,
+input,
+audio,
+video,
+tbody,
+button,
+iframe,
+textarea,
+a:after,
+a::before,
+li:after,
+li:before,
+div:after,
+div:before,
+span:after,
+span:before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+/** 初始化html和body */
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  -o-tap-highlight-color: transparent;
+  -ms-tap-highlight-color: transparent;
+  -moz-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', 'Microsoft Yahei', monospace;
+}
+
+/** iframe大小随父元素变化 */
+iframe {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/**渲染成按钮的风格*/
+button,
+input[type=button],
+input[type=reset],
+input[type=submit] {
+  border: none;
+  appearance: button;
+  -o-appearance: button;
+  -ms-appearance: button;
+  -moz-appearance: button;
+  -webkit-appearance: button;
+}
+
+/**去除表单控件的聚焦后的出现的蓝色边框*/
+input,
+button,
+textarea,
+a:focus,
+input:focus,
+button:focus,
+select:focus,
+texarea:focus {
+  outline: none;
+  outline-style: none;
+  background-color: white;
+}
+
+input{
+  border:1PX solid #e6e6e6;
+}
+
+/** texarea 大小固定 */
+texarea {
+  resize: none;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+/**清除搜索按钮的原生样式*/
+input[type="search"] {
+  appearance: none;
+  -o-appearance: none;
+  -ms-appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type=search]:-webkit-search-decoration,
+input[type=search]:-webkit-search-cancel-button,
+input[type=search]:-webkit-search-results-button,
+input[type=search]:-webkit-search-results-decoration {
+  display: none;
+}
+
+/**标题文字宽度正常*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+}
+
+/**一些语义化的标签显示正常*/
+address,
+cite,
+dfn,
+var {
+  font-style: normal;
+}
+
+/**斜体标签 */
+i,
+em {
+  font-style: italic;
+}
+
+/**去掉列表前面的修饰符号*/
+ol,
+ul {
+  list-style-type: none;
+}
+
+/**表格重置*/
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/**图片标签*/
+img {
+  width: 100%;
+  height: auto;
+  border: none;
+  vertical-align: middle;
+}
+
+/**清除链接样式*/
+a:active,
+a:hover,
+a:link,
+a:visited {
+  color: black;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+/**水平线*/
+hr {
+  margin: 0;
+  *margin: 0;
+  border: 0;
+  color: black;
+  background-color: #e1e1e1;
+  height: 1px
+}
+
+/**重置input输入后的背景为白色*/
+input:-webkit-autofill,
+select:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: black;
+  box-shadow: 0 0 0px 1000px white inset;
+}
+
+/**清除ie输入框叉叉和密码框眼睛*/
+::-ms-clear,
+::-ms-reveal {
+  display: none;
+}
+
+input:-ms-clear {
+  display: none;
+}
+
+input:-ms-reveal {
+  display: none;
+}
+
+/** 移动端 参考ionic 解决时延300ms，不能解决点透问题 */
+ul[tappable],
+li[tappable],
+div[tappable],
+span[tappable] {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
+
+[tappable] {
+  cursor: pointer
+}
+
+/** 媒体查询 (屏幕宽度基准为60rem)*/
+html {
+  width: 960px;
+  margin: 0 auto;
+  font-size: 16px;
+}
+
+@media only screen and (min-width:1024px) {
+  html {
+    width: 1024px;
+    font-size: 17.0666px;
+  }
+}
+
+@media only screen and (min-width:1100px) {
+  html {
+    width: 1100px;
+    font-size: 18.333px;
+  }
+}
+
+@media only screen and (min-width:1280px) {
+  html {
+    width: 1280px;
+    font-size: 21.333px;
+  }
+}
+
+@media only screen and (min-width:1366px) {
+  html {
+    width: 1366px;
+    font-size: 22.7666px;
+  }
+}
+
+@media only screen and (min-width:1440px) {
+  html {
+    width: 1440px;
+    font-size: 24px;
+  }
+}
+
+@media only screen and (min-width:1680px) {
+  html {
+    width: 1680px;
+    font-size: 28px;
+  }
+}
+
+@media only screen and (min-width:1920px) {
+  html {
+    width: 1920px;
+    font-size: 32px;
+  }
+}
+
+/* icon */
+
+[class^="icon-"],
+[class*=" icon-"],
+.icomoon {
+  font-size: .75rem;
+  line-height: .75rem;
+}
+

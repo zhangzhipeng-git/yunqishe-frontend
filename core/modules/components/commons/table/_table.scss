@@ -1,0 +1,31 @@
+.wd-tree-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+
+  // 表格单元格
+  th,
+  td {
+    text-align: left;
+    padding: 0.5rem 0;
+    font-size: $font-size-small;
+    border-bottom: 1px solid $gray-light-s;
+  }
+  // 按钮组件样式改写
+  .wd-select,
+  .wd-delete,
+  .wd-update,
+  .wd-insert {
+    button {
+      padding: 0.3rem 0.5rem;
+      line-height: 1rem;
+    }
+  }
+  .icon-caret-right,
+  .icon-caret-down {
+    display: inline-block;
+    padding-right: 0.5rem;
+    font-size: $font-size-normal;
+    line-height: 1;
+  }
+}

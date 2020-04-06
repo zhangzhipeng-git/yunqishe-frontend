@@ -1,0 +1,23 @@
+@charset 'utf-8';
+#id-app-footer {
+    height:$app-footer-height;
+    margin-top:-$app-footer-height;
+
+    background-color: $white;
+    color:$black-light;
+    text-align: center;
+    border-top:1PX solid $gray-light-m;
+    .wd-footer-bar {
+        padding-top: 1rem;
+        li {
+            display: inline;
+            margin: 0 2rem;
+            a {
+                color:$black-light;
+            }
+        }
+    }
+    .wd-footer-powered-by {
+        margin: .5rem auto;
+    }
+}

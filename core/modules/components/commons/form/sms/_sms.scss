@@ -1,0 +1,64 @@
+.wd-sms {
+    display: inline-block;
+    position: relative;
+    width:100%;
+    line-height: 2rem;
+    // 验证成功，失败，超时input的边框颜色
+    @mixin placeholder($color) {
+        &::-webkit-input-placeholder,
+        &::-moz-placeholder,
+        &::placeholder{
+            color: $color;
+        }
+    }
+    input{
+        line-height: 2rem;
+        padding-left:.5rem;
+        width:100%;
+        &.success {
+            border-color: green;
+            @include placeholder(green);    
+        }
+        &.failed {
+            border-color: red;
+            @include placeholder(red);
+        }
+        &.timeout {
+            border-color: orange;
+            @include placeholder(orange);
+        }
+    }
+    // input右侧span
+    .sms-tip {
+        position: absolute;
+        top:0;
+        right: .5rem;
+        font-size: $font-size-min;
+        color:$gray;
+    }
+    // 点击发送
+    .sms-send {
+        cursor: pointer;
+    }
+    // 验证成功右侧提示
+    .sms-success {
+        color:green;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+  
+    .#{$theme} {
+      .wd-sms {
+        // 秒数
+        .sms-second {
+          color: $main;
+        }
+      }
+    }
+  }
+  

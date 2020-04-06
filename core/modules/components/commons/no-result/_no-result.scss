@@ -1,0 +1,16 @@
+.wd-no-result{
+    height: 15rem;
+    width:100%;
+    line-height: 15rem;
+    p {
+        display: inline-block;
+        color:$gray;
+        line-height: 1.5;
+        vertical-align: middle;
+        font-size: $font-size-small;
+        .icon-coffee {
+            font-weight: lighter;
+            font-size: $font-size-large;
+        }
+    }
+}

@@ -1,0 +1,60 @@
+@charset "utf-8";
+
+// 可使用/deep/ 修改
+.wd-go-search {
+    display: inline-block;
+    position: relative;
+    width: 13rem;
+    height: 2rem;
+    margin-top: .5rem;
+
+    // 搜索输入框
+    .wd-go-search-input {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        color: gray;
+        text-indent: 1rem;
+        border-radius: 2rem;
+        vertical-align: middle;
+    }
+
+    // 搜索按钮
+    .icon-search {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        padding: 0 .5rem;
+        color: white;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        border-radius: 2rem;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+
+    .#{$theme} {
+        .wd-go-search {
+            // 搜索输入框
+            .wd-go-search-input {
+                border: 1PX solid $main;
+            }
+            // 搜索按钮
+            .icon-search {
+                background-color: $main;
+            }
+        }
+    }
+}

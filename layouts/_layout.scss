@@ -1,0 +1,14 @@
+// 收集布局的前台全局样式
+@import "./app-header/app-header";
+@import "./app-body/app-body";
+@import "./app-footer/app-footer";
+
+// app,sys
+#id-app, #id-sys {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+#id-sys{
+    @extend %clearfix;
+}

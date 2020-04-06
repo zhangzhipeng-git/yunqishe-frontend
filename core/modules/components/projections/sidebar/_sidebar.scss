@@ -1,0 +1,158 @@
+/**
+ * 侧边栏公共样式
+ */
+
+//  body左右布局右侧宽度
+$wd-main-right: 14.5rem;
+$sidebar-width: $wd-main-right;
+@include width-0tox(100%);
+.wd-sidebar {
+    position: absolute;
+    width: $wd-main-right;
+    top: 0;
+    right: 0;
+    // 重置可能从父组件设置的样式
+    transform: translateY(0);
+    padding-right: 0 !important;
+    overflow-y: auto;
+    background-color: $white;
+    // 侧边栏内容
+    .wd-sidebar-ctn {
+        padding-bottom: .5rem;
+    }
+    // 侧边栏用户图像和身份信息  - 关联 _user.scss!!
+    .wd-sidebar-ctn-user-list {
+        ul {
+            @extend %clearfix;
+        }
+        // li - 在 ~/assets/sass/common/_user.scss中 => .wd-user-img-square
+        li {
+            position: relative;
+            float: left;
+            margin: .2rem;
+            border-radius: .3rem;
+            cursor: pointer;
+        }
+        // img 一行3个 - 在 ~/assets/sass/common/_user.scss中 => .wd-user-img-square img
+        img {
+            // - 1rem 是因为侧边栏padding:.5rem; 
+            // - .2rem*4 是因为li（3个li，每个li包裹一个img）的左右间距
+            width: floor(($sidebar-width - 1rem - .2rem*4) / 3);
+        }
+    }
+    // 侧边栏内容标题 如"最近浏览"/"帖子推荐" - 标题前面有一道竖杠
+    .wd-sidebar-ctn-title {
+        position: relative;
+        font-size: $font-size-normal;
+        font-weight: bold;
+        padding-left: .5rem;
+        margin-bottom: .5rem;
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: .2rem;
+        }
+    }
+    // 侧边栏推荐
+    .wd-sidebar-recommend-list {
+        li {
+            cursor: pointer;
+            margin-bottom: .5rem;
+        }
+        a {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 1PX;
+            @extend %clearfix;
+            // &:hover:before {
+            //     content: '';
+            //     position: absolute;
+            //     display: block;
+            //     left:50%;
+            //     bottom: 0;
+            //     transform: translateX(-50%);
+            //     height: 2PX;
+            //     animation: width-0tox .4s forwards ease;
+            // }
+            &:hover {
+                border-radius: .5rem;
+            }
+        }
+        // 推荐左侧封面 , 推荐右侧内容
+        .wd-sidebar-recommend-cover,
+        .wd-sidebar-recommend-ctn {
+            float: left;
+        }
+        // 推荐左侧封面
+        .wd-sidebar-recommend-cover {
+            float: left;
+            img {
+                width: 5rem;
+                height: 5rem;
+                border-radius: .5rem;
+            }
+        }
+        // 推荐内容
+        .wd-sidebar-recommend-ctn {
+            float: left;
+            p {
+                width: $wd-main-right - 1rem - 6rem;
+            }
+        }
+        // 推荐内容标题
+        .wd-sidebar-recommend-ctn-title {
+            line-height: 2rem;
+            text-align: center;
+            font-weight: bold;
+            @extend %onerow-ellipsis;
+        }
+        // 推荐内容简介
+        .wd-sidebar-recommend-ctn-introduce {
+            height: 3rem;
+            padding-left: .5rem;
+            text-align: left;
+            font-size: $font-size-min;
+            @include multirow-ellipsis(3);
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $title: map-get($colors, title); // 标题色
+    $text: map-get($colors, text); // 文字色
+    $reverse: map-get($colors, reverse); // 反衬色
+    .#{$theme} {
+        .wd-sidebar {
+            // 标题 - 左侧有一道杠
+            .wd-sidebar-ctn-title {
+                color: $reverse;
+                &:before {
+                    background-color: $main;
+                }
+            }
+            // 推荐内容列表
+            .wd-sidebar-recommend-list {
+                a:hover {
+                    padding: 0;
+                    border: 1PX solid $reverse;
+                }
+            }
+            // 推荐内容标题
+            .wd-sidebar-recommend-ctn-title {
+                color: $title;
+            }
+            // 推荐内容简介
+            .wd-sidebar-recommend-ctn-introduce {
+                color: $text;
+            }
+        }
+    }
+}

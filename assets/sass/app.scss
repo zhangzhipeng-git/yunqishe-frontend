@@ -1,0 +1,65 @@
+// 全局样式 - 直接再nuxt配置文件使用作为全局样式
+@charset "utf-8";
+#__layout,#__nuxt {
+    width:100%;
+    height:100%;
+}
+
+// 全局动画
+// bg-color - 背景渐变
+@include keyframes(bg-color) {
+    0% {
+        background-color: #e74c3c;
+    }
+
+    20% {
+        background-color: #f1c40f;
+    }
+
+    40% {
+        background-color: #1abc9c;
+    }
+
+    60% {
+        background-color: #3498db;
+    }
+
+    80% {
+        background-color: #9b59b6;
+    }
+
+    100% {
+        background-color: #e74c3c;
+    }
+}
+// myloading - 加载
+@include keyframes(myloading){
+    0%{
+        transform: rotateZ(0deg);
+    }
+    100%{
+        transform: rotateZ(360deg);
+    }
+}
+
+
+
+// 公用样式 - css实体片段
+@import "./common/all";
+
+// 布局组件样式
+@import "../../layouts/layout";
+
+// core
+@import "../../core/modules/components/core-components";
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors , #{$theme});
+    #id-app.#{$theme},body.#{$theme} {
+        font-family:map-get($theme-font-familys, #{$theme});
+        background-color: map-get($colors, bg);
+    }
+}
+

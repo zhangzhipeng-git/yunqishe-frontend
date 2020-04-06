@@ -1,0 +1,22 @@
+.wd-window-form{
+    form{
+        padding-bottom: 4rem;
+    }
+    /deep/ input {
+        width:20rem;
+    }
+    .select-sex{
+        /deep/ ul {
+            max-height: 5rem;
+        }
+    }
+    .wd-btn-group {
+        left:50%;
+        right:unset;
+        text-align: center;
+        transform: translateX(-50%);
+        /deep/ .wd-button {
+            width:6rem;
+        }
+    }
+}

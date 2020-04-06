@@ -1,0 +1,146 @@
+.wd-page-bar {
+    font-size: $font-size-small;
+    height: 2rem;
+    padding: 0 1rem;
+    line-height: 2rem;
+    text-align: left;
+    color: $common;
+    background-color: $white;
+    @extend %clearfix;
+    &>li {
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+    }
+    // 改变每页大小
+    .page-neck {
+        position: relative;
+        width: 5rem;
+        border-radius: .3rem;
+        vertical-align: middle;
+        ul {
+            position: absolute;
+            z-index: 3;
+            left: 0;
+            width: 100%;
+            background-color: $white;
+            border: 1px solid $gray-light;
+            box-shadow: 1px 0 2px 0 $gray-light-s, -1px -1px 2px 0 $gray-light-s;
+        }
+        li {
+            line-height: 1.5rem;
+        }
+    }
+    // 导航条
+    .page-body {
+        ul {
+            @extend %clearfix;
+        }
+        // 上一页，下一页，中间页
+        li {
+            float: left;
+            margin-left: 0.2rem;
+            a {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+        // 首页，尾页
+        .first,
+        .last {
+            width: auto;
+            padding: 0 0.5rem;
+        }
+    }
+    // 跳页
+    .page-tail {
+        input {
+            width: 2rem;
+            height: 1.5rem;
+            padding: 0 0.5rem;
+            text-align: center;
+            border-radius: 0.3rem;
+        }
+        button {
+            height: 2rem;
+            width: 2rem;
+            text-align: center;
+            border-radius: 50%;
+            color: $white;
+        }
+    }
+    // 改变每页大小
+    .changePageSize {
+        text-align: center;
+        cursor: pointer;
+    }
+    // 上一页，下一页，首页和尾页禁用样式
+    .disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+    // 导航条中的a标签
+    .page-body a {
+        border-radius: 0.3rem;
+    }
+    // 所有a标签
+    a {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme;
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+    $main-deep: map-get($colors, main-deep);
+    $main-light: map-get($colors, main-light);
+    $reverse: map-get($colors, reverse);
+    .#{$theme} {
+        // 改变每页记录条数大小的交互样式
+        .wd-page-bar {
+            // 总页数，总记录数
+            .pages,
+            .total {
+                color: $main;
+            }
+            // 改页大小
+            .page-neck {
+                border: 1PX solid $main;
+            }
+            // 导航条a标签
+            .page-body {
+                a {
+                    color: $main;
+                    border: 1px solid $main;
+                }
+            }
+            // 跳页
+            .page-tail {
+                input:focus {
+                    border: 1px solid $main;
+                }
+                button {
+                    background-color: $main;
+                }
+            }
+            // a标签聚焦
+            .page-neck,
+            .page-body {
+                a:hover,
+                .active {
+                    color: $white;
+                    background-color: $main;
+                }
+                // a标签禁用
+                a.disabled:hover {
+                    color: $main;
+                    background-color: $white;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,318 @@
+/*
+ * Filename: d:\frontend\vue\nuxt-ssr\components\commons\editor\_editor.scss
+ * Path: d:\frontend\vue\nuxt-ssr
+ * Created Date: Sunday, December 29th 2019, 4:54:20 pm
+ * Author: zzp-dog
+ * 富文本编辑器样式
+ * Copyright (c) 2019 Your Company
+ */
+
+
+// _theme 依赖的主题
+@import './_theme/theme';
+// _alert 依赖弹窗
+@import './_alert/alert';
+// _form  依赖的表单元素
+@import './_form/form';
+
+// ui-link 插入链接的弹窗样式
+@import './ui-link/ui-link';
+// ui-table 插入table的弹窗样式
+@import './ui-table/ui-table';
+// ui-image 插入image的弹窗样式
+@import './ui-annex/ui-annex';
+
+.wd-editor {
+
+    // 编辑条
+    .wd-editor-bar {
+        @extend %clearfix;
+        padding: .5rem 0 0;
+        font-size: $font-size-small;
+        border-bottom: 1PX solid $gray-light-m;
+    }
+
+    // 承载a标签
+    .wd-edit-link-box {
+        display: inline-block;
+        position: relative;
+    }
+
+    // 编辑项 - a标签，icon容器
+    .wd-edit-link {
+        display: inline-block;
+        position: relative;
+        height: 1.7rem;
+        line-height: 1.7rem;
+        padding: 0 .5rem;
+        border-radius: .2rem;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $gray-light-m;
+        }
+
+        &:hover:before {
+            content: "";
+            position: absolute;
+            z-index: 1;
+            display: block;
+            opacity: .8;
+            top: 1.6rem;
+            left: 50%;
+            border: .2rem solid transparent;
+            border-bottom-color: #222222;
+            transform: translateX(-50%);
+        }
+
+        &:hover:after {
+            content: attr(data-tip);
+            opacity: .8;
+            position: absolute;
+            z-index: 1;
+            display: block;
+            top: 2rem;
+            left: 50%;
+            font-size: $font-size-min;
+            padding: 0 .4rem;
+            color: $white;
+            white-space: nowrap; // 不换行
+            background-color: #222222;
+            transform: translateX(-50%);
+            border-radius: .3rem;
+        }
+
+        // 图标
+        i.icomoon {
+            font-size: $font-size-small;
+        }
+    }
+
+    // 字样下拉域
+    .fontName .wd-edit-link {
+        width: 6.2rem;
+        text-align: left;
+
+        // 下箭头icon固定在右侧
+        i {
+            display: inline-block;
+            position: absolute;
+            right: .6rem;
+            line-height: 1.7rem;
+        }
+    }
+
+    // 字号下拉域
+    .fontSize .wd-edit-link {
+        width: 6rem;
+    }
+
+    // 文本格式下拉域
+    .formatBlock .wd-edit-link {
+        width: 3rem;
+    }
+
+    // 编辑项 - a标签聚焦
+    .wd-edit-link-active {
+        background-color: $gray-light-m;
+    }
+
+    // 面板列表
+    .wd-font-name-list,
+    .wd-font-size-list,
+    .wd-format-block-list,
+    .wd-code-list {
+        position: absolute;
+        z-index: 4;
+        top: 1.6rem;
+        color: $white;
+        background-color: #222222;
+        border-radius: .3rem;
+
+        a {
+            display: inline-block;
+            width: 100%;
+            padding: .2rem .5rem;
+            color: $white;
+            border-radius: .3rem;
+
+            &:hover {
+                background-color: #444444;
+            }
+        }
+    }
+
+    // 颜色面板列表
+    .wd-color-list {
+        position: absolute;
+        z-index: 4;
+        top: 1.6rem;
+        width: (1.2 * 10 + .2 * 21 + .3 * 2) + rem;
+        padding: .3rem .3rem;
+        border: 1PX solid $gray-light-s;
+        background-color: $white;
+        border-radius: .3rem;
+
+        // 行
+        .wd-tr {
+            @extend %clearfix;
+        }
+
+        // 列
+        .wd-td {
+            position: relative;
+            width: 1.2rem;
+            height: 1.2rem;
+            margin: .2rem;
+            float: left;
+        }
+
+        // 颜色小方块
+        a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: .6rem;
+            border-radius: .1rem;
+
+            &:hover {
+                top: -.1rem;
+                left: -.1rem;
+                padding: .7rem;
+            }
+        }
+    }
+
+    // 字样列表
+    .wd-font-name-list {
+        width: 8rem;
+    }
+
+    // 字号列表
+    .wd-font-size-list {
+        width: 10rem;
+    }
+
+    // 文本格式列表
+    .wd-format-block-list {
+        width: 3rem;
+    }
+    // 代码语言列表
+    .wd-code-list{
+        width: 6rem;
+    }
+
+    // 字色域和高亮色域icon底部边框颜色
+    .foreColor .icon-font-color,
+    .backColor .icon-pencil {
+        display: inline-block;
+        border-bottom: 2PX solid transparent;
+    }
+
+    // 输入区 contenteditable="true"
+    .wd-deitor-content {
+        outline: none;
+        padding: .6rem;
+        min-height: 8rem;
+        max-height: 15rem;
+        overflow: auto;
+        font-size:.875rem;
+
+        ul,
+        ol {
+            list-style-position: inside;
+        }
+
+        // 无序列表
+        ul {
+            list-style-type: disc;
+        }
+
+        // 有序列表
+        ol {
+            list-style-type: decimal;
+        }
+
+        // 超链接
+        a {
+            text-decoration: underline;
+        }
+
+        // table
+        table {
+            width: 100%;
+        }
+
+        // table列
+        td {
+            min-width: 4rem;
+            padding: .5rem;
+            border: 1PX solid gray;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        pre {
+            padding:.5rem .8rem;
+            border-radius: .3rem;
+        }
+    }
+    // 编辑脚部
+    .wd-edit-footer {
+        @extend %clearfix;
+        padding:.5rem;
+    }
+    .wd-edit-footer-btn{
+        float:right;
+        button {
+            line-height: 1.5rem;
+            padding:0 .5rem;
+            color: white;
+            border-radius: .3rem;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $title: map-get($colors, title); // 标题色
+    $text: map-get($colors, text); // 文字色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $main-deep: map-get($colors, main-deep); // 深主色
+    $main-light: map-get($colors, main-light); // 浅主色
+    $main-light-s: map-get($colors, main-light-s); // 超浅主色
+
+    .#{$theme} {
+        .wd-editor {
+            // 面板列表
+            .wd-font-name-list,
+            .wd-font-size-list,
+            .wd-format-block-list,
+            .wd-code-list {
+                a {
+                    &:hover {
+                        color: $main;
+                    }
+                }
+            }
+            // 编辑体中a标签
+            .wd-deitor-content {
+                a {
+                    color: $main-deep;
+                }
+                pre{
+                    background-color: $main-light-s;
+                    color: $reverse;
+                }
+            }
+            // 提交按钮容器及按钮
+            .wd-edit-footer-btn {
+                button{
+                    background-color: $reverse;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,71 @@
+.wd-ui-annex {
+    padding:0 1rem;
+    color:$gray;
+    // 文件表单隐藏
+    .wd-edit-file{
+        display: none;
+    }
+    // 每一行，copy from ui-link
+    li{
+        line-height: 2.5rem;
+        &>label{
+            display: inline-block;
+            font-size: .875rem;
+           
+        }
+        input{
+            width:17rem;
+            height: 2rem;
+            margin-left:1rem;
+            padding: 0 .5rem;
+            border-radius: .2rem;
+        }
+    }
+    // 单选按钮组
+    .wd-radio-group-type{
+        margin-left: 1rem;
+        label{
+            margin-right: 1.5rem;
+            &::nth-child(3){
+                margin-right:none;
+            }
+        }
+    }
+    // 本地上传按钮,// 外链上传按钮
+    .wd-upload-local, .wd-use-link-confirm{
+        width: 100%;
+        line-height: 2.2rem;
+        color:white;
+        border-radius: .3rem;
+        font-weight: bold;
+    }
+    .wd-upload-local{
+        text-align: middle;
+        .icomoon{
+            font-size: 1rem;
+            line-height: 2.2rem;
+        }
+    }
+    .wd-use-link-confirm{
+        margin:.5rem 0;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main-deep: map-get($colors, main-deep);
+    $reverse: map-get($colors, reverse);
+    .#{$theme} {
+        .wd-ui-annex {
+            .wd-upload-local{
+                background-color:  $reverse;
+            }
+            .wd-use-link-confirm{
+                background-color: $main-deep;
+            }
+        }
+    }
+}
+
