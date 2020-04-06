@@ -55,7 +55,7 @@
                 @click="goUserCenter(v)"
               >
                 <img :src="v.avator" alt="用户头像" />
-                <p class="wd-user-img-square-vip" v-if="v.partner">
+                <p class="wd-user-img-partner" v-if="v.partner">
                   <i class="icomoon icon-star"></i>
                 </p>
                 <p

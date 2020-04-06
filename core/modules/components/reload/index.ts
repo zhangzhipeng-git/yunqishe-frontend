@@ -29,8 +29,7 @@ export default class RefreshComponent extends Vue {
       return;
     }
     next((vm: Vue) => {
-      vm.$router.back();
-      vm.$router.push(fullPath);
+      vm.$router.replace(fullPath);
     });
   }
 }

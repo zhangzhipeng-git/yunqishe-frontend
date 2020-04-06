@@ -5,9 +5,12 @@
         height: 20rem;
         margin: 0;
         padding: 0;
-        animation: bg-color 20s infinite;
         overflow: hidden;
-
+        background: url(https://ae01.alicdn.com/kf/Uea457966cf554f699dc93ec16a7e8859c.jpg) no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        background-size: cover;
+        animation: bg-color 20s infinite;
         // 大标题
         h1 {
             margin-top: 5rem;
@@ -16,7 +19,6 @@
             font-weight: bold;
             font-size: $font-size-huge;
         }
-
         // 知行解释
         P {
             width: 24rem;
@@ -24,53 +26,81 @@
             text-align: center;
             color: $white;
             font-weight: bold;
+            line-height: 2.5;
         }
     }
-
-    // banner遮罩，用边框将banner底部盖住
+    // banner遮罩
     .ui-banner-mask {
         position: absolute;
-        bottom: -10rem;
-        left: 50%;
-        width: 300%;
-        height: 500%;
-        -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-        transform: translateX(-50%);
-        border: 10rem solid $white;
-        border-radius: 50%;
-
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: .05;
     }
-
-    // tab标签 视频和文档
-    .ui-tab {
-        height: 3rem;
-        line-height: 3rem;
-        text-align: center;
-        box-shadow: 0 1PX 4PX 0 $gray-light;
+    .ui-banner-text {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
     }
-
-    // 文档和视频链接公用样式
-    .ui-tab-doc,
-    .ui-tab-vid {
-        float: left;
-        display: block;
-        width: 30rem;
-        font-size: $font-size-middle;
-        letter-spacing:1rem;
-        background-color: $white;
-
-        &:hover {
-            font-weight: bold;
+    .ui-learn-doc {
+        // 文档体
+        .ui-doc {
+            padding: 3rem;
+            background-color: $white;
+            // 总分类列表
+            .ui-classes {
+                width: 40rem;
+                margin: 0 auto;
+                padding: 2rem 0;
+                border-radius: 3rem;
+                border: 1PX solid $gray-light-m;
+                @extend %clearfix;
+            }
+            // 文档分类
+            .ui-class {
+                height: 8rem;
+                line-height: 4rem;
+                text-align: left;
+                padding: 2rem 0;
+                margin: 0 4rem;
+                border-bottom: 1PX solid $gray-light-m;
+                // 最后一个li没有下外边距
+                &:last-child {
+                    border-bottom: none;
+                }
+                @extend %clearfix;
+            }
+            // 分类名称 
+            .ui-class-tittle {
+                float: left;
+                width: 5rem;
+                text-align: center;
+                font-size: $font-size-normal;
+            }
+            // 分类列表
+            .ui-items {
+                float: left;
+                height: 4rem;
+                width: 26.5rem;
+                font-size: $font-size-small;
+                line-height: 2rem;
+            }
+            // 分类item
+            .ui-item {
+                margin-left: 4rem;
+                display: inline-block;
+                a {
+                    color: $gray;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
         }
     }
-
-    //  连接聚焦
-    .nuxt-link-active {
-        font-weight: bold;
-    }
 }
-
 
 // 主题相关
 @each $theme in $themes {
@@ -94,33 +124,23 @@
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
-
     .#{$theme} {
         #id-ui-learn {
-            // 文档链接
-            .ui-tab-doc {
-                border-right: 1PX solid $main-light-s;
-                border-bottom: 1PX solid $main-light-s;
+            .ui-banner-mask {
+                background-color: $reverse;
             }
-
-            // 视频链接
-            .ui-tab-vid {
-                border-bottom: 1PX solid $main-light-s;
+            .ui-banner-text {
+                text-shadow: 3PX 3PX 3PX $main-deep;
             }
-            // 文档，视频链接
-            .ui-tab-doc,
-            .ui-tab-vid {
-                color: $main;
-
-                &:hover {
+            .ui-learn-doc {
+                .ui-class-tittle {
                     color: $main-deep;
                 }
-            }
-
-            // 链接聚焦
-            .nuxt-link-active {
-                color: $main-deep;
-                border-bottom: 2PX solid $main-deep;
+                .ui-item a {
+                    &:hover {
+                        color: $main;
+                    }
+                }
             }
         }
     }

@@ -71,16 +71,21 @@ export default class SideMenuComponent extends Vue {
     /**
      * 计算展开项高度
      */
-    get computedHeight() {
-        // 顶级菜单高度自适应！！！
-        if (this.tree.level === 0) {
-            return 'auto';
+    computedHeight(tree: any) {
+        if (tree.height === undefined) {
+            this.$set(tree, 'height', 0);
         }
-        // 每个链接的高度
-        const h = 2.5;
-        // 计算所有展开子节点的个数
-        const c = this.getChildCount(this.tree, 0);
-        return c * h + 'rem';
+        this.$nextTick(() => {
+                // 顶级菜单高度自适应！！！
+            if (tree.level === 0) {
+                return 'auto';
+            }
+            // 每个链接的高度
+            const h = 2.5;
+            // 计算所有展开子节点的个数
+            const c = this.getChildCount(tree, 0);
+            tree.height = c * h + 'rem';
+        });
     }
 
     /**
@@ -90,13 +95,15 @@ export default class SideMenuComponent extends Vue {
      */
     getChildCount(node: Tree, count: number) {
         let c = count;
-        if (!node.child) return c;
-        if (!node.child.length) return c;
-        if (!node.spread) return c;
-        c += node.child.length;
-        node.child.forEach((n, i) => {
-            this.getChildCount(n, c);
-        });
+        if (!node.spread || !node.child || !node.child.length) {
+            return c;
+        }
+        const len = node.child.length;
+        c += len;
+        for (let i = 0; i < len; i++) {
+            const e = node.child[i];
+            this.getChildCount(e, c);
+        }
         return c;
     }
 }

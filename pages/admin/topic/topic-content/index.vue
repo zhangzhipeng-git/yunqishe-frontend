@@ -12,49 +12,54 @@
     <div class="wd-title">内容管理</div>
     <!-- curd -->
     <div class="wd-curd-bar">
-      <ButtonComponent @click="insert$" class="wd-insert"
-        ><i class="icomoon icon-plus"></i>添加</ButtonComponent
-      >
-      <ButtonComponent @click="select$" class="wd-select"
-        ><i class="icomoon icon-edit"></i>编辑</ButtonComponent
-      >
-      <ButtonComponent @click="delete$" class="wd-delete"
-        ><i class="icomoon icon-x"></i>删除</ButtonComponent
-      >
-      <ButtonComponent @click="update$" class="wd-update"
-        ><i class="icomoon icon-check-circle"></i>保存</ButtonComponent
-      >
-      <ButtonComponent @click="search$" class="wd-search"
-        ><i class="icomoon icon-search"></i>搜索</ButtonComponent
-      >
+      <ButtonComponent @click="insert$" class="wd-insert">
+        <i class="icomoon icon-plus"></i>添加
+      </ButtonComponent>
+      <ButtonComponent @click="select$" class="wd-select">
+        <i class="icomoon icon-edit"></i>编辑
+      </ButtonComponent>
+      <ButtonComponent @click="delete$" class="wd-delete">
+        <i class="icomoon icon-x"></i>删除
+      </ButtonComponent>
+      <ButtonComponent @click="update$" class="wd-update">
+        <i class="icomoon icon-check-circle"></i>保存
+      </ButtonComponent>
+      <ButtonComponent @click="search$" class="wd-search">
+        <i class="icomoon icon-search"></i>搜索
+      </ButtonComponent>
     </div>
     <!-- filter -->
     <div class="wd-search-bar">
       <!-- 所属模块 -->
-      <span class="wd-form-unit-h ui-module"
-        ><label for="">模块</label
-        ><SelectComponent :force="true" v-model="searchModule" :list="moduleList"
-      /></span>
+      <span class="wd-form-unit-h ui-module">
+        <label for>模块</label>
+        <SelectComponent :force="true" v-model="searchModule" :list="moduleList" />
+      </span>
       <!-- 标题关键字检索 -->
-      <span class="wd-form-unit-h"
-        ><label for="">标题</label
-        ><input v-model="searchTitle" type="text"/>
+      <span class="wd-form-unit-h">
+        <label for>标题</label>
+        <input v-model="searchTitle" type="text" />
       </span>
       <!-- 所属话题分类 -->
-      <span class="wd-form-unit-h"
-        ><label for="">分类</label
-        ><SelectComponent :key$="'id'" :value$="'name'" v-model="searchCategory" :list="categoryList"
-      /></span>
+      <span class="wd-form-unit-h">
+        <label for>分类</label>
+        <SelectComponent
+          :key$="'id'"
+          :value$="'name'"
+          v-model="searchCategory"
+          :list="categoryList"
+        />
+      </span>
       <!-- 是否可见 -->
-      <span class="wd-form-unit-h"
-        ><label for="">状态</label
-        ><SelectComponent v-model="searchVisible" :list="visibleList"
-      /></span>
+      <span class="wd-form-unit-h">
+        <label for>状态</label>
+        <SelectComponent v-model="searchVisible" :list="visibleList" />
+      </span>
       <!-- 是否付费 -->
-      <span class="wd-form-unit-h"
-        ><label for="">付费</label
-        ><SelectComponent v-model="searchCharge" :list="chargeList"
-      /></span>
+      <span class="wd-form-unit-h">
+        <label for>付费</label>
+        <SelectComponent v-model="searchCharge" :list="chargeList" />
+      </span>
     </div>
     <!-- 表格容器 -->
     <div class="wd-table-wrap">
@@ -75,15 +80,32 @@
         </template>
         <!-- category -->
         <template v-slot:tid="{ row }">
-          <SelectComponent :force="true" :key$="'id'" :value$="'name'" class="select-menu" :list="categoryList" v-model="row.tid" />
+          <SelectComponent
+            :force="true"
+            :key$="'id'"
+            :value$="'name'"
+            class="select-menu"
+            :list="categoryList"
+            v-model="row.tid"
+          />
         </template>
         <!-- visible -->
         <template v-slot:visible="{ row }">
-          <SelectComponent :force="true" class="select-menu" :list="visibleList" v-model="row.visible" />
+          <SelectComponent
+            :force="true"
+            class="select-menu"
+            :list="visibleList"
+            v-model="row.visible"
+          />
         </template>
         <!-- charge -->
         <template v-slot:charge="{ row }">
-          <SelectComponent :force="true" class="select-menu" :list="chargeList" v-model="row.charge" />
+          <SelectComponent
+            :force="true"
+            class="select-menu"
+            :list="chargeList"
+            v-model="row.charge"
+          />
         </template>
       </TableComponent>
     </div>
@@ -99,13 +121,69 @@
       :isMove="true"
       :isScale="true"
     >
-      <InsertOrUpdateTopicContentComponent
-        @confirm="insertOrUpdate($event)"
-        :categories="categoryList"
-        :operate="operate"
-        :module="searchModule"
-        :topicContent="topicContent"
-      />
+      <div class="wd-window-form">
+        <form>
+          <!-- 所属模块 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>模块</label>
+            <input :disabled="true" :value="searchModule===0?'论坛':'问云'" type="text" />
+          </div>
+          <!-- 所属话题分类 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>分类</label>
+            <SelectComponent
+              :key$="'id'"
+              :value$="'name'"
+              :list="categoryList"
+              v-model="topicContent.tid"
+            />
+          </div>
+          <!-- 是否可见 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>可见</label>
+            <SelectComponent
+              class="trueOrFalse"
+              :force="true"
+              :list="list"
+              v-model="topicContent.visible"
+            />
+          </div>
+          <!-- 是否付费 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>付费</label>
+            <SelectComponent
+              class="trueOrFalse"
+              :force="true"
+              :list="list"
+              v-model="topicContent.charge"
+            />
+          </div>
+          <!-- 话题内容标题 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>标题</label>
+            <input v-model="topicContent.title" type="text" />
+          </div>
+          <!-- 话题内容封面 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>封面(暂只支持外链)</label>
+            <input v-model="topicContent.cover" type="text" />
+          </div>
+          <!-- 话题内容摘要 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>摘要</label>
+            <input v-model="topicContent.introduce" type="text" />
+          </div>
+          <!-- 话题内容主体 -->
+          <div class="wd-form-unit-v">
+            <label class="required" for>主体内容</label>
+            <EditorComponent v-model="topicContent.text" :hasBtn="false" />
+          </div>
+        </form>
+        <div class="wd-btn-group">
+          <ButtonComponent @click="close" class="wd-cancle" :throttle="0" :text="'取消'" />
+          <ButtonComponent @click="confirm" :text="'确认'" />
+        </div>
+      </div>
     </WindowComponent>
   </div>
 </template>

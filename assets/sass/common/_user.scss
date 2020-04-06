@@ -41,8 +41,8 @@
     background-color: $green-deep;
 }
 
-// 图像右下角vip标识
-.wd-user-img-square-vip {
+// 图像右下角partner标识
+.wd-user-img-partner {
     position: absolute;
     z-index: 2;
     bottom: -0rem;
@@ -85,6 +85,7 @@
     line-height: .8rem;
     font-size: $font-size-min;
     border-radius: .3rem 0 2rem 0;
+    animation: bg-color 20s infinite;
 }
 
 // 方形用户图像下方neck

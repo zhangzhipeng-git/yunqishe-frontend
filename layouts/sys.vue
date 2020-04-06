@@ -167,11 +167,28 @@ export default class SysHeaderComponent extends BaseComponent {
             level:2,
             name:'文档',
             leftIcon:['icon-book'],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+              {
+                level:3,
+                name:'文档分类',
+                url:'/admin/zhixing/doc-classify',
+                leftIcon:['icon-copy']
+              },
+              {
+                level:3,
+                name:'文档内容',
+                url:'/admin/zhixing/doc-content',
+                leftIcon:['icon-list']
+              }
+            ]
           },
           {
             level:2,
             name:'视频',
-            leftIcon:['icon-video']          }
+            leftIcon:['icon-video'],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],          
+          }
         ]
       },
       {

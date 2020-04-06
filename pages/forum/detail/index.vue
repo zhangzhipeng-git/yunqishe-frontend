@@ -324,7 +324,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                 @click="goUserCenter(v)"
               >
                 <img :src="v.avator" alt="用户头像" />
-                <p class="wd-user-img-square-vip" v-if="v.partner">
+                <p class="wd-user-img-partner" v-if="v.partner">
                   <i class="icomoon icon-star"></i>
                 </p>
                 <p

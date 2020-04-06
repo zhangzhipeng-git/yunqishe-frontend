@@ -1,52 +1,60 @@
 #id-topic-comment {
-   // 分割符号 ‘/’
-    .seperator{
-      font-weight: normal;
-      color:gray;
+    // 分割符号 ‘/’
+    .seperator {
+        font-weight: normal;
+        color: gray;
     }
     // 表格中选择下拉框
     .select-menu {
-      width:5rem;
-      vertical-align: middle;
-      /deep/ input {
-        width:5rem;
-        height: 1.5rem;
-        padding-left: 0.5rem;
-        line-height: 1.5rem;
-      }
-      /deep/ ul {
-        top: 1.5rem;
-        max-height: 4rem;
-      }
-    }
-  
-    // 样式穿透提取到全局[不影响其他样式，因为添加了本组件的样式属性data-v-hash]
-    @at-root #id-manage-topic-comment-window{
-      & /deep/ {
-        // scale  放大（进入） -> 缩小（离开）
-        .scale {
-          &-enter {
-            top: 10%;
-            transform: scale(0);
-            opacity: 0;
-            filter: alpha(opacity=0);
-          }
-  
-          &-active {
-            top: 10%;
-            transform: scale(1);
-            opacity: 1;
-            filter: alpha(opacity=100);
-          }
-  
-          &-leave {
-            top: 10%;
-            transform: scale(0);
-            opacity: 0;
-            filter: alpha(opacity=0);
-          }
+        width: 5rem;
+        vertical-align: middle;
+        /deep/ input {
+            width: 5rem;
+            height: 1.5rem;
+            padding-left: 0.5rem;
+            line-height: 1.5rem;
         }
-      }
+        /deep/ ul {
+            top: 1.5rem;
+            max-height: 4rem;
+        }
     }
-  }
-  
+    // 样式穿透提取到全局[不影响其他样式，因为添加了本组件的样式属性data-v-hash]
+    @at-root #id-manage-topic-comment-window {
+        & /deep/ {
+            // scale  放大（进入） -> 缩小（离开）
+            .scale {
+                &-enter {
+                    top: 10%;
+                    transform: scale(0);
+                    opacity: 0;
+                    filter: alpha(opacity=0);
+                }
+                &-active {
+                    top: 10%;
+                    transform: scale(1);
+                    opacity: 1;
+                    filter: alpha(opacity=100);
+                }
+                &-leave {
+                    top: 10%;
+                    transform: scale(0);
+                    opacity: 0;
+                    filter: alpha(opacity=0);
+                }
+            }
+        }
+    }
+}
+
+// 弹出层，不放在上面id中，
+// 因为是追加到了body里，上面的id选择器选不到
+.wd-window-form {
+    width: 40rem;
+    // 是与否
+    .trueOrFalse {
+        /deep/ ul {
+            max-height: 4rem;
+        }
+    }
+}

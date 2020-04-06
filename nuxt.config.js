@@ -113,14 +113,8 @@ module.exports = {
             // 根路径重定向到/protal
             let index = routes.findIndex(route => route.name === 'index');
             routes[index] = {
-                    ...routes[index],
-                    redirect: '/protal'
-                }
-                // /zhixing重定向到/zhixing/doc
-            index = routes.findIndex(route => route.name === 'zhixing');
-            routes[index] = {
                 ...routes[index],
-                redirect: '/zhixing/doc'
+                redirect: '/protal'
             }
         }
     },

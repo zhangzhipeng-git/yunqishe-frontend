@@ -41,7 +41,7 @@
       <ul
         class="wd-side-menu-height-transition"
         :style="{
-          height: tree.spread ? computedHeight : '0',
+          height: tree.spread ? computedHeight(tree) : '0',
           'background-color': tree.level === 0 ? 'white' : ''
         }"
       >

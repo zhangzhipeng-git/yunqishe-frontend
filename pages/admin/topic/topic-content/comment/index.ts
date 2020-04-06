@@ -1,8 +1,8 @@
 /*
 * @Author: your name
 * @Date: 2020-03-08 21:12:21
- * @LastEditTime: 2020-03-16 14:58:12
- * @LastEditors: Please set LastEditors
+* @LastEditTime: 2020-03-16 14:58:12
+* @LastEditors: Please set LastEditors
 * @Description: In User Settings Edit
 * @FilePath: \nuxt-ssr\pages\admin\forum-and-wenyun\list\list.ts
 */
@@ -14,7 +14,7 @@ import ButtonComponent from '@/core/modules/components/commons/form/button/butto
 import SelectComponent from '@/core/modules/components/commons/form/select/select.vue';
 import WindowComponent from '@/core/modules/components/commons/biz-alert/_window/window.vue';
 import PageBarComponent from '@/core/modules/components/commons/page-bar/page-bar.vue';
-import InsertOrUpdateTopicCommentComponent from '@/components/topic/insert-or-update-topic-comment/index.vue';
+import EditorComponent from '@/core/modules/components/commons/editor/editor.vue';
 import { Ref } from 'vue-property-decorator';
 @Component({
     layout: 'sys',
@@ -26,8 +26,8 @@ import { Ref } from 'vue-property-decorator';
         WindowComponent,
         SelectComponent,
         ButtonComponent,
-        PageBarComponent,
-        InsertOrUpdateTopicCommentComponent
+        EditorComponent,
+        PageBarComponent
     }
 })
 export default class ListComponent extends BaseComponent {
@@ -42,6 +42,10 @@ export default class ListComponent extends BaseComponent {
     chargeList: any[] = [
         {id: 0, description: '免费'},
         {id: 1, description: '付费'}
+    ];
+    list: any[] = [
+        { id: 0, description: '否' },
+        { id: 1, description: '是' }
     ];
     /** 默认显示所有付费和非付费 */
     searchCharge: number|string = '';
@@ -229,5 +233,16 @@ export default class ListComponent extends BaseComponent {
         const o = this.topicComment;
         this.topicComment = {text:''};
         setTimeout(() => {this.topicComment = o});
+    }
+
+    /** 关闭弹窗 */
+    close() {
+        this.window.close();
+    }
+
+    /** 确认并关闭弹窗 */
+    confirm() {
+        this.window.close();
+        this.insertOrUpdate(this.topicComment);
     }
 }
