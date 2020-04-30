@@ -12,12 +12,12 @@
       <div class="ui-doc">
         <ul class="ui-classes">
           <!-- 总分类循环 -->
-          <li v-for="i in 5" :key="i" class="ui-class">
-            <h3 class="ui-class-tittle">文档{{i}}</h3>
+          <li v-for="(v, i) in list" :key="i" class="ui-class">
+            <h3 class="ui-class-title">{{v.name}}</h3>
             <ul class="ui-items">
               <!-- 分类中项目循环 -->
-              <li class="ui-item" v-for="j in 7" :key="j">
-                <nuxt-link :to="'/zhixing/doc-detail/' + '1'">分类{{j}}</nuxt-link>
+              <li class="ui-item" v-for="(vv, ii) in v.docClasses" :key="ii">
+                <router-link :to="'/zhixing/detail?id='+vv.id+'&name='+vv.name">{{vv.name}}</router-link>
               </li>
             </ul>
           </li>

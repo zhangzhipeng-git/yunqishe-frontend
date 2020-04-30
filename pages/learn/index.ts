@@ -13,7 +13,7 @@ export default class LearnComponent extends BaseComponent {
 
     private mounted(): void {
         // 去文档页
-        this.$router.push('/learn/doc')
+        this.$router.push('/learn/docClass')
     }
 
     destroyed() {

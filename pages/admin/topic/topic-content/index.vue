@@ -4,7 +4,7 @@
  * @LastEditTime: 2020-03-15 19:04:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \nuxt-ssr\pages\admin\forum-and-wenyun\list\list.vue
+ * @FilePath: \nuxt-ssr\pages\admin\circle-and-circle\list\list.vue
  -->
 <template>
   <div id="id-topic-content">
@@ -58,7 +58,7 @@
       <!-- 是否付费 -->
       <span class="wd-form-unit-h">
         <label for>付费</label>
-        <SelectComponent v-model="searchCharge" :list="chargeList" />
+        <SelectComponent v-model="searchStrategy" :list="strategyList" />
       </span>
     </div>
     <!-- 表格容器 -->
@@ -66,9 +66,9 @@
       <TableComponent
         :list="topicContents"
         :thead="['标题', '分类', '可见', '付费', '创建时间']"
-        :columns="['title', 'tid', 'visible', 'charge', 'createTime']"
+        :columns="['title', 'pid', 'visible', 'strategy', 'createTime']"
         :operate="{ select: '编辑', delete: '删除' , other: {text: '评论',icon:'icon-arrow-right-circle'}}"
-        :slots="['title','tid', 'visible', 'charge']"
+        :slots="['title','pid', 'visible', 'strategy']"
         :rows.sync="rows"
         @select="selectOne($event)"
         @delete="deleteOne($event)"
@@ -79,14 +79,14 @@
           <span :title="row.title">{{row.title | strCut(12)}}</span>
         </template>
         <!-- category -->
-        <template v-slot:tid="{ row }">
+        <template v-slot:pid="{ row }">
           <SelectComponent
             :force="true"
             :key$="'id'"
             :value$="'name'"
             class="select-menu"
             :list="categoryList"
-            v-model="row.tid"
+            v-model="row.pid"
           />
         </template>
         <!-- visible -->
@@ -98,13 +98,13 @@
             v-model="row.visible"
           />
         </template>
-        <!-- charge -->
-        <template v-slot:charge="{ row }">
+        <!-- strategy -->
+        <template v-slot:strategy="{ row }">
           <SelectComponent
             :force="true"
             class="select-menu"
-            :list="chargeList"
-            v-model="row.charge"
+            :list="strategyList"
+            v-model="row.strategy"
           />
         </template>
       </TableComponent>
@@ -135,7 +135,7 @@
               :key$="'id'"
               :value$="'name'"
               :list="categoryList"
-              v-model="topicContent.tid"
+              v-model="topicContent.pid"
             />
           </div>
           <!-- 是否可见 -->
@@ -155,7 +155,7 @@
               class="trueOrFalse"
               :force="true"
               :list="list"
-              v-model="topicContent.charge"
+              v-model="topicContent.strategy"
             />
           </div>
           <!-- 话题内容标题 -->
@@ -180,7 +180,7 @@
           </div>
         </form>
         <div class="wd-btn-group">
-          <ButtonComponent @click="close" class="wd-cancle" :throttle="0" :text="'取消'" />
+          <ButtonComponent @click="close" class="wd-cancel" :throttle="0" :text="'取消'" />
           <ButtonComponent @click="confirm" :text="'确认'" />
         </div>
       </div>

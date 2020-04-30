@@ -2,7 +2,7 @@ import Component from "vue-class-component";
 import { Ref } from "vue-property-decorator";
 import { ECharts } from "echarts";
 import BaseComponent from "~/core/base-component";
-@Component({ layout: "sys" })
+@Component({ layout: 'admin' })
 export default class AdminComponent extends BaseComponent {
   /** 用户在线分布 */
   @Ref("online")

@@ -1,5 +1,5 @@
 module.exports = {
-    '/local/forum/getBlocks': {
+    '/local/circle/getBlocks': {
         status: 200,
         'data|2': [
             {
@@ -94,7 +94,7 @@ module.exports = {
         ]
     },
     // 请求帖子
-    '/local/forum/getInvitation': {
+    '/local/circle/getInvitation': {
         status: 200,
         data: {
             id: 1, // 帖子id

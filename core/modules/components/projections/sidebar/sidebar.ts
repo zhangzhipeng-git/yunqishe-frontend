@@ -49,6 +49,7 @@ export default class SidebarComponent extends Vue {
         const rsize = parseInt(DomUtil.getcomputedStyle(document.body, 'fontSize'));
         this.threshold$ = parseInt((<any>this).threshold);
         // 调整底部定位
+        this.sidebar.style.position = 'absolute';
         this.sidebar.style.bottom =  - this.threshold$ + 'rem';
 
         // 计算最小主体内容高度

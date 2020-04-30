@@ -1,9 +1,13 @@
 $opacity: 0.8;
-$wd-main-right: 40rem;
-$wd-main-left: 18.5rem;
+$wd-main-right: 17.5rem;
+$wd-main-left: $main-width - $wd-main-right - 1.5rem;
 // 左侧方块尺寸
-$size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
+$size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
 #id-user {
+    // 局部加载列表
+    .ui-part-loading-list {
+        width: $wd-main-left;
+    }
     position: relative;
     width: 100%;
     height: 100%;
@@ -32,7 +36,7 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
         text-align: center;
         overflow-y: auto;
     }
-    // 用户基本xinxi
+    // 用户基本信息
     .user-info {
         margin: 5rem auto 3rem;
         p {
@@ -90,6 +94,10 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
     .icon-mars {
         background-color: $blue-sky;
     }
+    // 间性
+    .icon-intersex {
+        background-color: purple;
+    }
     // 用户等级
     .user-level {
         height: 1.2rem;
@@ -113,6 +121,7 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
     .user-action-nav {
         margin: 0 3px 0.5rem;
         line-height: 2.5rem;
+        text-align: left;
         border-radius: 0.3rem;
         background-color: $white;
         opacity: $opacity;
@@ -129,26 +138,117 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
         margin: 0 3px;
         @extend %clearfix;
     }
-    // 用户详情主体左侧
+    // 用户主体详情左侧
     .user-main-left {
         width: $wd-main-left;
         border-radius: 0.3rem;
-        left: 0;
-        background-color: transparent;
-        @extend %no-scrollbar;
+        float: left;
     }
-    // 用户主体详情右侧
-    .user-main-right {
-        width: $wd-main-right;
-        border-radius: 0.3rem;
-        float: right;
+    // 无数据
+    .ui-no-data {
+        background-color: $white;
+        opacity: $opacity;
+    }
+    // 动态内容
+    .ui-dynamic-content {
+        margin-bottom: .5rem;
+        padding: .2rem 1rem .2rem 2rem;
+        text-align: left;
         background-color: $white;
         opacity: $opacity;
         border-radius: 0.3rem;
     }
+    // 动态列表顶部
+    .ui-dynamic-content-head {
+        height: 2.5rem;
+        line-height: 2.5rem;
+    }
+    // 动态列表顶部，用户头像，终端和时间
+    .ui-user-avator,
+    .ui-top-info {
+        float: left;
+    }
+    // 动态列表顶部，用户头像
+    .ui-user-avator {
+        margin-right: 1rem;
+        img {
+            height: 2rem;
+            width: 2rem;
+            border-radius: 100%;
+            border: 1PX solid $gray-light;
+        }
+    }
+    // 动态列表顶部，终端和时间
+    .ui-top-info {
+        p {
+            font-size: $font-size-min;
+            line-height: 1;
+        }
+    }
+    // 动态内容主体
+    .ui-dynamic-content-body {
+        margin: .5rem 0;
+        min-height: 4rem;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    // 封面和内容简介
+    .ui-dynamic-cover,
+    .ui-dynamic-introduce {
+        float: left;
+    }
+    // 封面
+    .ui-dynamic-cover {
+        width: 24%;
+        height: 6rem;
+        margin-right: 1%;
+        overflow: hidden;
+        img {
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+    // 动态简介
+    .ui-dynamic-introduce {
+        width: 75%;
+        @include multirow-ellipsis(6);
+    }
+    // 动态内容脚部
+    .ui-dynamic-content-foot {
+        height: 2rem;
+        line-height: 2rem;
+        i {
+            margin-left: .5rem;
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+        .ui-dynamic-detail {
+            float: right;
+            button {
+                height: 2rem;
+                line-height: 2rem;
+                border-radius: .3rem;
+                background-color: transparent;
+            }
+        }
+    }
+    // 用户详情主体右侧
+    .user-main-right {
+        @include flex();
+        @include flex-direction();
+        position: relative;
+        float: right;
+        width: $wd-main-right;
+        border-left: none;
+        border-radius: 0.3rem;
+        background-color: transparent;
+        overflow-y: visible;
+        @extend %no-scrollbar;
+    }
     // 用户人气等等
     .user-evaluate {
-        margin-bottom: $app-gap;
+        margin-bottom: $global-gap;
         background-color: $white;
         opacity: $opacity;
         border-radius: 0.3rem;
@@ -160,80 +260,114 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
             }
         }
     }
+    // 用户评估key
     .user-evaluate-k {
         color: $black-light;
     }
+    // 用户评估value
     .user-evaluate-v {
         font-weight: bold;
     }
-    // 侧边栏标题公共样式
+    // 侧边栏列表项标题
     .wd-sidebar-ctn-title {
+        z-index: 2;
+        margin: .5rem 0 0 1rem;
         text-align: left;
     }
     // 用户基本信息
     .user-introduce {
-        padding: 0.5rem 1rem;
+        margin-bottom: .5rem;
+        padding-bottom: 1rem;
         text-align: left;
         background-color: $white;
         opacity: $opacity;
         border-radius: 0.3rem;
         li {
-            padding: 0.5rem 0;
+            padding: 0.5rem 1rem;
         }
     }
+    // 用户简介key
     .user-introduce-k {
         display: inline-block;
         width: 4rem;
         color: $black-light;
     }
+    // 用户简介value
     .user-introduce-v {
+        float: right;
         color: black;
         font-weight: bold;
     }
-}
-
-// 用户捕捉
-// 用户礼物
-// 用户最近访客
-// 用户收集
-.user-collects,
-.user-captures,
-.user-gifts,
-.user-visitors {
-    position: relative;
-    margin: .5rem 0;
-    // 透明度的遮罩
-    .item-mask {
-        position: absolute;
-        z-index: 1;
-        opacity: $opacity;
-        width: 100%;
-        height: 100%;
-        border-radius: 0.3rem;
-        background-color: $white;
-    }
-    ul {
+    // 用户礼物
+    // 用户捕捉
+    // 用户最近访客
+    .user-gifts,
+    .user-captures,
+    .user-visitors {
         position: relative;
-        padding: .5rem;
-        z-index: 2;
-        @extend %clearfix;
-    }
-    li {
-        float: left;
-        margin: 0.25rem;
-        background-color: $white;
-        border-radius: .2rem;
-        a {
-            display: inline-block;
-            width: $size;
-            height: $size;
-            border-radius: 0.2rem;
+        margin-bottom: .5rem;
+        // 透明度的遮罩
+        .item-mask {
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: $opacity;
+            border-radius: 0.3rem;
+            background-color: $white;
+        }
+        ul {
+            position: relative;
+            padding: .5rem;
+            z-index: 2;
+            @extend %clearfix;
+        }
+        li {
+            float: left;
+            margin: 0.25rem;
+            border-radius: .2rem;
+            line-height: 1.5rem;
+            font-size: $font-size-min;
+            a {
+                position: relative;
+                display: inline-block;
+                width: $size;
+                height: $size;
+                border-radius: 0.2rem;
+                padding: 0.1rem;
+                overflow: hidden;
+                img {
+                    width: $size - .1rem;
+                    border-radius: 0.2rem;
+                }
+            }
+            span {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 2rem;
+                height: 1.5rem;
+                background-color: $gray-light;
+                color: $white;
+                opacity: .7;
+            }
+            label {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 1.5rem;
+                color: black;
+                background-color: $white;
+                opacity: .7;
+            }
         }
     }
-}
-
-.user-visitors {
-    margin-bottom: 0;
+    .user-visitors {
+        @include flex-1();
+    }
 }
 
 // 主题相关
@@ -241,6 +375,7 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
     $colors: map-get($theme-colors,
     #{$theme}); // 颜色map
     $main: map-get($colors, main); // 主题主色
+    $main-deep: map-get($colors, main-deep); // 深主题主色
     $warm-title: map-get($colors, warm-title); // 醒目标题色
     $btn: map-get($colors, btn); // 按钮类颜色
     .#{$theme} {
@@ -251,7 +386,25 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3;
                 }
             }
             .item-mask+ul a:hover {
-                border: 1px solid $red-warm;
+                padding: 0;
+                border: .1rem solid $red-warm;
+                label {
+                    bottom: -.1rem;
+                }
+                span {
+                    top: -.1rem;
+                    right: -.1rem;
+                }
+            }
+            // 动态列表用户姓名
+            .ui-top-info {
+                p:first-child {
+                    color: $main-deep;
+                }
+            }
+            // 查看全文
+            .ui-dynamic-detail button {
+                color: $main;
             }
         }
     }

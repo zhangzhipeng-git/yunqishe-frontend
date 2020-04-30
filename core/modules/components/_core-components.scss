@@ -1,15 +1,14 @@
-
-
 /** 全局可用(不支持投影，只支持静态方法调用)*/
-/** app-loader */
+
+// app-loader
 @import "./app-loader/app-loader";
-/** app-alert */
+// app-alert
 @import "./app-alert/app-alert";
-/** app-toast */
+// app-toast
 @import "./app-toast/app-toast";
 
-
 /* commons */
+
 // 业务组件弹窗样式（支持投影和被包含在组件中，也可以通过其静态方法调用）
 @import "./commons/biz-alert/biz-alert";
 // 轮播样式
@@ -30,15 +29,18 @@
 @import "./commons/no-result/no-result";
 // table(有tree的选项)
 @import "./commons/table/table";
-// tree
-@import "./commons/tree/tree";
 // page-bar
 @import "./commons/page-bar/page-bar";
 // twemoji
 @import "./commons/emoji/emoji";
+// video
+@import "./commons/video/video";
+// 局部加载
+@import "./commons/part-loading/part-loading";
 
 /* projections */
+
 // 侧边栏容器
 @import "./projections/sidebar/sidebar";
-// 导航式侧边栏容器 - position:fixed
+// 导航式侧边栏菜单的容器 - position:absolute
 @import "./projections/sidebar-nav/sidebar-nav";

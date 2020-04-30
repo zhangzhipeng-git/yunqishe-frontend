@@ -8,368 +8,362 @@
  */
 
 @charset "utf-8";
-
-// ！！！以屏幕宽度60rem为基准计算,实际内容占58rem宽度！！！
+// ！！！以屏幕宽度60rem为基准计算,实际内容占56rem宽度！！！
 #id-ui-protal {
+    // 主体内容宽度
+    $content-width: $main-width - $global-padding*2;
+    // 主体内容宽度 - 中间间隔后 均分
+    $avg-width: ($content-width - $global-margin) / 2;
     // 头部
-.ui-portal-header {
-    padding: 1rem;
-    background-color: $white;
-    @extend %clearfix;
-}
-// 轮播容器
-.ui-protal-carousel {
-    width:28.5rem;
-    height: 16rem;
-    float:left;
-}
-// 轮播右侧排行容器
-.ui-protal-header-right {
-    margin-left:1rem;
-    width:28.5rem;
-    height:16rem;
-    float:left;
-}
-// 轮播右侧排行文章
-.ui-protal-header-right-item {
-    position: relative;
-    width: 13.75rem;
-    height: 7.5rem;
-    float:left;
-    margin-right: 1rem;
-    margin-bottom:1rem;
-    border-radius: 1rem;
-    cursor: pointer;
-    // 排行序号
-    .ui-rank-level {
-        position: absolute;
-        top:0;
-        left:0;
-        width:1rem;
-        height:1rem;
-        font-size:$font-size-min;
-        line-height: 1rem;
-        color:$white;
-        text-align: center;
-        border-radius: .2rem;
-        z-index:1;
+    .ui-portal-header {
+        padding: $global-padding;
+        background-color: $white;
+        @extend %clearfix;
     }
-    // 文章封面
-    img{
+    // 轮播容器
+    .ui-protal-carousel {
+        width: $avg-width;
+        height: 16rem;
+        float: left;
+    }
+    // 轮播右侧排行容器
+    .ui-protal-header-right {
+        margin-left: 1rem;
+        width: $avg-width;
+        height: 16rem;
+        float: left;
+    }
+    // 轮播右侧排行文章
+    .ui-protal-header-right-item {
+        position: relative;
+        width: ($avg-width - 2rem)/2;
+        height: 7.5rem;
+        float: left;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 1rem;
+        cursor: pointer;
+        // 排行序号
+        .ui-rank-level {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1rem;
+            height: 1rem;
+            font-size: $font-size-min;
+            line-height: 1rem;
+            color: $white;
+            text-align: center;
+            border-radius: .2rem;
+            z-index: 1;
+        }
+        // 文章封面
+        img {
+            width: 100%;
+            height: 7.5rem;
+            border-radius: .2rem;
+        }
+        // 底部信息圆角
+        .ui-item-bottom,
+        .ui-item-abstract,
+        .ui-item-bottom-mask {
+            border-radius: 0 0 .2rem .2rem;
+        }
+        // 文章封面底部信息遮罩
+        .ui-item-bottom-mask {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2.1rem;
+            z-index: 1;
+            opacity: .7;
+            filter: alpha(opacity=70);
+            background-image: linear-gradient(to bottom, rgba(188, 188, 188, 0), rgba(50, 50, 50, 1));
+        }
+        // 文章摘要
+        .ui-item-abstract {
+            position: absolute;
+            z-index: 2;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            height: 2rem;
+            font-size: $font-size-min;
+            line-height: $font-size-min * 2;
+            color: $white;
+            @extend %onerow-ellipsis
+        }
+        // 文章封面底部信息
+        .ui-item-bottom {
+            position: absolute;
+            left: 0;
+            bottom: .1rem;
+            width: 100%;
+            color: white;
+            font-size: $font-size-min;
+            line-height: $font-size-min;
+            transition: height .3s;
+            z-index: 3;
+            overflow: hidden;
+            // 用户小头像
+            img {
+                float: left;
+                width: 2rem;
+                height: 2rem;
+                margin-left: .5rem;
+                border-radius: 100%;
+            }
+            // 用户小头像右侧两行文字
+            .ui-other-info {
+                float: left;
+                width: 9.75rem;
+            }
+            .ui-author-info {
+                margin-top: .2rem;
+            }
+            .ui-author-info,
+            .ui-work-info {
+                margin-left: 3rem;
+            }
+            span,
+            .icomoon {
+                font-size: $font-size-min !important;
+                vertical-align: middle;
+            }
+        }
+        // 高度变为2rem
+        .ui-2rem-height {
+            height: 2rem;
+        }
+        // 高度变为0;
+        .ui-no-height {
+            height: 0;
+            transition: none;
+        }
+    }
+    // 小广告
+    .ui-protal-ad {
         width: 100%;
-        height: 7.5rem; 
-        border-radius: .2rem;
+        height: 4rem;
+        margin: 1rem 0;
+        img {
+            width: 100%;
+            height: 4rem;
+            object-fit: cover;
+        }
     }
-    // 底部信息圆角
-    .ui-item-bottom,
-    .ui-item-abstract,
-    .ui-item-bottom-mask{
-        border-radius: 0 0 .2rem .2rem;
+    // 推广作品容器
+    .ui-recommend-items {
+        width: 100%;
+        padding: $global-padding;
+        background-color: $white;
+        ul {
+            @extend %clearfix;
+        }
     }
-    // 文章封面底部信息遮罩
-    .ui-item-bottom-mask {
-        position: absolute;
-        left:0;
-        bottom:0;
-        width:100%;
-        height:2.1rem;
-        z-index:1;
-        opacity: .7;
-        filter:alpha(opacity=70);
-        background-image: linear-gradient(to bottom, rgba(188,188,188,0), rgba(50, 50, 50, 1));
-    }
-    // 文章摘要
-    .ui-item-abstract{
-        position: absolute;
-        z-index:2;
-        left:0;
-        bottom:0;
-        width:100%;
+    // 推广作品
+    .ui-recommends-item {
+        position: relative;
+        width: ($content-width - 4*1rem) / 5;
+        height: 8.1rem;
+        float: left;
+        font-size: $font-size-min;
         text-align: center;
-        height:2rem;
-        font-size:$font-size-min;
-        line-height: $font-size-min * 2;
-        color:$white;
-        @extend %onerow-ellipsis
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        // 封面
+        img {
+            width: 100%;
+            height: 6rem;
+            border-radius: .5rem .5rem 0 0;
+        }
     }
-    // 文章封面底部信息
+    // 推广作品信息
     .ui-item-bottom {
         position: absolute;
-        left:0;
-        bottom:.1rem;
-        width:100%;
-        color: white;
-        font-size:$font-size-min;
-        line-height: $font-size-min;
-        transition: height .3s;
-        z-index:3;
-        overflow: hidden;
-        // 用户小头像
-        img {
-            float:left;
-            width:2rem;
-            height:2rem;
-            margin-left:.5rem;
-            border-radius: 100%;
+        width: 100%;
+        height: 2rem;
+        left: 0;
+        bottom: .1rem;
+        line-height: .8rem;
+        border-radius: 0 0 .5rem .5rem;
+        box-shadow: 0 1PX 2PX 0 $gray-light;
+        // 作品摘要
+        .ui-item-abstract {
+            margin-top: .2rem
         }
-        // 用户小头像右侧两行文字
-        .ui-other-info {
-            float:left;
-            width:9.75rem; 
-        }
-        .ui-author-info{
-            margin-top:.2rem;
-        }
-        .ui-author-info,
+        // 发表时间和浏览次数
         .ui-work-info {
-            margin-left:3rem;
-        }
-        span,.icomoon {
-            font-size:$font-size-min !important;
-            vertical-align: middle;
-        }
-    }
-    // 高度变为2rem
-    .ui-2rem-height {
-        height:2rem;
-    }
-    // 高度变为0;
-    .ui-no-height {
-        height:0;
-        transition: none;
-    }
-}
-// 小广告
-.ui-protal-ad {
-    width:100%;
-    height: 4rem;
-    margin: 1rem 0;
-    img {
-        width:100%;
-        height: 4rem;
-        object-fit: cover;
-    }
-}
-
-// 推广作品容器
-.ui-recommend-items {
-    width:100%;
-    padding: 1rem;
-    background-color: $white;
-    ul {
-        @extend %clearfix;
-    }
-}
-// 推广作品
-.ui-recommends-item {
-    position: relative;
-    width:10.8rem;
-    height:8.1rem;
-    float: left;
-    font-size:$font-size-min;
-    text-align: center;
-    margin-right:1rem;
-    margin-bottom:1rem;
-    // 封面
-    img {
-        width:100%;
-        height: 6rem;
-        border-radius: .5rem .5rem 0 0;
-    }
-}
-// 推广作品信息
-.ui-item-bottom {
-    position: absolute;
-    width:100%;
-    height:2rem;
-    left:0;
-    bottom:.1rem;
-    line-height: .8rem;
-    border-radius: 0 0 .5rem .5rem;
-    box-shadow: 0 1PX 2PX 0 $gray-light;
-    // 作品摘要
-    .ui-item-abstract {
-        margin-top:.2rem
-    }
-    // 发表时间和浏览次数
-    .ui-work-info {
-        i,span {
-            font-size:$font-size-min;
-            vertical-align: middle;
-        }
-        span {
-            margin-right:.5rem;
-        }
-    }
-}
-// 推广作品遮罩
-.ui-recommend-item-mask {
-    position: absolute;
-    z-index:1;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    opacity: .5;
-    border-radius: .5rem;
-    filter:alpha(opacity=50);
-    background-color: gray;
-}
-// 遮罩上方提示
-.ui-recommend-item-tip {
-    position: absolute;
-    z-index:2;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    font-size:3rem;
-    line-height: 8.1rem;
-    color:$white;
-    cursor: pointer;
-}
-
-
-//推广内容-end
-
-// 上榜UP-start
-// 上榜UP容器
-.ui-up-items {
-    padding: 1rem;
-    background-color: $white;
-    ul {
-        position: relative;
-        height: auto;
-        border-radius: .5rem;
-        @extend %clearfix;
-    }
-}
-// 上榜UP
-.ui-up-item {
-    position: relative;
-    float: left;
-    width: 6.375rem;
-    height: 6rem;
-    margin: 0 1rem 1rem 0;
-    // 正面
-    .ui-up-item-front{
-        position: relative;
-        z-index:3;
-        backface-visibility: hidden;
-        transition: transform 1.2s;
-        cursor: pointer;
-        // 用户头像
-        img {
-            display: block;
-            height:6rem;
-            width:6.375rem;
-            z-index:2;
-            object-fit: cover;
-            border-radius: .5rem;
-        }
-        // 底部up信息
-        .ui-up-info {
-            position: absolute;
-            height:1.5rem;
-            width:100%;
-            left:0;
-            bottom: 0;
-            margin: 0 .1rem;
-            line-height:1.5rem;
-            border-radius: .5rem;
-            color: white;
-            background-image: linear-gradient(to bottom, rgba(188,188,188,0), rgba(50, 50, 50, 1));
-            text-align: center;
-            @extend %onerow-ellipsis;
-            // 性别
-            .icon-boy, .icon-girl {
-                margin: 0 .1rem;
-                padding:0 .2rem;
-                font-size: $font-size-min;
-                line-height: 1.3;
-                border-radius: .2rem;
-            }
-            .icon-girl{
-                // background-color: $red-warm;
-                &::before {
-                    content: "♁";
-                }
-            }
-            .icon-boy {
-                // background-color: $blue-sky;
-                &::before {
-                    content: "♂";
-                }
-            }
+            i,
             span {
                 font-size: $font-size-min;
+                vertical-align: middle;
+            }
+            span {
+                margin-right: .5rem;
             }
         }
     }
-    // 卡片背部
-    .ui-up-item-back{
-        z-index:1;
-        color: $white;
-        text-align: center;
-        transition: transform 1.2s;
-        transform: rotateY(-180deg);
-    }
-    // 翻转
-    .rotateY-180 {
-        transform: rotateY(180deg)
-    }
-
-    .rotateY--180 {
-        transform: rotateY(-360deg);
-    }
-
-    // 反面和正面
-    .ui-up-item-back,
-    .ui-up-item-front,
-    .ui-up-item-info-mask {
+    // 推广作品遮罩
+    .ui-recommend-item-mask {
         position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
         top: 0;
         left: 0;
-        height: 100%;
-        width: 100%;
-        border-radius: .5rem;
-    }
-
-    // 反面遮罩
-    .ui-up-item-info-mask {
-        z-index: 1;
         opacity: .5;
+        border-radius: .5rem;
         filter: alpha(opacity=50);
-        background-color: $black-light;
+        background-color: gray;
     }
-
-    .ui-up-item-info {
-        position: relative;
-        width: 6.375rem;
+    // 遮罩上方提示
+    .ui-recommend-item-tip {
+        position: absolute;
+        z-index: 2;
+        width: 100%;
         height: 100%;
-        z-index: 1;
+        top: 0;
+        left: 0;
+        font-size: 3rem;
+        line-height: 8.1rem;
+        color: $white;
         cursor: pointer;
-        overflow: hidden;
-        font-size: .75em;
-        text-align: center;
-
-        // to you
-        .ui-up-to-you {
-            padding: 1em 1em 0 1em;
-            color: white;
+    }
+    //推广内容-end
+    // 上榜UP-start
+    // 上榜UP容器
+    .ui-up-items {
+        padding: 1rem;
+        background-color: $white;
+        ul {
+            position: relative;
+            height: auto;
+            border-radius: .5rem;
+            @extend %clearfix;
         }
-
-        // up想说
-        .ui-up-say-to-you {
-            padding: 1em;
+    }
+    // 上榜UP
+    .ui-up-item {
+        position: relative;
+        float: left;
+        width: ($content-width - 7*1rem)/8;
+        height: 6rem;
+        margin: 0 1rem 1rem 0;
+        // 正面
+        .ui-up-item-front {
+            position: relative;
+            z-index: 3;
+            backface-visibility: hidden;
+            transition: transform 1.2s;
+            cursor: pointer;
+            // 用户头像
+            img {
+                display: block;
+                height: 6rem;
+                width: 6.375rem;
+                z-index: 2;
+                object-fit: cover;
+                border-radius: .5rem;
+            }
+            // 底部up信息
+            .ui-up-info {
+                position: absolute;
+                height: 1.5rem;
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                margin: 0 .1rem;
+                line-height: 1.5rem;
+                border-radius: .5rem;
+                color: white;
+                background-image: linear-gradient(to bottom, rgba(188, 188, 188, 0), rgba(50, 50, 50, 1));
+                text-align: center;
+                @extend %onerow-ellipsis;
+                // 性别
+                .icon-boy,
+                .icon-girl {
+                    margin: 0 .1rem;
+                    padding: 0 .2rem;
+                    font-size: $font-size-min;
+                    line-height: 1.3;
+                    border-radius: .2rem;
+                }
+                .icon-girl {
+                    // background-color: $red-warm;
+                    &::before {
+                        content: "♁";
+                    }
+                }
+                .icon-boy {
+                    // background-color: $blue-sky;
+                    &::before {
+                        content: "♂";
+                    }
+                }
+                span {
+                    font-size: $font-size-min;
+                }
+            }
+        }
+        // 卡片背部
+        .ui-up-item-back {
+            z-index: 1;
+            color: $white;
+            text-align: center;
+            transition: transform 1.2s;
+            transform: rotateY(-180deg);
+        }
+        // 翻转
+        .rotateY-180 {
+            transform: rotateY(180deg)
+        }
+        .rotateY--180 {
+            transform: rotateY(-360deg);
+        }
+        // 反面和正面
+        .ui-up-item-back,
+        .ui-up-item-front,
+        .ui-up-item-info-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: .5rem;
+        }
+        // 反面遮罩
+        .ui-up-item-info-mask {
+            z-index: 1;
+            opacity: .5;
+            filter: alpha(opacity=50);
+            background-color: $black-light;
+        }
+        .ui-up-item-info {
+            position: relative;
+            width: 6.375rem;
+            height: 100%;
+            z-index: 1;
+            cursor: pointer;
             overflow: hidden;
-            @extend %onerow-ellipsis;
+            font-size: .75em;
+            text-align: center;
+            // to you
+            .ui-up-to-you {
+                padding: 1em 1em 0 1em;
+                color: white;
+            }
+            // up想说
+            .ui-up-say-to-you {
+                padding: 1em;
+                overflow: hidden;
+                @extend %onerow-ellipsis;
+            }
         }
     }
-    }
-
     // 上榜UP-end
-
     // item上方工具条-start
     .ui-tool-bar {
         height: 4rem;
@@ -377,7 +371,6 @@
         line-height: 2rem;
         background-color: $white;
         @extend %clearfix;
-
         // 推广标题
         h2 {
             float: left;
@@ -385,11 +378,9 @@
             font-weight: bold;
             // color: $red-deep;
         }
-
         // "更多"按钮
         .ui-btn-more {
             float: right;
-
             a {
                 display: inline-block;
                 padding: 0 .5rem;
@@ -399,7 +390,6 @@
                 line-height: 1.5rem;
                 border-radius: .3rem;
                 // border: 1PX solid $red-warm;
-
                 &:focus,
                 &:hover {
                     color: $white;
@@ -408,13 +398,12 @@
             }
         }
     }
-
     // item上方工具条-end
 }
 
 // 主题相关
 @each $theme in $themes {
-    $colors: map-get($theme-colors , #{$theme}); // 颜色map
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
     $main: map-get($colors, main); // 主题主色
     $warm-title: map-get($colors, warm-title); // 醒目标题色
     $btn: map-get($colors, btn); // 按钮类颜色
@@ -431,7 +420,7 @@
                 border: 1PX solid $btn;
                 &:focus,
                 &:hover {
-                    background-color:$btn;
+                    background-color: $btn;
                 }
             }
             // 工具条大标题

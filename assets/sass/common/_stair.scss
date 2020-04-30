@@ -4,18 +4,12 @@
  * 文章和回复() -- start ******
  */
 
-
-$wd-main-left: 0;
-$wd-body-middle: 45rem;
-$wd-main-right: 14.5rem;
-
 // 楼层左侧宽度
 $stair-left-width: 8rem;
 // 楼层右侧宽度
-$stair-right-width-level1: $wd-body-middle - $stair-left-width;
+$stair-right-width-level1: $wd-main-left - $stair-left-width;
 // 2级回复楼层右侧宽度
 $stair-right-width-level2: $stair-right-width-level1 - 5rem;
-
 // 0级 文章体
 .wd-stair-level-0 {
     position: relative;
@@ -34,11 +28,9 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     height: 100%;
     text-align: center;
     background-color: $white;
-
     p {
         margin-top: .5rem;
     }
-
     img {
         width: 5rem;
         height: 5rem;
@@ -65,21 +57,17 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     width: 100%;
     font-size: .875rem;
     line-height: 3rem;
-
     // 第几层
     .wd-stair-right-tag-level-0 {
         padding: 0 1rem;
         font-size: 1rem;
         line-height: 3rem;
     }
-
     // 图标
     .icomoon {
         margin-left: 1rem;
         font-size: .875rem;
     }
-
-
     // 图标和后面的数量
     i,
     span {
@@ -87,7 +75,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
         line-height: 3rem;
         vertical-align: middle;
     }
-
     // 图标后面的span - 数量
     i+span {
         margin-left: .2rem;
@@ -102,14 +89,12 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     line-height: 1;
     border-radius: .2rem;
     text-decoration: underline;
-
     // 用于textarea聚焦
-    label{
+    label {
         display: inline-block;
         padding: .3rem .4rem;
-        cursor:pointer;
+        cursor: pointer;
     }
-
     &:hover {
         text-decoration: none;
     }
@@ -134,7 +119,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     height: 100%;
     text-align: center;
     background-color: $white;
-
     img {
         width: 5rem;
         height: 5rem;
@@ -148,8 +132,8 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     float: right;
     width: $stair-right-width-level1;
     min-height: 7rem;
-    padding-right:1rem;
-    padding-bottom:.5rem;
+    padding-right: 1rem;
+    padding-bottom: .5rem;
     background-color: $white;
 }
 
@@ -199,14 +183,11 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     width: 100%;
     font-size: .875rem;
     line-height: 2rem;
-
     // 图标
     .icomoon {
         margin-left: 1rem;
         font-size: .875rem;
     }
-
-
     // 图标和后面的数量
     i,
     span {
@@ -214,7 +195,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
         line-height: 2rem;
         vertical-align: middle;
     }
-
     // 图标后面的span - 数量
     i+span {
         margin-left: .2rem;
@@ -230,14 +210,12 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     border-radius: .2rem;
     background-color: transparent;
     text-decoration: underline;
-
     // 用于textarea聚焦
-    label{
+    label {
         display: inline-block;
         padding: .3rem .4rem;
-        cursor:pointer;
+        cursor: pointer;
     }
-
     &:hover {
         text-decoration: none;
     }
@@ -261,7 +239,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     height: 100%;
     text-align: center;
     background-color: $white;
-
     // 2级回复 头像
     img {
         width: 3rem;
@@ -301,9 +278,9 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
 // 2级 回复者昵称
 .wd-stair-right-wrap-head-neck-level-2 {
     font-weight: bold;
-    .alt{
+    .alt {
         font-style: normal;
-        font-size:$font-size-normal;
+        font-size: $font-size-normal;
         font-weight: bold;
         color: black;
     }
@@ -331,13 +308,11 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     width: 100%;
     font-size: .75rem;
     line-height: 1rem;
-
     // 图标
     .icomoon {
         margin-left: 1rem;
         font-size: .75rem;
     }
-
     // 图标和后面的数量
     i,
     span {
@@ -345,7 +320,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
         line-height: 1rem;
         vertical-align: middle;
     }
-
     // 图标后面的span - 数量
     i+span {
         margin-left: .1rem;
@@ -362,14 +336,12 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     border-radius: .2rem;
     background-color: transparent;
     text-decoration: underline;
-
     // 用于textarea聚焦
-    label{
+    label {
         display: inline-block;
         padding: .1rem .2rem;
-        cursor:pointer;
+        cursor: pointer;
     }
-
     &:hover {
         text-decoration: none;
     }
@@ -377,7 +349,7 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
 
 // 2级回复查看更多
 .wd-view-more-leve-2 {
-    padding-left:1rem;
+    padding-left: 1rem;
     font-size: .75rem;
     // text-align: center;
     text-align: lfet;
@@ -392,7 +364,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
         color: $gray;
         text-decoration: underline;
         border-radius: .5rem;
-
         &:hover {
             text-decoration: none;
         }
@@ -418,38 +389,30 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
-
     .#{$theme} {
-
         // 0级 右侧正文左侧边框
         .wd-stair-right-level-0 {
             border-left: 1PX solid $bc;
         }
-
         // 0级 发表信息条
         .wd-stair-right-deliver-level-0 {
             border-top: 1PX solid $bc;
-
             // 第几层
             .wd-stair-right-tag-level-0 {
                 color: $reverse;
             }
-
             // 鼠标悬浮，图标变红
             a:hover>i {
                 color: $main;
             }
         }
-
         // 0级 发表信息条
         .wd-stair-right-deliver-level-0 {
             color: $tip;
-
             a {
                 color: $tip;
             }
         }
-
         // 0级 回复按钮
         .wd-stair-right-reply-btn-level-0 {
             &:hover {
@@ -457,46 +420,37 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
                 background-color: $help;
             }
         }
-
         // 1级 右侧正文左侧边框
         .wd-stair-right-level-1 {
             border-left: 1PX solid $bc;
         }
-
         // 1级 回复者楼层
         .wd-stair-right-wrap-head-tag-level-1 {
             color: $reverse;
         }
-
         // 1级 回复者昵称
         .wd-stair-right-wrap-head-neck-level-1 {
             color: $main
         }
-
         // 1级 回复者等级
         .wd-stair-right-wrap-head-level-level-1 {
             background-color: $vip;
         }
-
         // 1级 发表信息条
         .wd-stair-right-wrap-deliver-level-1 {
-
             // 鼠标悬浮，图标变红
             a:hover>i {
                 color: $main;
             }
         }
-
         // 1级 发表信息条
         .wd-stair-right-wrap-deliver-level-1 {
             color: $tip;
             border-bottom: 1PX solid $bc;
-
             a {
                 color: $tip;
             }
         }
-
         // 1级 回复按钮
         .wd-stair-right-wrap-deliver-btn-level-1 {
             &:hover {
@@ -504,40 +458,32 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
                 background-color: $help;
             }
         }
-
         // 2级 回复者楼层
         .wd-stair-right-wrap-head-tag-level-2 {
             color: $reverse;
         }
-
         // 2级 回复者昵称
         .wd-stair-right-wrap-head-neck-level-2 {
             color: $main;
         }
-
         // 2级 回复者等级
         .wd-stair-right-wrap-head-level-level-2 {
             background-color: $vip;
         }
-
         // 2级 发表信息条
         .wd-stair-right-wrap-deliver-level-2 {
-
             // 鼠标悬浮，图标变红
             a:hover>i {
                 color: $main;
             }
         }
-
         // 2级 发表信息条
         .wd-stair-right-wrap-deliver-level-2 {
             color: $tip;
-
             a {
                 color: $tip;
             }
         }
-
         // 2级 回复按钮
         .wd-stair-right-wrap-deliver-btn-level-2 {
             &:hover {
@@ -545,7 +491,6 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
                 background-color: $help;
             }
         }
-
         // 2级回复查看更多
         .wd-view-more-leve-2 {
             border-top: 1PX solid $bc;
@@ -559,6 +504,5 @@ $stair-right-width-level2: $stair-right-width-level1 - 5rem;
                 }
             }
         }
-
     }
 }

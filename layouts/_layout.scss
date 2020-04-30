@@ -1,14 +1,15 @@
 // 收集布局的前台全局样式
-@import "./app-header/app-header";
-@import "./app-body/app-body";
-@import "./app-footer/app-footer";
-
+@import "./app/app-header/index";
+@import "./app/app-body/index";
+@import "./app/app-footer/index";
 // app,sys
-#id-app, #id-sys {
-    position: relative;
+#id-app,
+#id-sys {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
 }
-#id-sys{
+
+#id-sys {
     @extend %clearfix;
 }

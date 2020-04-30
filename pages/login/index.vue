@@ -25,13 +25,13 @@
         <div class="wd-form-unit-v">
           <label for="account">账号</label>
           <div>
-            <input id="account" @input="isDisabled" v-model="account" :placeholder="'请输入账号'" type="text" />
+            <input id="account" v-model="account" :placeholder="'请输入账号'" type="text" />
           </div>
         </div>
         <div class="wd-form-unit-v">
           <label for="password">密码</label>
           <div>
-            <input autocomplete="off" @input="isDisabled" id="password" v-model="password" :placeholder="'请输入密码'" type="password" />
+            <input autocomplete="off" id="password" v-model="password" :placeholder="'请输入密码'" type="password" />
           </div>
         </div>
         <!-- 注册 -->
@@ -39,13 +39,13 @@
           <div class="wd-form-unit-v">
             <label for="repassword">密码确认</label>
             <div>
-              <input autocomplete="off" @input="isDisabled" id="repassword" v-model="repassword" :placeholder="'请确认密码'" type="password" />
+              <input autocomplete="off" id="repassword" v-model="repassword" :placeholder="'请确认密码'" type="password" />
             </div>
           </div>
           <div class="wd-form-unit-v">
             <label for="verifyType">{{vtype==='email'?'邮箱':'手机号'}}</label>
             <div>
-              <input @input="isDisabled" :placeholder="'请输入'+(vtype==='email'?'邮箱':'手机号')" autocomplete="off" v-model="vTypeValue" id="verifyType" />
+              <input :placeholder="'请输入'+(vtype==='email'?'邮箱':'手机号')" autocomplete="off" v-model="vTypeValue" id="verifyType" />
             </div>
           </div>
           <div class="wd-form-unit-v">
@@ -56,7 +56,7 @@
           </div>
         </template>
       </form>
-      <ButtonComponent class="ui-btn" :disabled="disabled" :throttleTime="2000" @click="doLoginOrRegist">{{type==='login'?'登录':'注册'}}</ButtonComponent>
+      <ButtonComponent class="ui-btn" :disabled="isDisabled" :throttleTime="2000" @click="doLoginOrRegist">{{type==='login'?'登录':'注册'}}</ButtonComponent>
       <div class="ui-other-login">
         <i class="icomoon icon-qq">&nbsp;QQ方式登录</i>
         <i class="icomoon icon-wechat">&nbsp;微信方式登录</i>

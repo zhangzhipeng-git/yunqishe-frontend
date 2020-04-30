@@ -3,19 +3,21 @@
  */
 import App from "~/core/context/app-context";
 import { AxiosRequestConfig } from "axios";
-// 不需要加密的接口，应该和后端同步
+// 不需要加密的接口
 const PUBLIC_API = [
   // 用户
   "/user/logout",
   "/user/isrecord",
+  "/user/setup",
   "/user/f/select/active/list",
+  // 用户动态
+  "/user/f/select/dynamic/list",
   // 获取公钥，上送密钥
   "/security/getpk", 
   "/security/sendsk",
   // 话题
-  "/topic/f/select/one",
-  "/topic/f/select/list",
-  "/topic/f/wenyun/select/list",
+  "/topicClass/f/select/one",
+  "/topicClass/f/select/list",
   // 用户等级
   "/level/f/select/list",
   // 话题内容
@@ -25,6 +27,18 @@ const PUBLIC_API = [
   // 话题回复
   "/topicComment/f/select/one",
   "/topicComment/f/select/list"
+  // 文档分类
+  ,"/docClass/f/select/top2lv/list"
+  ,"/docClass/f/select/end2lv/list"
+  // 节
+  ,"/docContent/f/select/one"
+  // 本项目的媒体只有视频！！！
+  // 媒体分类
+  ,"/mediaClass/f/select/top2lv/list"
+  ,"/mediaClass/f/select/end2lv/list"
+  ,"/mediaClass/f/select/oneWithChildren"
+  // 媒体内容
+  ,"/mediaContent/f/select/one"
 ];
 export default function({ $axios}: any) {
   if (process && process.server) return;

@@ -8,7 +8,7 @@
         </div>
         <div class="ui-tab">
             <!-- 文档 -->
-            <nuxt-link class="ui-tab-doc" to="/learn/doc">文档</nuxt-link>
+            <nuxt-link class="ui-tab-doc" to="/learn/docClass">文档</nuxt-link>
             <!-- 视频 -->
             <nuxt-link class="ui-tab-vid" to="/learn/vid">视频</nuxt-link>
         </div>

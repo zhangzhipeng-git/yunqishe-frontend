@@ -30,7 +30,6 @@ export default class LoginComponent extends BaseComponent {
     account: string = '';
     /** 密码 */
     password: string = '';
-
     // 注册部分
     /** 密码确认 */
     repassword: string = '';
@@ -38,8 +37,6 @@ export default class LoginComponent extends BaseComponent {
     vTypeValue: string = '';
     /** 验证码 */
     verifycode: string = '';
-    /** 按钮是否可点击 */
-    disabled: boolean = true;
     /** 是否通过验证 */
     isVerify: boolean = false;
     /** redirect前的路由地址 */
@@ -48,6 +45,13 @@ export default class LoginComponent extends BaseComponent {
     static DEFAULT_PASS = '/protal';
     /** 验证码状态 */
     status: number = 0;  
+    /** 按钮是否禁用 */
+    get isDisabled() {
+        if (this.type === 'login') {
+            return !(this.account && this.password);
+        }
+        return !(this.account && this.password && this.repassword && this.vTypeValue && this.isVerify);
+    }
     constructor() {
         super();
     }
@@ -83,7 +87,6 @@ export default class LoginComponent extends BaseComponent {
                     this.status = data.status;
                     if (this.status === 1) {
                         this.isVerify = true;
-                        this.isDisabled();
                     }
                 }
             });
@@ -93,12 +96,12 @@ export default class LoginComponent extends BaseComponent {
     /**
      * 登录或注册
      */
-    public doLoginOrRegist() {
+    public async doLoginOrRegist() {
         if (this.type === 'login') {
             // 登录
             this.httpRequest(this.http.post('/user/login', {
                 account: this.account,
-                password: EncryptUtil.MD5(this.password)
+                password: await EncryptUtil.MD5(this.password)
             }), {
                 success: (data: any) => {
                     this.pass(data.user);      
@@ -109,23 +112,12 @@ export default class LoginComponent extends BaseComponent {
             this.httpRequest(this.http.post('/user/regist', {
                 email: this.vTypeValue,           
                 account: this.account,
-                password: EncryptUtil.MD5(this.password)
+                password: await EncryptUtil.MD5(this.password)
             }), {
                 success: (data: any) => {
                     this.pass(data.user);
                 }
             })
-        }
-    }
-
-    /**
-     * 按钮是否禁用
-     */
-    public isDisabled(): void {
-        if (this.type === 'login') {
-            this.disabled = !(this.account && this.password);
-        } else {
-            this.disabled = !(this.account && this.password && this.repassword && this.vTypeValue && this.isVerify);
         }
     }
     
@@ -137,15 +129,7 @@ export default class LoginComponent extends BaseComponent {
         let path = !!this.fromPath&&this.fromPath != '/login'? this.fromPath : '/protal';
         this.$store.commit('setUser', user);
         // 解码2%
-        this.$router.push({path:decodeURIComponent(path)});         
-    }
-
-    /**
-     * 切换登录和注册时，触发按钮是否禁用
-     */
-    @Watch('type')
-    public watchType() {
-        this.isDisabled();
+        this.$router.push({path:decodeURIComponent(path)});      
     }
 
 }

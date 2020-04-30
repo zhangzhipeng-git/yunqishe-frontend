@@ -4,7 +4,7 @@
 
 The components directory contains your Vue.js Components.
 
-_Nuxt.js doesn't supercharge these components._
+_Nuxt.js doesn't superstrategy these components._
 
 ## mycomponents
 
@@ -20,4 +20,3 @@ _Nuxt.js doesn't supercharge these components._
 
 - base-component.ts - 页面组件的基类组件
 （用于赋予子类公用方法，方法应兼容ssr渲染和spa渲染！！！）
-

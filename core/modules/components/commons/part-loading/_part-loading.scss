@@ -1,0 +1,58 @@
+@include keyframes(partLoading) {
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+
+.wd-part-loading-list,
+.wd-part-loading-text {
+    i {
+        display: inline-block;
+        animation: partLoading 1s infinite;
+    }
+}
+
+.wd-part-loading-list {
+    text-align: center;
+    i {
+        line-height: 1;
+        font-weight: bold;
+        font-size: $font-size-huge;
+    }
+    img {
+        width: $font-size-huge;
+    }
+}
+
+.wd-part-loading-text {
+    display: inline;
+    text-align: center;
+    i {
+        line-height: 1;
+        font-size: $font-size-min;
+    }
+    img {
+        width: $font-size-min;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme;
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+    $main-deep: map-get($colors, main-deep);
+    $main-light: map-get($colors, main-light);
+    $reverse: map-get($colors, reverse);
+    .#{$theme} {
+        .wd-part-loading-list,
+        .wd-part-loading-text {
+            i {
+                color: $main;
+            }
+        }
+    }
+}

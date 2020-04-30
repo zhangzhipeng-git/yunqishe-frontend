@@ -7,10 +7,11 @@
  */
 import App from "@/core/context/app-context.ts";
 import Component from "vue-class-component";
-export default function({ $axios }: any) {
+import { Context } from "@nuxt/types";
+export default function(context: Context) {
+
   const app = App.getAppContext();
-  const http = app.getHttp();
-  http.setAxios($axios);
+  app.setContext(context);
 
   // Register the router hooks with their names
   Component.registerHooks([

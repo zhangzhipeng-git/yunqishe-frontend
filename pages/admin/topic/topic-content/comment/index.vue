@@ -4,7 +4,7 @@
  * @LastEditTime: 2020-03-16 14:47:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \nuxt-ssr\pages\admin\forum-and-wenyun\list\list.vue
+ * @FilePath: \nuxt-ssr\pages\admin\circle-and-circle\list\list.vue
  -->
 <template>
   <div id="id-topic-comment">
@@ -46,7 +46,7 @@
       <!-- 是否付费 -->
       <span class="wd-form-unit-h">
         <label for>付费</label>
-        <SelectComponent v-model="searchCharge" :list="chargeList" />
+        <SelectComponent v-model="searchStrategy" :list="strategyList" />
       </span>
     </div>
     <!-- 表格容器 -->
@@ -55,9 +55,9 @@
       <TableComponent
         :list="topicComments"
         :thead="[/** 列不够，id来凑^-^ */'ID', '可见', '付费', '创建时间']"
-        :columns="['id', 'visible', 'charge', 'createTime']"
+        :columns="['id', 'visible', 'strategy', 'createTime']"
         :operate="{ select: '编辑', delete: '删除'}"
-        :slots="['visible', 'charge']"
+        :slots="['visible', 'strategy']"
         :rows.sync="rows"
         @select="selectOne($event)"
         @delete="deleteOne($event)"
@@ -71,13 +71,13 @@
             v-model="row.visible"
           />
         </template>
-        <!-- charge -->
-        <template v-slot:charge="{ row }">
+        <!-- strategy -->
+        <template v-slot:strategy="{ row }">
           <SelectComponent
             :force="true"
             class="select-menu"
-            :list="chargeList"
-            v-model="row.charge"
+            :list="strategyList"
+            v-model="row.strategy"
           />
         </template>
       </TableComponent>
@@ -113,7 +113,7 @@
               class="trueOrFalse"
               :force="true"
               :list="list"
-              v-model="topicComment.charge"
+              v-model="topicComment.strategy"
             />
           </div>
           <!-- 话题内容回复或评论主体 -->
@@ -123,7 +123,7 @@
           </div>
         </form>
         <div class="wd-btn-group">
-          <ButtonComponent @click="close" class="wd-cancle" :throttle="0" :text="'取消'" />
+          <ButtonComponent @click="close" class="wd-cancel" :throttle="0" :text="'取消'" />
           <ButtonComponent @click="confirm" :text="'确认'" />
         </div>
       </div>

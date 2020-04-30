@@ -17,7 +17,7 @@ class Tap implements VueDirective {
         if (!Tap.isMB) { // 非移动端
             return;
         }
-        // 移动端是点击事件是 touchstart -> touchmove -> touchend -> touchcancle | click
+        // 移动端是点击事件是 touchstart -> touchmove -> touchend -> touchcancel | click
         DomUtil.addEvent(el, 'touchend', Tap.ontouchend);
         DomUtil.addEvent(el, 'touchstart', Tap.ontouchstart);
     }

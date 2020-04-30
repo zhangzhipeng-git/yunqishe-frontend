@@ -3,7 +3,6 @@
  */
 
 //  body左右布局右侧宽度
-$wd-main-right: 14.5rem;
 $sidebar-width: $wd-main-right;
 @include width-0tox(100%);
 .wd-sidebar {
@@ -16,6 +15,7 @@ $sidebar-width: $wd-main-right;
     padding-right: 0 !important;
     overflow-y: auto;
     background-color: $white;
+    border-left: 1PX solid $gray-light-s;
     // 侧边栏内容
     .wd-sidebar-ctn {
         padding-bottom: .5rem;
@@ -35,9 +35,7 @@ $sidebar-width: $wd-main-right;
         }
         // img 一行3个 - 在 ~/assets/sass/common/_user.scss中 => .wd-user-img-square img
         img {
-            // - 1rem 是因为侧边栏padding:.5rem; 
-            // - .2rem*4 是因为li（3个li，每个li包裹一个img）的左右间距
-            width: floor(($sidebar-width - 1rem - .2rem*4) / 3);
+            width: ($sidebar-width - 3*.4rem) / 3 - .5rem;
         }
     }
     // 侧边栏内容标题 如"最近浏览"/"帖子推荐" - 标题前面有一道竖杠

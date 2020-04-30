@@ -172,14 +172,14 @@ export default class SelectComponent extends Vue {
     let result;
     if(this.model$.length === 0) {
         this.model$.push('');
-        result = this.model$;
+        // result = this.model
     } else if (!this.multiple) {
       // 单选
       const o = v[this.key$];
       // 长度始终限定为1，即总是最后点击的元素，因为它是先改变了model，然后再触发事件
       if (this.model$.length > 1) this.model$ = [o];
       // 取消选中时，this.model$的长度为0，即result为undefined
-      result = this.model$;
+      // result = this.model
       this.toggle();
     } else {
       // 多选
@@ -191,8 +191,8 @@ export default class SelectComponent extends Vue {
           }
         }
       }
-      result = this.model$;
     }
+    result = this.model$;
     this.inputValue = this.inputValue$;
     return !this.multiple?(result[0]!==''?result[0]:''):result;
   }

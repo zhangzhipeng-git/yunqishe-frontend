@@ -3,23 +3,21 @@
 /**
  * 公用导航条
  */
+
 // 首页>xx>yy>zz 
-.wd-content-bar {
+.wd-nav-bar {
     padding: 0 1rem;
     line-height: 2rem;
     border-bottom: 1PX solid $gray-light-s;
     background-color: $white;
-
     a {
         color: $red-warm;
         cursor: pointer;
         vertical-align: middle;
-
         &:hover {
             text-decoration: underline;
         }
     }
-
     i {
         color: gray;
         vertical-align: middle;

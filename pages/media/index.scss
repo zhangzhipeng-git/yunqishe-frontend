@@ -1,0 +1,100 @@
+#id-ui-media {
+    // 主体内容宽度
+    $content-width: $main-width;
+    // 主体内容宽度 - 中间间隔后 均分
+    $avg-width: ($content-width - $global-margin) / 2;
+    // 每行4ge
+    $row-counts: 4;
+    .ui-media-header {
+        margin: .5rem auto 1.5rem;
+    }
+    // 视频列表
+    .ui-class {
+        margin-bottom: 1.5rem;
+        background-color: $gray-light-s;
+        .ui-class-title {
+            font-size: $font-size-normal;
+            margin: 0 .5rem;
+        }
+        ul {
+            @extend %clearfix;
+        }
+        li {
+            position: relative;
+            width: ($content-width - 4 * 1rem) / 4;
+            float: left;
+            margin: .5rem;
+            background-color: $white;
+            border-radius: .4rem;
+            overflow: hidden;
+        }
+        a {
+            display: inline-block;
+            padding: .3rem;
+            img {
+                width: 100%;
+            }
+        }
+        .ui-media-name,
+        .ui-media-user {
+            padding: 0 .5rem;
+            height: 2rem;
+            line-height: 2rem;
+            font-size: $font-size-min;
+        }
+        .ui-media-user {
+            height: 2rem;
+            line-height: 2rem;
+            img {
+                width: 1.5rem;
+                height: 1.5rem;
+                border-radius: 100%;
+                cursor: pointer;
+            }
+        }
+        .ui-mask {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            top: 0;
+            left: 0;
+            bottom: 4rem;
+            color: $white;
+            background-color: $gray;
+            opacity: .7;
+            p {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                border: 4PX solid $white;
+                padding: 1rem;
+                border-radius: 100%;
+            }
+            i {
+                font-size: $font-size-huge;
+                margin-left: .2rem;
+            }
+        }
+        a:hover .ui-mask {
+            display: block;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主题主色
+    $warm-title: map-get($colors, warm-title); // 醒目标题色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    .#{$theme} {
+        #id-ui-media {
+            .ui-class-title {
+                color: $main;
+            }
+        }
+    }
+}

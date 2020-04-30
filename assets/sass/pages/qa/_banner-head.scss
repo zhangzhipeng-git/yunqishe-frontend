@@ -1,0 +1,104 @@
+@charset 'utf-8';
+
+/*********************circle详情页头部信息 -- start ****************/
+
+// 楼层内容容器
+.wd-stairs-content {
+    float: left;
+    width: $wd-main-left;
+}
+
+// 头部信息
+.wd-content-head {
+    height: 7rem;
+    width: $wd-main-left;
+    padding: .5rem 1rem;
+    margin-bottom: .5rem;
+    background-color: $white;
+}
+
+// circle信息和右侧信息
+.wd-content-head-left,
+.wd-content-head-right {
+    float: left;
+    height: 6rem;
+    position: relative;
+}
+
+// 话题封面遮罩
+.wd-content-head-cover-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    opacity: .5;
+    border-radius: 1rem 0 1rem 0;
+    background-color: $black-light;
+}
+
+// circle信息
+.wd-content-head-left {
+    margin: .5rme 0;
+    text-align: center;
+    border-radius: 1rem 0 1rem 0;
+    // circle封面
+    img {
+        height: 6rem;
+        border-radius: 1rem 0 1rem 0;
+    }
+}
+
+// 关注按钮
+.wd-content-concern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    line-height: 6rem;
+    color: $white;
+    font-size: $font-size-big;
+    cursor: pointer;
+    .icommon {
+        font-size: $font-size-big;
+    }
+}
+
+// 右侧信息上部
+.wd-content-head-right-up {
+    height: 4rem;
+    padding: 0 2rem;
+    line-height: 4rem;
+}
+
+// 话题名称
+.wd-content-name {
+    font-size: $font-size-huge;
+    color: $blue-sky;
+    text-shadow: 1PX 1PX 2PX $blue-sky;
+}
+
+// 话题的内容数和关注数
+.wd-content-info {
+    display: inline-block;
+    font-size: .9rem;
+    line-height: 1.2;
+    padding: .3rem .5rem;
+}
+
+// 右侧信息下部
+.wd-to-you {
+    height: 2rem;
+    margin: 0 2rem 0 2rem;
+    color: gray;
+}
+
+// 数字 (内容和关注数量等)
+.wd-number-red {
+    color: $red-warm;
+}
+
+
+/*********************circle/帖子头部circle信息 -- end ****************/

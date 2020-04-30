@@ -53,18 +53,15 @@
             .ui-classes {
                 width: 40rem;
                 margin: 0 auto;
-                padding: 2rem 0;
                 border-radius: 3rem;
                 border: 1PX solid $gray-light-m;
                 @extend %clearfix;
             }
             // 文档分类
             .ui-class {
-                height: 8rem;
                 line-height: 4rem;
-                text-align: left;
-                padding: 2rem 0;
                 margin: 0 4rem;
+                vertical-align: middle;
                 border-bottom: 1PX solid $gray-light-m;
                 // 最后一个li没有下外边距
                 &:last-child {
@@ -73,23 +70,21 @@
                 @extend %clearfix;
             }
             // 分类名称 
-            .ui-class-tittle {
-                float: left;
-                width: 5rem;
+            .ui-class-title {
+                font-weight: bold;
                 text-align: center;
                 font-size: $font-size-normal;
             }
             // 分类列表
             .ui-items {
-                float: left;
-                height: 4rem;
-                width: 26.5rem;
+                padding-bottom: 1rem;
+                text-align: center;
                 font-size: $font-size-small;
                 line-height: 2rem;
             }
             // 分类item
             .ui-item {
-                margin-left: 4rem;
+                margin: .5rem 2rem;
                 display: inline-block;
                 a {
                     color: $gray;
@@ -133,7 +128,7 @@
                 text-shadow: 3PX 3PX 3PX $main-deep;
             }
             .ui-learn-doc {
-                .ui-class-tittle {
+                .ui-class-title {
                     color: $main-deep;
                 }
                 .ui-item a {

@@ -1,0 +1,129 @@
+#id-ui-media-detail {
+    // 头部媒体播放器
+    .ui-media-header {
+        margin: .5rem auto 1.5rem;
+    }
+    // 发表者信息
+    .ui-user {
+        height: 3rem;
+        line-height: 3rem;
+        background-color: $white;
+        .fr,
+        .fl {
+            height: 100%;
+        }
+        button {
+            height: 2rem;
+            line-height: 2rem;
+            color: $white;
+            padding: 0 1rem;
+            margin-right: 1rem;
+            border-radius: 2rem;
+        }
+    }
+    // 用户头像
+    .ui-user-avator {
+        float: left;
+        line-height: 3rem;
+        margin: 0 .5rem;
+        img {
+            width: 2rem;
+            border-radius: 100%;
+            border: 1PX solid $gray-light-s;
+        }
+    }
+    // 用户信息
+    .ui-user-info {
+        float: left;
+        height: 100%;
+        p {
+            margin: .4rem;
+            height: 1.1rem;
+            line-height: 1;
+            font-size: $font-size-min;
+        }
+    }
+    // 用户昵称
+    .wd-user-nickname {
+        color: red;
+    }
+    // 用户发表媒体的时间
+    .ui-user-create-time {
+        color: $common;
+    }
+    // 播放列表
+    .ui-play-list {
+        padding: 1rem;
+        background-color: $white;
+        h3 {
+            padding: 0 0 .5rem .5rem;
+            border-bottom: 1PX solid $gray-light-s;
+        }
+        ul {
+            @extend %clearfix;
+        }
+        li {
+            float: left;
+        }
+        a {
+            display: inline-block;
+            height: 1.5rem;
+            line-height: 1.5rem;
+            margin: .5rem;
+            padding: 0 .5em;
+            border-radius: .1rem;
+            font-size: $font-size-min;
+            &:hover {
+                color: $white;
+            }
+        }
+    }
+    // 权限提示
+    .ui-privilege-tip {
+        font-size: $font-size-min;
+        color: $gray-light-s;
+        margin: 1rem;
+    }
+    // 权限获取的按钮，如登录，开通vip等
+    .ui-privilege-btn {
+        button {
+            display: inline-block;
+            height: 2rem;
+            padding: 0 1rem;
+            font-size: $font-size-normal;
+            line-height: 2rem;
+            color: $white;
+            border-radius: 3rem;
+            background: linear-gradient(to right, rgb(231, 205, 119), rgb(250, 164, 5));
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主题主色
+    $warm-title: map-get($colors, warm-title); // 醒目标题色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    .#{$theme} {
+        #id-ui-media-detail {
+            .ui-user button {
+                background-color: $main;
+            }
+            .ui-play-list {
+                h3 {
+                    color: $main;
+                }
+                a {
+                    color: $main;
+                    border: 1PX solid $main;
+                    &:hover,
+                    &.active {
+                        color: $white;
+                        background-color: $main;
+                    }
+                }
+            }
+        }
+    }
+}

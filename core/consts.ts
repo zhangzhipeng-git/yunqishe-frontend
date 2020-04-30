@@ -18,8 +18,24 @@ const consts =  {
       {
         id: "zx-amap",
         src: "https://webapi.amap.com/maps?v=1.4.15&key=3157520ad22cc8d71fe23e13732729a9"
+      },
+      {
+        id:"zx-hljs",
+        src:"https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"
+      },
+      {
+        id: "zx-cryptojs",
+        src: "https://cdn.bootcdn.net/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"
+      },
+      {
+        id: "zx-jsencrypt",
+        src: "https://cdn.bootcdn.net/ajax/libs/jsencrypt/3.0.0-beta.1/jsencrypt.min.js"
       }
-    ] 
+    ] ,
+    // https://github.com/leizongmin/js-xss/blob/master/README.zh.md
+    JSXSS_OPTIONS: {
+      css: false // 不对style作限制
+    }
   };
 
 export default consts;

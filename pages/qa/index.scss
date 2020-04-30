@@ -1,0 +1,119 @@
+@charset "utf-8";
+$margin-left: 0rem;
+#id-ui-circle {
+    @extend %clearfix;
+    // 左侧
+    .wd-main-left {
+        // 列表项目，文章或问答
+        .ui-item {
+            position: relative;
+            padding: 0 1.5rem .5rem 1.5rem;
+            border-bottom: 1PX solid $gray-light-s;
+            background-color: $white;
+            // 标题
+            h3 {
+                font-weight: bold;
+                line-height: 3rem;
+                margin-left: $margin-left;
+            }
+            &:first-child {
+                padding-top: 1rem;
+            }
+        }
+        // 项目内容
+        .ui-item-conent {
+            @extend %clearfix;
+            // 没有封面则增加左外间距并且宽度变为auto
+            .ui-item-no-img {
+                margin-left: $margin-left;
+                width: auto;
+            }
+        }
+        // 列表项目左侧，有封面的时候，封面会充当左侧
+        .ui-item-left {
+            float: left;
+            margin-left: $margin-left;
+            img {
+                width: (190 / 16) + rem;
+                height: (106 / 16) + rem;
+            }
+        }
+        // 列表项目右侧，文章简介
+        .ui-item-right {
+            float: left;
+            width: $wd-main-left - 2 * 1.5 - (190 / 16) - 1 - $margin-left;
+            margin-left: 1rem;
+            // api请求控制摘要/简介内容长度，这里是最后防线
+            @include multirow-ellipsis(5);
+        }
+        // 信息条
+        .ui-item-type-bar {
+            margin-left: $margin-left;
+            color: $gray;
+            font-size: $font-size-normal;
+            line-height: 2rem;
+            @extend %clearfix;
+            // 图标和文字容器
+            span {
+                margin-right: 2rem;
+            }
+            // 图标
+            i.icomoon {
+                margin-right: .5rem;
+                font-size: $font-size-normal;
+            }
+            // 查看全文
+            button {
+                float: right;
+                height: 2rem;
+                line-height: 2rem;
+                margin-top: .5rem;
+                padding: 0 .2rem;
+                color: $white;
+                background-color: $white;
+                font-size: $font-size-small;
+                border-radius: .3rem;
+            }
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $main-deep: map-get($colors, main-deep); // 主色
+    $tip: map-get($colors, tip); // 提示色
+    $text: map-get($colors, text); // 字体颜色
+    $title: map-get($colors, title); // 标题颜色
+    $warm-title: map-get($colors, warm-title); // 醒目标题
+    $nav: map-get($colors, nav); // 导航字体颜色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    $hover: map-get($colors, hover); // 悬浮类颜色
+    $active: map-get($colors, active); // 激活类颜色
+    $bg: map-get($colors, bg); // 页面背景色
+    $bc: map-get($colors, bc); // 输入类边框色
+    $vip: map-get($colors, vip); // vip标识色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $help: map-get($colors, help); // 辅助色
+    $common: map-get($colors, common); // 通用色
+    $warn: map-get($colors, warn); // 警示色
+    .#{$theme} {
+        #id-ui-circle {
+            .ui-item-type-bar {
+                // 简介
+                .ui-item-right {
+                    color: $text;
+                }
+                // 查看全文
+                button {
+                    color: $main;
+                    border: 1PX solid $main;
+                    &:hover {
+                        color: $warn;
+                    }
+                }
+            }
+        }
+    }
+}

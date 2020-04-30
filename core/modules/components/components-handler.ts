@@ -27,7 +27,7 @@ export default class ComponentsHandler {
     public toast(option: Toast): ComponentsHandler {
         const toast = ToastComponent.toast(option);
         const d = option.duration;
-        if(d && d < 0 && d === Infinity) {
+        if(d && d < 0 || d === Infinity) {
             (<any>this).toastInstance = toast;
         }
         return this;

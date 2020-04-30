@@ -13,7 +13,7 @@
             <SideMenuComponent />
         </SidebarNavComponent>
         <!-- 主体内容 -->
-        <div class="ui-main-comtent">
+        <div class="ui-main-content">
             <!-- 测试富文本编辑器 -->
             <EditorComponent @recieveContent="recieveContent($event)"/>
         </div>

@@ -1,6 +1,5 @@
 // 常量
 @charset "utf-8";
-
 //////////////////黑白灰/////////////////////
 // 白色
 $white: white;
@@ -13,13 +12,13 @@ $black-light: rgb(58, 52, 52);
 // 灰色
 $gray: gray;
 // 灰色rgba
-$gray-50: rgba(128,128,128,.5);
+$gray-50: rgba(128, 128, 128, .5);
 // 浅灰色
 $gray-light: rgb(200, 200, 200);
 // 中浅灰色
 $gray-light-m: rgb(230, 230, 230);
 // 浅灰色rgba
-$gray-light-50: rgba(200, 200, 200,.5);
+$gray-light-50: rgba(200, 200, 200, .5);
 // 超浅灰色
 $gray-light-s: rgb(244, 244, 244);
 //////////////////蓝色/////////////////////
@@ -58,7 +57,6 @@ $yellow-middle: #ffa500;
 // 浅橙色
 $yellow-light: rgb(253, 188, 8);
 ///////////////////////////////////////
-
 // 字体大小
 $font-size-min: .75rem;
 $font-size-small: .875rem;
@@ -68,16 +66,44 @@ $font-size-large:1.5rem;
 $font-size-big:2rem;
 $font-size-huge:2.5rem;
 $font-size-super:4rem;
-
 // 尺寸
+// id-app,id-sys
 $app-width: 60rem;
-$app-gap: .5rem;
-$wd-main-left: 45rem;
-$wd-body-middle: 0;
-$wd-main-right: 14.5rem;
-
+// id-app-body
+$main-width:56rem;
+$wd-main-middle: 0;
+$wd-main-left: 44rem;
+$wd-main-right: 12rem;
+// id-app-header,id-app-footer
+$app-footer-height:7rem;
+$app-header-height:3rem;
+$sys-header-height:3rem;
+// 其他
+$global-padding: 1rem;
+$global-margin: 1rem;
+$global-gap: .5rem;
 // 字体样式
-$font-family-y: YouYuan Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif;
-$font-family-h: Helvetica Neue,Helvetica,Arial,Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif;
-$font-family-m: Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif;
-$font-family-c: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', 'Microsoft Yahei', monospace;
+$font-family-y: YouYuan Microsoft Yahei,
+Hiragino Sans GB,
+Heiti SC,
+WenQuanYi Micro Hei,
+sans-serif;
+$font-family-h: Helvetica Neue,
+Helvetica,
+Arial,
+Microsoft Yahei,
+Hiragino Sans GB,
+Heiti SC,
+WenQuanYi Micro Hei,
+sans-serif;
+$font-family-m: Microsoft Yahei,
+Hiragino Sans GB,
+Heiti SC,
+WenQuanYi Micro Hei,
+sans-serif;
+$font-family-c: Consolas,
+Monaco,
+'Andale Mono',
+'Ubuntu Mono',
+'Microsoft Yahei',
+monospace;

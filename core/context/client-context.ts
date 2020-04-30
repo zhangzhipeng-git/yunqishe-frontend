@@ -5,7 +5,7 @@ import AppSecure from '../modules/secure/app-secure';
 import LocalStorage from '../modules/db/LocalStorage';
 import SessionStorage from '../modules/db/SessionStorege';
 import ComponentsHandler from '../modules/components/components-handler';
-import ThirdJS from '../modules/thirdJS/third-js';
+import { Context } from '@nuxt/types';
 
 /** app */
 export default  class Client {
@@ -25,8 +25,8 @@ export default  class Client {
     private lStore!: LocalStorage;
     /** SessionStorage */
     private sStore!: SessionStorage;
-    /** loadJS */
-    private thirdJS!: ThirdJS;
+    /** context */
+    private context!: Context;
     /** 启动任务 */
     private tasks: Function[] = [];
 
@@ -111,18 +111,20 @@ export default  class Client {
     }
 
     /**
-     * 获取懒加载js服务
+     * 设置两端公用的上下文
+     * @param context 核心上下文
      */
-    public getThirdJS(): ThirdJS {
-        return this.thirdJS;
+    public setContext(context: Context) {
+        if (!!this.context) return;
+        this.context = context;
+        this.setHttpAjax(context.$axios);
     }
 
     /**
-     * 设置懒加载第三方js服务
-     * @param thirdJS 懒加载第三方js
+     * 获取两端公用的上下文
      */
-    public setThirdJs(thirdJS: ThirdJS): void {
-        this.thirdJS = thirdJS;
+    public getContext(): Context {
+        return this.context;
     }
 
     private init() {
@@ -140,13 +142,19 @@ export default  class Client {
         this.setLocalStorage(new LocalStorage());
         // 设置会话存贮服务
         this.setSessionStorage(new SessionStorage());
-        // 设置懒加载第三方js服务
-        this.setThirdJs(new ThirdJS());
 
         // 注入模块间依赖
         this.injectDendencies();
         // 启动异步任务
         setTimeout(() => {this.startUp()});
+    }
+
+    /**
+     * 设置http通讯工具
+     * @param ajax ajax
+     */
+    private setHttpAjax(ajax: any) {
+        this.http.setAjax(ajax);
     }
 
     /** 添加启动任务 */
@@ -184,10 +192,10 @@ export default  class Client {
      * 服务端的单例要放到global上，客户端clientContext上下文相当于服务端的session
      */
     public static getClientContext() {
-        if ((<any>global).clientContext) {
-            return (<any>global).clientContext;
+        if ((<any>Client).clientContext) {
+            return (<any>Client).clientContext;
         }
-        (<any>global).clientContext = new Client();
-        return (<any>global).clientContext;
+        (<any>Client).clientContext = new Client();
+        return (<any>Client).clientContext;
     }
 }

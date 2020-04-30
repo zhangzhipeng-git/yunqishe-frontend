@@ -1,56 +1,53 @@
 #id-ui-learn-doc {
     // 文档体
     .ui-doc {
-        margin-top:.5rem;
-        padding:3rem;
+        margin-top: .5rem;
+        padding: 3rem;
         background-color: $white;
         // 总分类列表
         .ui-classes {
             width: 40rem;
-            margin:0 auto; 
-            padding:2rem 0;
+            margin: 0 auto;
+            padding: 2rem 0;
             border-radius: 3rem;
             border: 1PX solid $gray-light-m;
             @extend %clearfix;
         }
-
         // 文档分类
         .ui-class {
             height: 8rem;
             line-height: 4rem;
             text-align: left;
-            padding:2rem 0;
+            padding: 2rem 0;
             margin: 0 4rem;
             border-bottom: 1PX solid $gray-light-m;
             // 最后一个li没有下外边距
             &:last-child {
-                border-bottom:none;
+                border-bottom: none;
             }
             @extend %clearfix;
         }
         // 分类名称 
-        .ui-class-tittle {
-            float:left;
-            width:5rem;
+        .ui-class-title {
+            float: left;
+            width: 5rem;
             text-align: center;
             font-size: $font-size-normal;
         }
-
         // 分类列表
         .ui-items {
-            float:left;
+            float: left;
             height: 4rem;
-            width:26.5rem;
+            width: 26.5rem;
             font-size: $font-size-small;
-            line-height:2rem;
+            line-height: 2rem;
         }
-
         // 分类item
         .ui-item {
-            margin-left:4rem;
+            margin-left: 4rem;
             display: inline-block;
             a {
-                color:$gray;
+                color: $gray;
                 &:hover {
                     text-decoration: underline;
                 }
@@ -81,10 +78,9 @@
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
-
     .#{$theme} {
-        #id-ui-learn-doc { 
-            .ui-class-tittle { 
+        #id-ui-learn-doc {
+            .ui-class-title {
                 color: $main-deep;
             }
             .ui-item a {

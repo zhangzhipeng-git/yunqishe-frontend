@@ -1,0 +1,290 @@
+.wd-video-player {
+    position: relative;
+    padding: 2rem 0;
+    background-color: black;
+    // 插槽播放器权限
+    .ui-privilege {
+        position: absolute;
+        z-index: 7;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+    }
+    // 播放器权限校验提示和按钮包裹
+    .ui-privilege-wrap {
+        position: absolute;
+        text-align: center;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    // 加载中
+    .loading {
+        position: absolute;
+        z-index: 6;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        color: $white;
+        text-align: center;
+        background-color: black;
+        .loading-tip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        // "LODDING"
+        p {
+            margin: 1rem;
+            font-size: $font-size-huge;
+        }
+        // "LODDING"下方椭圆线条
+        .line {
+            position: relative;
+            width: 100%;
+            height: 4PX;
+            border-radius: 50%;
+            background-color: goldenrod;
+        }
+        // "LODDING"下方椭圆线条上的移动光点
+        .light-dot {
+            position: absolute;
+            z-index: 2;
+            height: 8PX;
+            width: 6PX;
+            left: 0;
+            top: -2PX;
+            border-radius: 4px;
+            background-color: rgb(248, 181, 11);
+            animation: cycle 5s linear infinite;
+        }
+        // 光点动画
+        @include keyframes(cycle) {
+            0% {
+                left: 0;
+                transform: scale(1);
+            }
+            50% {
+                left: 50%;
+                transform: scale(1.2);
+            }
+            100% {
+                left: 100%;
+                transform: scale(1);
+            }
+        }
+    }
+    /////////////////mask-start/////////////////
+    // 遮罩
+    .mask {
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        bottom: 2.1rem;
+        width: 100%;
+        cursor: pointer;
+    }
+    // 播放icon的容器
+    .icon-wrap {
+        position: absolute;
+        height: 4rem;
+        width: 4rem;
+        top: 50%;
+        left: 50%;
+        margin-top: -2rem;
+        margin-left: -2rem;
+        color: $white;
+        text-align: center;
+        background-color: $gray;
+        opacity: .6;
+        border-radius: 100%;
+        transition: all .3s;
+        .icommon {
+            font-size: 2rem;
+            line-height: 4rem;
+        }
+    }
+    // icon-wrap, 点击恢复播放时的动画
+    .animation {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+    /////////////////mask-end//////////////////
+    // 视频标签
+    video {
+        width: 100%;
+        height: auto;
+        object-position: center center;
+    }
+    /////////////////tools-start//////////////////
+    .tools {
+        position: absolute;
+        left: .1rem;
+        right: .1rem;
+        bottom: 0;
+        height: 2rem;
+        background-color: black;
+    }
+    // 进度条
+    .progress {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 5PX;
+        cursor: pointer;
+    }
+    // 鼠标悬浮提示
+    .hover-time-tip {
+        position: absolute;
+        height: 1rem;
+        top: -1.1rem;
+        line-height: 1rem;
+        color: $white;
+        background-color: black;
+        font-size: $font-size-min;
+        padding: 0 .2rem;
+        transform: scale(.8);
+        opacity: .8;
+        border-radius: .2rem;
+    }
+    // 总时长
+    .outer-bar {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        background-color: $gray;
+    }
+    // 已缓冲
+    .buffer-bar {
+        position: absolute;
+        z-index: 2;
+        height: 100%;
+        background-color: $gray-light-s;
+    }
+    // 已播放
+    .play-bar {
+        position: absolute;
+        z-index: 3;
+        height: 100%;
+        // 拖拽按钮
+        .bar-btn {
+            display: none;
+            position: absolute;
+            width: 10PX;
+            height: 12PX;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: $white;
+            border-radius: 12PX;
+        }
+    }
+    // 进度条下方小工具
+    .controls {
+        position: relative;
+        z-index: 5;
+        margin-top: 10PX;
+        line-height: 1rem;
+        color: $white;
+    }
+    // 每个的工具盒子
+    .box {
+        display: inline-block;
+        vertical-align: middle;
+        height: 1rem;
+        cursor: pointer;
+        a {
+            display: inline-block;
+            margin: 1PX .5rem;
+            line-height: 1rem;
+            background-color: black;
+        }
+        i {
+            color: $white;
+            font-style: normal;
+            font-size: $font-size-small;
+        }
+    }
+    .play-pause i {
+        display: block;
+        margin-left: .5rem;
+        font-weight: bold;
+        transform: scale(1.2);
+    }
+    // 音量
+    .volume {
+        position: relative;
+    }
+    // 音量调节背景
+    .volume-back {
+        position: absolute;
+        z-index: 5;
+        height: 4rem;
+        width: 4PX;
+        left: 50%;
+        margin-left: -12PX;
+        bottom: 1rem;
+        border-style: solid;
+        border-width: 5PX 10PX 10PX 10PX;
+        border-color: black;
+        opacity: .8;
+        background-color: $gray-light;
+        box-sizing: content-box;
+    }
+    // 音量调节总长度
+    .volume-wrap {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        background-color: $gray-light;
+    }
+    // 音量调节到多少的进度
+    .volume-bar {
+        position: absolute;
+        z-index: 2;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+    }
+    // 音量调节按钮
+    .volume-bar-btn {
+        position: absolute;
+        z-index: 3;
+        width: 10PX;
+        height: 5PX;
+        left: 50%;
+        margin-left: -5PX;
+        border-radius: 4PX;
+        background-color: $white;
+    }
+    /////////////////tools-end//////////////////
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+    .#{$theme} {
+        .wd-video-player {
+            .play-bar {
+                background-color: $main;
+            }
+            // 重播
+            .replay:hover i {
+                color: $main;
+            }
+            // 音量已调节到多少的部分的背景色
+            .volume-bar {
+                background-color: $main;
+            }
+        }
+    }
+}

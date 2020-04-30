@@ -4,7 +4,7 @@
 * @LastEditTime: 2020-03-15 23:28:42
 * @LastEditors: Please set LastEditors
 * @Description: In User Settings Edit
-* @FilePath: \nuxt-ssr\pages\admin\forum-and-wenyun\list\list.ts
+* @FilePath: \nuxt-ssr\pages\admin\circle-and-circle\list\list.ts
 */
 import Component from 'vue-class-component';
 import strCut from '~/core/modules/filters/strCut';
@@ -17,7 +17,7 @@ import PageBarComponent from '@/core/modules/components/commons/page-bar/page-ba
 import EditorComponent from '@/core/modules/components/commons/editor/editor.vue';
 import { Ref } from 'vue-property-decorator';
 @Component({
-    layout: 'sys',
+    layout: 'admin',
     filters: {
         strCut
     },
@@ -46,7 +46,7 @@ export default class ListComponent extends BaseComponent {
     /** 默认显示所有可见和非可见 */
     searchVisible: number | string = '';
     /** 是否付费 */
-    chargeList: any[] = [
+    strategyList: any[] = [
         { id: 0, description: '免费' },
         { id: 1, description: '付费' }
     ];
@@ -55,7 +55,7 @@ export default class ListComponent extends BaseComponent {
         { id: 1, description: '是' }
     ];
     /** 默认显示所有付费和非付费 */
-    searchCharge: number | string = '';
+    searchStrategy: number | string = '';
     /** 模块的话题分类列表，从后台获取 */
     categoryList: any[] = [];
     /** '' 表示查询该模块 所有话题分类的所有话题内容 */
@@ -97,7 +97,7 @@ export default class ListComponent extends BaseComponent {
     selectTopicContentList() {
         const queryStr = '?searchModule=' + this.searchModule
             + '&searchTitle=' + this.searchTitle + '&searchVisible='
-            + this.searchVisible + '&searchCharge=' + this.searchCharge
+            + this.searchVisible + '&searchStrategy=' + this.searchStrategy
             + '&searchCategory' + this.searchCategory + '&' + this.pageQueryStr;
         return this.httpRequest(this.http.get('/topicContent/select/list' + queryStr), {
             success: (data: any) => {
@@ -131,9 +131,9 @@ export default class ListComponent extends BaseComponent {
      * 查询话题分类列表
      */
     selectTopicList() {
-        return this.httpRequest(this.http.get('/topic/select/list?type=' + this.searchModule), {
+        return this.httpRequest(this.http.get('/topicClass/select/list?type=' + this.searchModule), {
             success: (data: any) => {
-                this.categoryList = data.topics;
+                this.categoryList = data.topicClasses;
             }
         });
     }
@@ -251,7 +251,7 @@ export default class ListComponent extends BaseComponent {
      * 查看评论
      */
     viewComments({ row }: any) {
-        this.$router.push('/admin/topic/topic-content/comment?id=' + row.id);
+        this.$router.push('/admin/topicClass/topic-content/comment?id=' + row.id);
     }
 
     /** 关闭弹窗 */
@@ -262,7 +262,7 @@ export default class ListComponent extends BaseComponent {
     /** 确认并关闭弹窗 */
     confirm() {
         this.window.close();
-        this.topicContent.wt = this.searchModule;
+        this.topicContent.type = this.searchModule;
         this.insertOrUpdate(this.topicContent);
     }
 

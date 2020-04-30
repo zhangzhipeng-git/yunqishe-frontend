@@ -9,7 +9,7 @@
 <template>
   <div class="wd-editor">
     <!-- 编辑条开始 -->
-    <!-- mousedown事件判断命令是否支持，不支持则弹出提示 -->
+    <!-- mousedown事件判断命令是否支持，不支持则弹出提示，且某些命令在代码区设置无效 -->
     <div class="wd-editor-bar" @mousedown="querySupportCMD($event)">
       <!-- 事件执行富文本命令[失焦时，命令执行无效，所以要阻止失焦，或者在事件执行前聚焦] -->
 

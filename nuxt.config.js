@@ -20,15 +20,30 @@ module.exports = {
             { charset: "utf-8" },
             // { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             {
-                hid: "description",
-                name: "description",
-                content: process.env.npm_package_description || ""
+                name: "render",
+                content: "webkit"
+            },
+            {
+                'http-equiv': "X-UA-Compatible",
+                content: "IE=edge"
+            },
+            {
+                name: 'referrer',
+                content: 'no-referrer'
+            },
+            {
+                name: 'referrer',
+                content: 'never'
             }
         ],
         link: [
             { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
             { rel: "stylesheet", type: "text/css", href: "/css/common.css" },
-            { rel: "stylesheet", type: "text/css", href: "/css/fonts/style.css" }
+            { rel: "stylesheet", type: "text/css", href: "/css/fonts/style.css" },
+            { rel: "stylesheet", type: "text/css", href: "https://cdn.bootcss.com/highlight.js/9.18.1/styles/a11y-light.min.css" }
+        ],
+        script: [
+            { src: "https://cdn.bootcss.com/js-xss/0.3.3/xss.js" }
         ],
         htmlAttrs: {
             lang: "zh-CN",
@@ -97,12 +112,13 @@ module.exports = {
         scss: ["./core/assets/sass/_zx.scss"]
     },
 
-    loading: {
-        color: $theme_main_colors.r,
-        failedColor: $theme_main_colors.r,
-        height: "1PX",
-        continuous: true
-    },
+    // loading: {
+    //     color: $theme_main_colors.r,
+    //     failedColor: $theme_main_colors.r,
+    //     height: "1PX",
+    //     continuous: true
+    // },
+    loading: false,
 
     /**
      * 中间件，路由改变时调用
@@ -111,7 +127,7 @@ module.exports = {
         middleware: "router",
         extendRoutes(routes, resolve) {
             // 根路径重定向到/protal
-            let index = routes.findIndex(route => route.name === 'index');
+            let index = routes.findIndex(route => route.path === '/');
             routes[index] = {
                 ...routes[index],
                 redirect: '/protal'
@@ -142,26 +158,24 @@ module.exports = {
         typeCheck: true,
         ignoreNotFoundWarnings: true
     },
+    // 生产环境压缩css
+    optimizeCSS: process.env.NODE_ENV === 'production' ? true : false,
     /*
      ** Build configuration
      */
     build: {
         ssr: true,
+        analyze: true,
         preset: {
             autoprefixer: {}
         },
         parallel: true, // 开启多线程打包
-        // analyze: true,
-        // or
-        // analyze: {
-        //   analyzerMode: 'static'
-        // }
         /*
          * You can extend webpack config here
          */
         extend(config, ctx) {
             const module = config.module;
-            if (ctx.isClient) {
+            if (ctx.isClient && ctx.isDev) {
                 config.devtool = "eval-source-map";
             }
             module.rules.push({
@@ -174,23 +188,13 @@ module.exports = {
                 }
             });
         },
-        // 去掉日志打印 - 生产环境有效
-        plugins: [
-            (process.env.NODE_ENV === 'production' ? new UglifyJsPlugin({
-                uglifyOptions: {
-                    compress: {
-                        warnings: false,
-                        drop_console: true,
-                        pure_funcs: ['console.log', 'Log.debug', 'console.warn']
-                    },
-                    mangle: {
-                        safari10: true
-                    }
-                },
-                sourceMap: false,
-                cache: true,
-                parallel: true
-            }) : { apply: () => {} })
-        ]
+        // 生产环境有效,在默认配置上加上去除console
+        terser: {
+            terserOptions: {
+                compress: {
+                    pure_funcs: ["console.log", "Log.debug"]
+                }
+            }
+        }
     }
 };

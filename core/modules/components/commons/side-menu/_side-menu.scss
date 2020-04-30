@@ -1,55 +1,44 @@
 /*
- * Filename: d:\frontend\vue\nuxt-ssr\components\commons\side-menu\side-menu.scss
- * Path: d:\frontend\vue\nuxt-ssr
- * Created Date: Saturday, December 28th 2019, 6:12:55 pm
+ * Project: nuxt-ssr
+ * FileName: _side-menu.scss
  * Author: zzp-dog
- * 侧边菜单
- * Copyright (c) 2019 Your Company
+ * File Created: Saturday, 22nd February 2020 8:16:02 pm
+ * description:
+ * Last Modified: Friday, 10th April 2020 4:24:09 pm
+ * Modified By: zzp-dog
+ * Copyright © zzp-dog, All rights reserved.
  */
 
 // 菜单层级
 $side-menu-level: 3;
+.fr {
+    float: right;
+}
 
-// 顶级菜单容器
-.wd-side-menu-level0 {
-    height: 100%;
-    background-color: $white;
-    min-width: 10rem;
-    // 顶级菜单标题
-    &>a {
-        display: inline-block;
-        width: 100%;
-        padding-left: 1.5rem;
-        font-size: $font-size-normal;
-        line-height: 3rem;
-        // border-bottom: 1PX solid $gray-light-m;
-        cursor: default;
-        i {
-            margin-right:1rem;
-            line-height: 3rem;
-            font-size: $font-size-normal;
-        }
-    }
-    .fr{
-        float: right;
-    }
-    .fl{
-        float: left;
-    }
+.fl {
+    float: left;
 }
 
 // 菜单层级 1级到$side-menu-level + 1级
 @for $i from 1 to ($side-menu-level + 1) {
-
     // 菜单项
     .wd-side-menu-level#{$i} {
-        &>a {
+        overflow: hidden;
+        a {
             display: inline-block;
             width: 100%;
-            padding-left: 1.5rem + ($i - 1)*.4;
+            padding-left: 1.5rem + $i*.4;
             line-height: 2.5rem;
             font-size: $font-size-small;
-            color:$black-light;
+            color: $black-light;
+            @if $i==1 {
+                // 顶级列表背景白色
+                background-color: $white;
+            }
+            @else {
+                // 子孙级列表背景灰色
+                background-color: $gray-light-s !important;
+            }
             // icon
             i {
                 font-size: $font-size-small;
@@ -58,12 +47,6 @@ $side-menu-level: 3;
                 margin-right: 1rem;
             }
         }
-
-        // 子节点列表容器
-        &>div {
-            overflow: auto;
-            background-color: $gray-light-s;
-        }
     }
 }
 
@@ -71,27 +54,20 @@ $side-menu-level: 3;
 .wd-side-menu-height-transition {
     transition: height .2s;
 }
-.router-link-active{
-    background-color: transparent;
-}
+
 // 主题相关
 @each $theme in $themes {
     // @debug $theme; 
     $colors: map-get($theme-colors, #{$theme});
     $main: map-get($colors, main);
-
     .#{$theme} {
-        // 顶级菜单的子菜单
-        @for $i from 1 to ($side-menu-level + 1) {
-            .wd-side-menu-level#{$i} {
-                &>a:focus,.router-link-active {
-                    color: $main;
-                    border-right: 1PX solid $main;
-                }
-                &>a:hover {
-                    color: $main;
-                }
-            }
+        .wd-active {
+            color: $main;
+            border-left: 1PX solid $main;
+            border-right: 1PX solid $main;
+        }
+        a:hover {
+            color: $main;
         }
     }
 }

@@ -1,9 +1,16 @@
 import AppHttp  from '../modules/http/app-http';
 import AppSecure from '../modules/secure/app-secure';
+import { Context } from '@nuxt/types';
+
 export default class Server {
-    http!: AppHttp;
-    secure!: AppSecure;
-    db: Map<string, Object> = new Map();
+    /** http */
+    private http!: AppHttp;
+    /** 安全 */
+    private secure!: AppSecure;
+    /** 全局存贮 */
+    private db: Map<string, Object> = new Map();
+    /** context */
+    context!: Context;
     static serverContext: Server;
     private constructor() {
         if ((<any>global).serverContext) {
@@ -26,9 +33,6 @@ export default class Server {
         return this.db;
     }
 
-    private setHttp(http: AppHttp): void {
-        this.http = http;
-    }
     /**
      * 获取http服务
      */
@@ -36,14 +40,28 @@ export default class Server {
         return this.http;
     }
 
-    private setSecure(secure: AppSecure): void {
-        this.secure = secure;
-    }
     /**
      * 获取安全服务
      */
     public getSecure(): AppSecure {
         return this.secure;
+    }
+
+    /**
+     * 设置两端公用的上下文
+     * @param context 核心上下文
+     */
+    public setContext(context: Context) {
+        if (!!this.context) return;
+        this.context = context;
+        this.setHttpAjax(context.$axios);
+    }
+
+    /**
+     * 获取两端公用的上下文
+     */
+    public getContext(): Context {
+        return this.context;
     }
 
     private injectDependencies(): void {
@@ -53,14 +71,27 @@ export default class Server {
         this.secure.setHttp(this.http);
     }
 
+        /**
+     * 设置http通讯工具
+     * @param ajax ajax
+     */
+    private setHttpAjax(ajax: any) {
+        this.http.setAjax(ajax);
+    }
+
+    /** 返回undifined，服务端不会用到公用组件管理器！！！ */
+    getHandler(): any {
+        return;
+    }
+
     /**
      *获取服务端context
      */
     public static getServerContext(): Server {
-        if ((<any>global).serverContext) {
-            return (<any>global).serverContext;
+        if ((<any>Server).serverContext) {
+            return (<any>Server).serverContext;
         }
-        (<any>global).serverContext = new Server();
-        return (<any>global).serverContext;
+        (<any>Server).serverContext = new Server();
+        return (<any>Server).serverContext;
     }
 }

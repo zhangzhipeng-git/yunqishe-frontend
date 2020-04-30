@@ -1,6 +1,8 @@
-// 备注：jsencrypt 服务端渲染需要在该文件中添加window和navigator
-import './lib/cryptojs.min.js';
-import './lib/jsencrypt.min.js';
+// // 备注：jsencrypt 服务端渲染需要在该文件中添加window和navigator
+// import './lib/cryptojs.min.js';
+// import './lib/jsencrypt.min.js';
+import JSUtil from './js-util';
+import CONTS from '../../consts';
 declare class CryptoJS {
     static AES: any;
     static enc: any;
@@ -36,35 +38,52 @@ declare class JSEncrypt {
  * 
  * 2.JSEncrypt的RSA加解密，如加密时，可以用后端传来的base64公钥直接加密，返回的也是base64密文。
  */
-export default class EncryptUtil { 
+export default class EncryptUtil {
+
+    private static loadCryptojs(f: Function) {
+        JSUtil.loadJS(CONTS.JS_MAPS[4], f);
+    }
+
+    private static loadJsencrypt(f: Function) {
+        JSUtil.loadJS(CONTS.JS_MAPS[5], f);
+    }
 
     /**
      * MD5抽取摘要
      * @param str MD5抽取摘要的字符串
+     * @returns {Promise<string>}
      */
-    public static MD5(str: string): string {
-        return CryptoJS.MD5(str).toString();
+    public static MD5(str: string): Promise<string> {
+        return new Promise(res => {
+            this.loadCryptojs(() => {
+                res(CryptoJS.MD5(str).toString());
+            });
+        });
     }
-    
+
     /**
      * aes加密(CBC带iv偏移，增加了解密难度)
      * @param mes 明文
      * @param key 密钥
      * @returns string base64str
      */
-    public static AESEncrypt(mes: string | object, key: string): string {
-        if (mes instanceof Object)
-            mes = JSON.stringify(mes)
-        // mes,key可以传string，也可以传wordArray
-        // 为了与后端保持一致，这里要转成wordArray
-        key = CryptoJS.enc.Utf8.parse(key);
-        const encrypted = CryptoJS.AES.encrypt(mes, key, {
-            iv: key, // 初始向量（用来做偏移加密的）与私钥相同
-            mode:CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
+    public static AESEncrypt(mes: string | object, key: string): Promise<string> {
+        return new Promise(res => {
+            this.loadCryptojs(() => {
+                if (mes instanceof Object)
+                    mes = JSON.stringify(mes)
+                // mes,key可以传string，也可以传wordArray
+                // 为了与后端保持一致，这里要转成wordArray
+                key = CryptoJS.enc.Utf8.parse(key);
+                const encrypted = CryptoJS.AES.encrypt(mes, key, {
+                    iv: key, // 初始向量（用来做偏移加密的）与私钥相同
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                // 变成字符串，默认utf8
+                res(encrypted.toString());
+            })
         });
-        // 变成字符串，默认utf8
-        return encrypted.toString();
     }
     /**
      * AES解密
@@ -72,22 +91,26 @@ export default class EncryptUtil {
      * @param key 私钥
      * @returns string|object
      */
-    public static AESDecrypt(cip: string, key: string): string | object {
-        // cip,key可以传string，也可以传wordArray
-        // 为了与后端保持一致，这里要转成wordArray
-        key = CryptoJS.enc.Utf8.parse(key);
-        const bytes: any = CryptoJS.AES.decrypt(cip, key, {
-            iv: key, // 初始向量（用来做偏移加密的）与私钥相同
-            mode:CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        // 字节变成utf8格式字符串
-        let mes = bytes.toString(CryptoJS.enc.Utf8);
-        const firstChar = mes.charAt(0);
-        // 如果加密的是json则转成json
-        if (firstChar === '{' || firstChar === '[')
-        mes = JSON.parse(mes);
-        return mes;
+    public static AESDecrypt(cip: string, key: string): Promise<string | object> {
+        return new Promise(res => {
+            this.loadCryptojs((e: any) => {
+                // cip,key可以传string，也可以传wordArray
+                // 为了与后端保持一致，这里要转成wordArray
+                key = CryptoJS.enc.Utf8.parse(key);
+                const bytes: any = CryptoJS.AES.decrypt(cip, key, {
+                    iv: key, // 初始向量（用来做偏移加密的）与私钥相同
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                // 字节变成utf8格式字符串
+                let mes = bytes.toString(CryptoJS.enc.Utf8);
+                const firstChar = mes.charAt(0);
+                // 如果加密的是json则转成json
+                if (firstChar === '{' || firstChar === '[')
+                    mes = JSON.parse(mes);
+                res(mes);
+            })
+        })
     }
 
     /**
@@ -97,11 +120,16 @@ export default class EncryptUtil {
      * @param isLong 是否采取长加密[分段加密]
      * @returns {string}
      */
-    public static RSAEncrypt(mes: string|Object, key: string, isLong: boolean = false): string {
-        if (mes instanceof Object) mes = JSON.stringify(mes);
-        const encrypter = new JSEncrypt();
-        encrypter.setPublicKey(key);
-        return !isLong?encrypter.encrypt(<string>mes):(<any>encrypter).encryptLong(<string>mes);
+    public static RSAEncrypt(mes: string | Object, key: string, isLong: boolean = false): Promise<string> {
+        return new Promise(res => {
+            this.loadJsencrypt(() => {
+                if (mes instanceof Object) mes = JSON.stringify(mes);
+                const encrypter = new JSEncrypt();
+                encrypter.setPublicKey(key);
+                res( encrypter.encrypt(<string>mes))
+                // res(!isLong ? encrypter.encrypt(<string>mes) : (<any>encrypter).encryptLong(<string>mes))
+            })
+        })
     }
 
     /**
@@ -110,32 +138,44 @@ export default class EncryptUtil {
      * @param key RSA私钥
      * @returns {string|Object}
      */
-    public static RSADecrypt(cip: string, key: string): string|Object {
-        const decrypter = new JSEncrypt();
-        decrypter.setPrivateKey(key);
-        let mes = decrypter.decrypt(cip);
-        const firstChar = mes.charAt(0);
-        // 如果加密的是json则转成json
-        if (firstChar === '{' || firstChar === '[')
-        mes = JSON.parse(mes);
-        return mes;
+    public static RSADecrypt(cip: string, key: string): Promise<string | Object> {
+        return new Promise(res => {
+            this.loadJsencrypt(() => {
+                const decrypter = new JSEncrypt();
+                decrypter.setPrivateKey(key);
+                let mes = decrypter.decrypt(cip);
+                const firstChar = mes.charAt(0);
+                // 如果加密的是json则转成json
+                if (firstChar === '{' || firstChar === '[')
+                    mes = JSON.parse(mes);
+                res(mes);
+            })
+        })
     }
 
     /**
      * 将普通字符串编码成base64字符串
      * @param str 字符串
      */
-    public static str2Base64Str(str: string): string {
-        const wardArray = CryptoJS.enc.Utf8.parse(str);
-        return CryptoJS.enc.Base64.stringify(wardArray);
+    public static str2Base64Str(str: string): Promise<string> {
+        return new Promise(res => {
+            this.loadCryptojs(() => {
+                const wardArray = CryptoJS.enc.Utf8.parse(str);
+                res(CryptoJS.enc.Base64.stringify(wardArray));
+            })
+        });
     }
 
     /**
      * 将base64字符串解码成普通字符串
      * @param base64Str base64字符串
      */
-    public static base64Str2str(base64Str: string): string {
-        const wordArray = CryptoJS.enc.Base64.parse(base64Str);
-        return CryptoJS.enc.Utf8.stringify(wordArray);
+    public static base64Str2str(base64Str: string): Promise<string> {
+        return new Promise(res => {
+            this.loadCryptojs(() => {
+                const wordArray = CryptoJS.enc.Base64.parse(base64Str);
+                res(CryptoJS.enc.Utf8.stringify(wordArray));
+            })
+        })
     }
 }

@@ -1,18 +1,151 @@
-$side-menu-width: 14rem;
-#id-ui-doc-detail {
+// 左侧菜单宽度
+$side-menu-width: 12rem;
+// 主体内容宽度
+$main-content-width: $main-width - $side-menu-width;
+// 主体内容右侧导航宽度
+$main-content-right-nav-width: 10rem;
+#id-doc-detail {
     position: absolute;
-    top:0;
-    bottom:$app-footer-height;
+    top: 3.5rem;
+    bottom: 0;
     // 左侧菜单
-    .ui-side-nav{
-        width:$side-menu-width;
+    .ui-menu {
+        width: $side-menu-width;
     }
-    // 文档内容
-    .ui-main-comtent {
-        width:$app-width - $side-menu-width;
+    // 文档主体
+    .ui-main {
+        position: relative;
+        width: $main-content-width;
         margin-left: $side-menu-width;
-        padding: 0 1rem;
         background-color: $white;
-        overflow: auto;
+        height: 100%;
+        // 面包屑
+        .wd-nav-bar {
+            font-size: $font-size-small;
+            line-height: 1.5rem;
+            a {
+                text-decoration: none;
+                cursor: default;
+            }
+            a:first-child:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        }
+        // 文档内容+该文档内容导航
+        .ui-doc {
+            position: absolute;
+            top: 2rem;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            font-size: $font-size-small;
+            // 文档内容
+            &-content {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                overflow-y: auto;
+                word-break: break-all;
+                width: 100%;
+                padding: 1rem $main-content-right-nav-width+1rem 1rem 1rem;
+            }
+            // 该文档内容标题导航
+            &-nav {
+                position: fixed;
+                top: 3.5rem + 3rem;
+                right: 1rem;
+                width: $main-content-right-nav-width;
+                &-mask {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: $gray-light;
+                    border-radius: .4rem;
+                    opacity: .2;
+                }
+                ul {
+                    position: relative;
+                    margin: 0 auto;
+                    z-index: 1;
+                }
+                li {
+                    position: relative;
+                    height: 1.5rem;
+                    line-height: 1.5rem;
+                    border-left: 1PX solid $gray-light;
+                    cursor: pointer;
+                    &::before {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        top: .5rem;
+                        left: -.25rem;
+                        height: .5rem;
+                        width: .5rem;
+                        border: .1rem solid $gray-light;
+                        background-color: $white;
+                        border-radius: 100%;
+                    }
+                }
+            }
+            // h1
+            .docH1 {
+                margin-left: .5rem;
+                font-size: $font-size-small;
+            }
+            // h2
+            .docH2 {
+                margin-left: .75rem;
+                font-size: $font-size-min;
+            }
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main-light-s: map-get($colors, main-light-s); // 超浅主色
+    $main-light: map-get($colors, main-light); // 浅主色
+    $main-deep: map-get($colors, main-deep); // 深主色
+    $main: map-get($colors, main); // 主色
+    $tip: map-get($colors, tip); // 提示色
+    $text: map-get($colors, text); // 字体颜色
+    $title: map-get($colors, title); // 标题颜色
+    $warm-title: map-get($colors, warm-title); // 醒目标题
+    $nav: map-get($colors, nav); // 导航字体颜色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    $hover: map-get($colors, hover); // 悬浮类颜色
+    $active: map-get($colors, active); // 激活类颜色
+    $bg: map-get($colors, bg); // 页面背景色
+    $bc: map-get($colors, bc); // 输入类边框色
+    $vip: map-get($colors, vip); // vip标识色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $help: map-get($colors, help); // 辅助色
+    $common: map-get($colors, common); // 通用色
+    $warn: map-get($colors, warn); // 警示色
+    .#{$theme} {
+        #id-doc-detail {
+            li.active {
+                &::before {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    top: .5rem;
+                    left: -.25rem;
+                    height: .5rem;
+                    width: .5rem;
+                    border: .1rem solid $main;
+                    background-color: $white;
+                    border-radius: 100%;
+                }
+                a {
+                    color: $main;
+                }
+            }
+        }
     }
 }

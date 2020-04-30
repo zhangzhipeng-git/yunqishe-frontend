@@ -140,7 +140,7 @@ export default class DomUtil {
      * @param {string} key 样式 - 驼峰式
      */
     public static getcomputedStyle(el: HTMLElement | any, key: any) {
-        return (getComputedStyle && getComputedStyle(el, null)[key]) || el.currentStyle[key];
+        return (window.getComputedStyle && window.getComputedStyle(el, null)[key]) || el.currentStyle[key];
     }
     /**
      * 判断是否移动端
@@ -148,7 +148,8 @@ export default class DomUtil {
      */
     public static isMB(): boolean {
         // tslint:disable-next-line: max-line-length
-        return /iphone|ipod|ios|android|BlackBerry|windows ce|windows mobile|webos|SymbianOS/i.test(navigator.userAgent);
+        const navigator = (<any>global||window).navigator || {userAgent:''};
+        return /iphone|ipod|ios|android|BlackBerry|windows ce|windows mobile|webos|SymbianOS/i.test((navigator).userAgent);
     }
 
     /**
@@ -176,11 +177,14 @@ export default class DomUtil {
      * @param bubble 是否冒泡，默认冒泡
      */
     public static addEvent(el: any, event: string, f: Function, useCapture: boolean = false) {
-        if (el.addEventListener) {
-            el.addEventListener(event, f, useCapture);
-        } else if (el.attachEvent) {
-            el.attachEvent('on' + event, f.bind(el), useCapture);
-        }
+        const es = event.split(/\s+/);
+        es.forEach((e: string) => {
+            if (el.addEventListener) {
+                el.addEventListener(e, f, useCapture);
+            } else if (el.attachEvent) {
+                el.attachEvent('on' + e, f.bind(el), useCapture);
+            }
+        });
     }
 
     /**
@@ -190,11 +194,14 @@ export default class DomUtil {
      * @param f 事件绑定的函数
      */
     public static removeEvent(el: any, event: string, f: Function, useCapture: boolean = false) {
-        if (el.removeEventListener) {
-            el.removeEventListener(event, f, useCapture);
-        } else if (el.detachEvent) {
-            el.detachEvent('on' + event, f, useCapture);
-        }
+        const es = event.split(/\s+/);
+        es.forEach((e: string) => {
+            if (el.removeEventListener) {
+                el.removeEventListener(e, f, useCapture);
+            } else if (el.detachEvent) {
+                el.detachEvent('on' + e, f, useCapture);
+            }
+        });
     }
     /**
      * 获取兼容设置style的文本

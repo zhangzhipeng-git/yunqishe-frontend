@@ -12,7 +12,7 @@ sass - 存放.scss文件的目录
 
 - common - 公用样式
 
-- pages  - 模块样式（protal, forum, qs, video, learn, other)
+- pages  - 模块样式（protal, circle, qs, video, learn, other)
 
 - _%.scss - 继承样式
 

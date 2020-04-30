@@ -6,19 +6,20 @@ import LocalStorage from '../modules/db/LocalStorage';
 import SessionStorage from '../modules/db/SessionStorege';
 import AppDB from '../modules/db/AppDB';
 import AppHttp from '../modules/http/app-http';
-import ThirdJS from '../modules/thirdJS/third-js';
 import AppSecure  from '../modules/secure/app-secure';
 import ComponentsHandler from "../modules/components/components-handler";
-interface AppContext {
+import { Context } from "@nuxt/types";
+export interface AppContext {
     getDB(): AppDB;
     getHttp(): AppHttp;
     getSecure(): AppSecure;
     getCookie?(): Cookie;
     getLocalStorage?(): LocalStorage;
     getSessionStorage?(): SessionStorage;
-    getHandler?(): ComponentsHandler;
-    getThirdJS?(): ThirdJS;
+    getHandler(): ComponentsHandler;
     addTask?(): void;
+    getContext(): Context;
+    setContext(context: Context): void;
 }
 export default class App {
 

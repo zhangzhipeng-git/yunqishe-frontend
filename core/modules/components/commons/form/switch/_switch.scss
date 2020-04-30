@@ -1,0 +1,42 @@
+.wd-switch {
+    display: inline-block;
+    position: relative;
+    width: 3rem;
+    height: 1.5rem;
+    margin: .25rem 0;
+    line-height: 2rem;
+    border-style: solid;
+    border-color: $gray-light;
+    border-radius: 1.5rem;
+    border-left: none;
+    background-color: white;
+    overflow: hidden;
+    cursor: pointer;
+    .wd-switch-bg {
+        height: 1.5rem;
+        transition: width .1s;
+    }
+    .wd-switch-handle {
+        position: absolute;
+        top: 0;
+        width: 1.5rem;
+        height: 100%;
+        border: 1PX solid $gray-light;
+        border-radius: 100%;
+        background-color: white;
+        transition: left .1s;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main-light: map-get($colors, main-light);
+    .#{$theme} {
+        .wd-switch .wd-switch-bg {
+            // 秒数
+            background-color: $main-light;
+        }
+    }
+}

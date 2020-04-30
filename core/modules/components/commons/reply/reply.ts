@@ -15,7 +15,8 @@ import EmojiComponent from '../emoji/emoji.vue'; // 表情组件
 @Component({data(vm: any){return {spread$: vm.spread}},
 components: {
     EmojiComponent
-}})
+}
+})
 export default class ReplyComponent extends Vue {
     /** texarea的id */
     @Prop({type: String, default: null})

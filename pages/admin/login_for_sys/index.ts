@@ -1,3 +1,4 @@
+
 /*
 * Filename: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\login\index.ts
 * Path: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
@@ -13,7 +14,7 @@ import BaseComponent from '@/core/base-component.ts';
 import EncryptUtil from '~/core/modules/util/encrypt-util.ts';
 import SMSComponent from '@/core/modules/components/commons/form/sms/sms';
 import ButtonComponent from '@/core/modules/components/commons/form/button/button';
-import App from '~/core/context/app-context';
+
 @Component({
     layout:'default',
     components: {
@@ -22,8 +23,8 @@ import App from '~/core/context/app-context';
     },
     async asyncData(context:  Context) {
         let type;
-        const http = App.getAppContext().getHttp();
-        await http.httpRequest(http.get('/user/queryadmin'), {
+        const util = BaseComponent.getSingleton();
+        await util.httpRequest(util.http.get('/user/setup'), {
             success: () => {
                 type = 'install';
             },
@@ -99,12 +100,12 @@ export default class LogForSysComponent extends BaseComponent {
     /**
      * 登录或安装
      */
-    public doLoginOrInstall() {
+    public async doLoginOrInstall() {
         if (this.type === 'login') {
             // 登录
             this.httpRequest(this.http.post('/user/login', {
                 account: this.account,
-                password: EncryptUtil.MD5(this.password)
+                password: await EncryptUtil.MD5(this.password)
             }), {
                 success: (data: any) => {
                     this.pass(data.user);           
@@ -115,7 +116,7 @@ export default class LogForSysComponent extends BaseComponent {
             this.httpRequest(this.http.post('user/install', {
                 email: this.vTypeValue,           
                 account: this.account,
-                password: EncryptUtil.MD5(this.password)
+                password: await EncryptUtil.MD5(this.password)
             }), {
                 success: (data: any) => {
                     this.pass(data.user);
@@ -142,7 +143,7 @@ export default class LogForSysComponent extends BaseComponent {
         this.db.set('user', user);
         let path = !!this.fromPath? this.fromPath : '/admin';
         this.$store.commit('setUser', user);
-        this.$router.push({path});         
+        this.$router.push({path});        
     }
 
 }

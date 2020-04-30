@@ -1,49 +1,48 @@
-.wd-select-component{
+.wd-select-component {
     display: inline-block;
     position: relative;
     // slect框
     input[type=text] {
-        margin-left:0;
+        margin-left: 0;
         height: 2rem;
         line-height: 2rem;
         border-radius: 0;
     }
     // 下拉箭头icon
-    .icon-chevron-down{
+    .icon-chevron-down {
         display: inline-block;
         position: relative;
-        z-index:2;
-        margin-left:-1.5rem;
+        z-index: 2;
+        margin-left: -1.5rem;
         font-size: $font-size-middle;
         line-height: 1;
         vertical-align: middle;
         cursor: pointer;
     }
     // 下拉列表
-    ul{
+    ul {
         position: absolute;
-        z-index:99;
-        left:0;
-        top:2.01rem;
-        width:100%;
-        border:1PX solid $gray-light;
+        z-index: 99;
+        left: 0;
+        top: 2.01rem;
+        width: 100%;
+        border: 1PX solid $gray-light;
         border-radius: 0 0 .3rem .3rem;
-        box-shadow: 1PX 1PX 3PX 1PX $gray-light-s
-        ,-1PX 0 3PX 0 $gray-light-s;
+        box-shadow: 1PX 1PX 3PX 1PX $gray-light-s, -1PX 0 3PX 0 $gray-light-s;
         overflow: auto;
         background-color: $white;
         transition: height .3s;
     }
     // 关闭
-    .close{
+    .close {
         height: 0;
     }
     // 展开
-    .open{
-        height: 13rem;
+    .open {
+        height: 8rem;
     }
     // 下拉框关闭后样式修正
-    .no-border{
+    .no-border {
         border: none;
         box-shadow: none;
     }
@@ -51,67 +50,67 @@
     .no-scrollbar {
         overflow: hidden;
     }
-    
     // 列表项包含a
-    li{
+    li {
         position: relative;
         line-height: 1;
     }
     // 包含lable
-    a{
+    a {
         display: inline-block;
-        width:100%;
-        color:$common;
-        &:hover{
-            color:$white;
-            & > label{
+        width: 100%;
+        color: $common;
+        &:hover {
+            color: $white;
+            &>label {
                 color: $white;
             }
         }
     }
     // 包含选项描述和icon对勾
-    label{
+    label {
         position: relative;
         display: inline-block;
-        width:100%;
-        margin:0;
-        padding:.4rem .5rem;
+        width: 100%;
+        margin: 0;
+        padding: .4rem .5rem;
         font-size: $font-size-small;
     }
     // icon：选中后的对勾
-    .icon-check{
+    .icon-check {
         position: absolute;
-        top:0;
-        right:0;
-        padding:.4rem .5rem;
+        top: 0;
+        right: 0;
+        padding: .4rem .5rem;
         font-size: $font-size-small;
         line-height: $font-size-small;
         font-weight: bold;
         color: green;
     }
-    input[type='checkbox'],.checkbox{
+    input[type='checkbox'],
+    .checkbox {
         display: none;
     }
-    input[type=checkbox] + i{
+    input[type=checkbox]+i {
         display: none;
         line-height: 1;
     }
-    input[type=checkbox]:checked + i{
+    input[type=checkbox]:checked+i {
         display: inline-block;
     }
 }
+
 // 主题相关
 @each $theme in $themes {
     // @debug $theme; 
     $colors: map-get($theme-colors, #{$theme});
     $main: map-get($colors, main);
     $main-light: map-get($colors, main-light);
-  
     .#{$theme} {
-      .wd-select-component {
-          a:hover{
-              background-color: lighten($color: $main-light, $amount: 10);
-          }
-      }
+        .wd-select-component {
+            a:hover {
+                background-color: lighten($color: $main-light, $amount: 10);
+            }
+        }
     }
-  }
+}

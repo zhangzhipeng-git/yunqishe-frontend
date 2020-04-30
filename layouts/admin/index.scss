@@ -1,0 +1,220 @@
+$wd-main-right: 47rem;
+$wd-main-left: 12.5rem;
+// 头部样式
+.wd-sys-header {
+    position: absolute;
+    z-index: 99999;
+    width: 100%;
+    height: $app-header-height;
+    padding: 0 2rem;
+    line-height: $app-header-height;
+    color: $white;
+    border-bottom: 1px solid $gray-light-s;
+    @extend %clearfix;
+}
+
+// 头部左侧
+.sys-header-left {
+    float: left;
+    // 标题
+    h1 {
+        float: left;
+        font-size: $font-size-large;
+    }
+}
+
+// 左侧三道杠
+.header-left-menu {
+    float: left;
+    width: 2rem;
+    height: 100%;
+    padding: (3rem - 0.4rem * 3 - 0.2 * 3rem)/2-0.2rem 0 0 0;
+    cursor: pointer;
+    .line1,
+    .line2,
+    .line3 {
+        height: 0;
+        width: 1.5rem;
+        margin-top: (1.7-0.1 * 6)/3 + rem;
+        border: 0.1rem solid $white;
+        transition: transform 0.5s;
+    }
+    .rotate1 {
+        width: 1.7rem;
+        transform-origin: 0 0;
+        transform: rotate(45deg);
+    }
+    .rotate2 {
+        width: 1.7rem;
+        transform-origin: 0 0.2rem;
+        transform: rotate(-45deg);
+    }
+}
+
+// 头部右侧
+.sys-header-right {
+    float: right;
+    padding-right: 0.2rem 0;
+    line-height: 3rem;
+    // 管理员头像
+    img {
+        display: inline-block;
+        width: 2rem;
+        height: 2rem;
+        line-height: 1;
+        vertical-align: middle;
+        border-radius: 50%;
+    }
+    // 管理员设置选项
+    .admin-set {
+        position: relative;
+        display: inline;
+        vertical-align: middle;
+        cursor: pointer;
+        // 下拉菜单
+        .admin-menu {
+            position: absolute;
+            top: 1.5rem;
+            right: 0;
+            width: 7rem;
+            line-height: 1;
+            color: $common;
+            background-color: $white;
+            border-radius: .2rem;
+            box-shadow: 0 1PX 3PX 0 $gray-light;
+            a {
+                display: block;
+                padding: .2rem .5rem;
+                font-size: $font-size-small;
+                line-height: 1.5rem;
+                &:hover {
+                    color: $white;
+                }
+            }
+        }
+    }
+}
+
+// 左侧菜单
+.wd-sys-left {
+    position: relative;
+    top: $sys-header-height;
+    bottom: 0;
+    float: left;
+    height: calc(100vh - 3rem);
+    transition: width 0.5s;
+    overflow-x: hidden;
+    &.left-open {
+        width: $wd-main-left;
+    }
+    &.left-close {
+        width: 0;
+    }
+}
+
+.wd-side-menu {
+    padding-top: 1rem;
+}
+
+// 右侧主体部分
+.wd-sys-main {
+    position: relative;
+    float: left;
+    height: calc(100vh - 3rem);
+    margin: $app-header-height 0 0 0;
+    overflow: auto;
+    transition: width 0.5s;
+    &.origin-width {
+        width: $wd-main-right;
+    }
+    &.full-width {
+        width: $main-width;
+    }
+}
+
+// 弹出层
+// 样式穿透提取到全局[不影响其他样式，因为添加了本组件的样式属性data-v-hash]
+@at-root #id-admin-window {
+    & /deep/ {
+        // scale  放大（进入） -> 缩小（离开）
+        .scale {
+            &-enter {
+                top: 10%;
+                transform: scale(0);
+                opacity: 0;
+                filter: alpha(opacity=0);
+            }
+            &-active {
+                top: 10%;
+                transform: scale(1);
+                opacity: 1;
+                filter: alpha(opacity=100);
+            }
+            &-leave {
+                top: 10%;
+                transform: scale(0);
+                opacity: 0;
+                filter: alpha(opacity=0);
+            }
+        }
+    }
+}
+
+// 弹出层
+.wd-window-form {
+    form {
+        padding-bottom: 4rem;
+    }
+    /deep/ input {
+        width: 20rem;
+    }
+    .select-sex {
+        /deep/ ul {
+            max-height: 5rem;
+        }
+    }
+    .wd-btn-group {
+        left: 50%;
+        right: unset;
+        text-align: center;
+        transform: translateX(-50%);
+        /deep/ .wd-button {
+            width: 6rem;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $main-deep: map-get($colors, main-deep); // 主色
+    $main-light: map-get($colors, main-light); // 主色
+    $tip: map-get($colors, tip); // 提示色
+    $text: map-get($colors, text); // 字体颜色
+    $title: map-get($colors, title); // 标题颜色
+    $warm-title: map-get($colors, warm-title); // 醒目标题
+    $nav: map-get($colors, nav); // 导航字体颜色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    $hover: map-get($colors, hover); // 悬浮类颜色
+    $active: map-get($colors, active); // 激活类颜色
+    $bg: map-get($colors, bg); // 页面背景色
+    $bc: map-get($colors, bc); // 输入类边框色
+    $vip: map-get($colors, vip); // vip标识色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $help: map-get($colors, help); // 辅助色
+    $common: map-get($colors, common); // 通用色
+    $warn: map-get($colors, warn); // 警示色
+    .#{$theme} {
+        #id-sys {
+            .wd-sys-header {
+                background-color: $main;
+                .admin-menu {
+                    a:hover {
+                        background-color: $main-light;
+                    }
+                }
+            }
+        }
+    }
+}

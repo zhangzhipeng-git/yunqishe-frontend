@@ -1,5 +1,6 @@
 <template>
   <div class="wd-no-result">
+    <slot v-if="$slots.default" />
     <p v-if="!vhtml">
       <i class="icomoon icon-coffee"></i><br />暂无数据~
     </p>

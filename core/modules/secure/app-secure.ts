@@ -54,7 +54,7 @@ export default class AppSecure {
      * 请求公钥并上送密钥
      */
     public async secureInit(): Promise<any> {
-        if (this.pk&&this.sk){
+        if (this.pk && this.sk) {
             return;
         }
         // 同步执行
@@ -69,7 +69,7 @@ export default class AppSecure {
         return this.http.get<string>(AppSecure.get_pk_api).then(data => {
             if ((<any>data).status === 400) {
                 alert("密钥协商失败!")
-            }            
+            }
             this.pk = (<any>data).data.pk;
             return this.pk;
         });
@@ -80,18 +80,22 @@ export default class AppSecure {
      */
     public sendSecuritySK(): Promise<any> {
         this.genAESKey();
-        const sk = EncryptUtil.RSAEncrypt(this.sk, this.pk , true);
-        Log.debug('上送密钥', COLORS.GREEN);
-        console.log(this.getKey());
-        // 后端用json格式接受，否则接收到的私钥/会变成%
-        return this.http.$post(
-            AppSecure.send_sk_api,
-            sk
-        ).then(data => {
-            if ((<any>data).status === 400) {
-                alert("密钥协商失败!")
-            }
-        });
+        return new Promise(res => {
+            EncryptUtil.RSAEncrypt(this.sk, this.pk, true).then(sk => {
+                Log.debug('上送密钥', COLORS.GREEN);
+                console.log(this.getKey());
+                // 后端用json格式接受，否则接收到的私钥/会变成%
+                this.http.$post(
+                    AppSecure.send_sk_api,
+                    sk
+                ).then(data => {
+                    if ((<any>data).status === 400) {
+                        alert("密钥协商失败!")
+                    }
+                    res();
+                });
+            });
+        })
     }
 
 
@@ -107,7 +111,7 @@ export default class AppSecure {
      * 获取AES密钥
      */
     public getKey(): string {
-        return this.sk; 
+        return this.sk;
     }
 
     /**
@@ -148,10 +152,10 @@ export default class AppSecure {
         const max = AppSecure.DICT.length - 1;
         const random = Math.random;
         const range = max - min;
-        for(let i = 0; i < len; i++) {
-            sk += AppSecure.DICT.charAt(min + ~~(random()*range));
+        for (let i = 0; i < len; i++) {
+            sk += AppSecure.DICT.charAt(min + ~~(random() * range));
         }
         return this.sk = sk;
     }
-    
+
 }

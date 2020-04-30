@@ -4,7 +4,7 @@
 * @LastEditTime: 2020-03-16 14:58:12
 * @LastEditors: Please set LastEditors
 * @Description: In User Settings Edit
-* @FilePath: \nuxt-ssr\pages\admin\forum-and-wenyun\list\list.ts
+* @FilePath: \nuxt-ssr\pages\admin\circle-and-circle\list\list.ts
 */
 import Component from 'vue-class-component';
 import strCut from '~/core/modules/filters/strCut';
@@ -17,7 +17,7 @@ import PageBarComponent from '@/core/modules/components/commons/page-bar/page-ba
 import EditorComponent from '@/core/modules/components/commons/editor/editor.vue';
 import { Ref } from 'vue-property-decorator';
 @Component({
-    layout: 'sys',
+    layout: 'admin',
     filters: {
         strCut
     },
@@ -39,7 +39,7 @@ export default class ListComponent extends BaseComponent {
     /** 默认显示所有可见和非可见 */
     searchVisible: number|string = '';
     /** 是否付费 */
-    chargeList: any[] = [
+    strategyList: any[] = [
         {id: 0, description: '免费'},
         {id: 1, description: '付费'}
     ];
@@ -48,7 +48,7 @@ export default class ListComponent extends BaseComponent {
         { id: 1, description: '是' }
     ];
     /** 默认显示所有付费和非付费 */
-    searchCharge: number|string = '';
+    searchStrategy: number|string = '';
     /** 内容模糊查询 */
     searchText: string = '';
     /** 话题内容回复或评论列表 */
@@ -97,7 +97,7 @@ export default class ListComponent extends BaseComponent {
         '?tcid='+this.tcid
         +'&searchText='+this.searchText
         +'&searchVisible='+this.searchVisible
-        +'&searchCharge='+this.searchCharge
+        +'&searchStrategy='+this.searchStrategy
         +'&'+this.pageQueryStr;
         return this.httpRequest(this.http.get('/topicComment/select/list'+queryStr), {
             success: (data: any) => {

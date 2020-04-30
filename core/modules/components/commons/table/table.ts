@@ -48,7 +48,8 @@ export default class TableComponent extends Vue {
   @Prop({ type: Array, default: () => [] })
   disabled!: number[];
   /** 复选框选中的行,以sync方式同步更新,以$index-下标为索引进行回显！！！ */
-  @Prop({ type: Array, default: () => {} })
+  /** 和v-model的效果类似，后期会考虑换为v-model */
+  @Prop({ type: Array, default: () => [] })
   rows!: Object[];
   /** 返回选中行的类型：'cks'-优化后的，其他-未优化的 */
   @Prop({ type: String, default: "cks" })
@@ -58,10 +59,10 @@ export default class TableComponent extends Vue {
   list!: any[];
   /** list的副本 */
   list$: any[] = [];
-  /** v-model的键名，默认id */
+  /** 行实体的键名，默认id，tree为true时生效 */
   @Prop({ type: String, default: "id" })
   key$!: string;
-  /** v-model父主键，默认pid */
+  /** 行实体父主键，默认pid，tree为true时生效*/
   @Prop({ type: String, default: "pid" })
   pkey$!: string;
   /** 父组件插槽名数组，以列名作为插槽名 */

@@ -25,15 +25,19 @@ export default class ToastComponent extends Vue {
      * 关闭弹窗
      */
     untoast() {
+        let d = this.duration;
+        if (d === -1 || d === Infinity) {
+            d = 0;
+        }
         // 离开
         setTimeout(() => {
             this.active = false;
-        }, this.enter + this.duration);
+        }, this.enter + d);
         // 彻底移除
         setTimeout(() => {
             document.body.removeChild(this.$el);
             ToastComponent.instance = null;
-        }, this.enter + this.duration + this.leave);
+        }, this.enter + d + this.leave);
     }
     /**
      * 创建弹出式tip
