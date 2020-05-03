@@ -40,9 +40,12 @@ export default class ListComponent extends BaseComponent {
     searchVisible: number|string = '';
     /** 是否付费 */
     strategyList: any[] = [
-        {id: 0, description: '免费'},
-        {id: 1, description: '付费'}
+        {id: 1, description: '免费'},
+        {id: 2, description: '全价云币'},
+        {id: 3, description: 'vip可见'},
+        {id: 4, description: 'vip半价'},
     ];
+    /** 是否 */
     list: any[] = [
         { id: 0, description: '否' },
         { id: 1, description: '是' }

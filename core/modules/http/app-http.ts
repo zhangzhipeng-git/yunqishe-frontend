@@ -50,10 +50,7 @@ export default class AppHttp {
      * @param db 全局存贮
      */
     public setDB(db: AppDB) {
-        if (this.db) {
-            throw new Error(HTTP_ERRORS.HTTP_ERROR_03)
-            return;
-        }
+        if (this.db) {return;}
         this.db = db;
     }
 
@@ -106,7 +103,7 @@ export default class AppHttp {
                     console.log('解密后：');
                     console.log(mes);
                     res(mes);
-                })
+                });
             })
         });
     }

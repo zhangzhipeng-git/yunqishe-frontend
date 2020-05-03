@@ -38,7 +38,9 @@ const PUBLIC_API = [
   ,"/mediaClass/f/select/end2lv/list"
   ,"/mediaClass/f/select/oneWithChildren"
   // 媒体内容
-  ,"/mediaContent/f/select/one"
+  ,"/mediaContent/f/select/one",
+  // vip时长配置参数列表
+  "/vipArg/u/select/list"
 ];
 export default function({ $axios}: any) {
   if (process && process.server) return;

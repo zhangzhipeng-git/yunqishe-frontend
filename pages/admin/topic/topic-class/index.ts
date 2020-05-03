@@ -34,7 +34,7 @@ export default class TopicClassifyComponent extends BaseComponent {
     table!: TableComponent;
     /** 借助直接获取子组件的值的方式修改子组件！！！ */
     get tableList() {
-        return this.table.list
+        return this.table.list$;
     }
     
     /** 选中的行下标 */
@@ -93,7 +93,7 @@ export default class TopicClassifyComponent extends BaseComponent {
     delete$() {
         // 无id的行，游离态
         const noid = this.rows.filter((row: any)=> {
-            return !row.id&&row.id !== 0;
+            return !row.id&&row.id !== 0; // 假设数据库存在id为0的数据
         }) ;
         // 有id的行，持久态
         const hasid = this.rows.filter((row: any) => {

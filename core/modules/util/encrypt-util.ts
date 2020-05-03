@@ -40,6 +40,9 @@ declare class JSEncrypt {
  */
 export default class EncryptUtil {
 
+    private static ENCRYPT_ERROR = '加密异常';
+    private static DECRYPT_ERROR = '解密异常';
+
     private static loadCryptojs(f: Function) {
         JSUtil.loadJS(CONTS.JS_MAPS[4], f);
     }
@@ -75,11 +78,16 @@ export default class EncryptUtil {
                 // mes,key可以传string，也可以传wordArray
                 // 为了与后端保持一致，这里要转成wordArray
                 key = CryptoJS.enc.Utf8.parse(key);
-                const encrypted = CryptoJS.AES.encrypt(mes, key, {
-                    iv: key, // 初始向量（用来做偏移加密的）与私钥相同
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                });
+                let encrypted = '';
+                try{
+                    encrypted = CryptoJS.AES.encrypt(mes, key, {
+                        iv: key, // 初始向量（用来做偏移加密的）与私钥相同
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                } catch(e) {
+                    throw new Error(this.ENCRYPT_ERROR);
+                }
                 // 变成字符串，默认utf8
                 res(encrypted.toString());
             })
@@ -97,13 +105,18 @@ export default class EncryptUtil {
                 // cip,key可以传string，也可以传wordArray
                 // 为了与后端保持一致，这里要转成wordArray
                 key = CryptoJS.enc.Utf8.parse(key);
-                const bytes: any = CryptoJS.AES.decrypt(cip, key, {
-                    iv: key, // 初始向量（用来做偏移加密的）与私钥相同
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                });
-                // 字节变成utf8格式字符串
-                let mes = bytes.toString(CryptoJS.enc.Utf8);
+                let mes = '';
+                try {
+                    const bytes = CryptoJS.AES.decrypt(cip, key, {
+                        iv: key, // 初始向量（用来做偏移加密的）与私钥相同
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    // 字节变成utf8格式字符串
+                    mes = bytes.toString(CryptoJS.enc.Utf8);
+                } catch (e) {
+                    throw new Error(this.DECRYPT_ERROR);
+                }
                 const firstChar = mes.charAt(0);
                 // 如果加密的是json则转成json
                 if (firstChar === '{' || firstChar === '[')
@@ -126,7 +139,13 @@ export default class EncryptUtil {
                 if (mes instanceof Object) mes = JSON.stringify(mes);
                 const encrypter = new JSEncrypt();
                 encrypter.setPublicKey(key);
-                res( encrypter.encrypt(<string>mes))
+                let cip = '';
+                try {
+                    cip = encrypter.encrypt(<string>mes);
+                } catch (e) {
+                    throw new Error(this.ENCRYPT_ERROR);
+                }
+                res(cip);
                 // res(!isLong ? encrypter.encrypt(<string>mes) : (<any>encrypter).encryptLong(<string>mes))
             })
         })
@@ -143,7 +162,12 @@ export default class EncryptUtil {
             this.loadJsencrypt(() => {
                 const decrypter = new JSEncrypt();
                 decrypter.setPrivateKey(key);
-                let mes = decrypter.decrypt(cip);
+                let mes = '';
+                try {
+                   mes = decrypter.decrypt(cip);
+                } catch (e) {
+                    throw new Error(this.DECRYPT_ERROR);
+                }
                 const firstChar = mes.charAt(0);
                 // 如果加密的是json则转成json
                 if (firstChar === '{' || firstChar === '[')

@@ -44,7 +44,7 @@ export default class TableComponent extends Vue {
   /** 是否要渲染成树形结构 */
   @Prop({ type: Boolean, default: false })
   tree!: string;
-  /** 禁用id数组[只在tree为false时生效] */
+  /** 禁用行的id数组[只在tree为false时生效] */
   @Prop({ type: Array, default: () => [] })
   disabled!: number[];
   /** 复选框选中的行,以sync方式同步更新,以$index-下标为索引进行回显！！！ */

@@ -11,7 +11,7 @@
     <!-- 标题 -->
     <div class="wd-title">
       <a @click="$router.back()">内容管理</a>
-      <span class="seperator">&nbsp;/&nbsp;</span>评论管理
+      <span class="wd-seperator">&nbsp;/&nbsp;</span>评论管理
     </div>
     <!-- curd -->
     <div class="wd-curd-bar">

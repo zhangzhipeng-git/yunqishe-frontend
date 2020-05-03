@@ -61,13 +61,15 @@ $side-menu-level: 3;
     $colors: map-get($theme-colors, #{$theme});
     $main: map-get($colors, main);
     .#{$theme} {
-        .wd-active {
-            color: $main;
-            border-left: 1PX solid $main;
-            border-right: 1PX solid $main;
-        }
-        a:hover {
-            color: $main;
+        .wd-side-menu {
+            .wd-active {
+                color: $main;
+                border-left: 1PX solid $main;
+                border-right: 1PX solid $main;
+            }
+            a:hover {
+                color: $main;
+            }
         }
     }
 }

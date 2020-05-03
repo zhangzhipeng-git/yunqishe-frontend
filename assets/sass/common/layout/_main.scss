@@ -1,0 +1,19 @@
+/* 主体内容app-body布局样式 - 与总体布局不一样！！ */
+
+// 左侧
+.wd-main-left {
+    float: left;
+    width: $wd-main-left;
+    @extend %clearfix;
+}
+
+// 右侧
+.wd-main-right {
+    float: right;
+    width: $wd-main-right;
+    padding: .5rem 0 .5rem .5rem;
+    overflow-y: auto;
+    background-color: $white;
+    border-left: 1PX solid $gray-light-s;
+    @extend %clearfix;
+}

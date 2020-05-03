@@ -1,0 +1,516 @@
+@charset "utf-8";
+
+/**
+ * 文章和回复() -- start ******
+ */
+
+// 楼层左侧宽度
+$stair-width:$wd-main-left;
+// 2级回复楼层宽度
+$stair-level2-width: $wd-main-left - 5rem;
+// 0级 文章体
+.wd-stair2-level0 {
+    position: relative;
+    min-height: 18rem;
+    @extend %clearfix;
+}
+
+// 0级 左侧楼层信息
+.wd-stair2-level0-head {
+    width: $stair-width;
+    padding-top: 1rem;
+    background-color: $white;
+    @extend %clearfix;
+    .wd-stair2-level0-head-avator,
+    .wd-stair2-level1-head-info {
+        float: left;
+        margin-left: 1rem;
+    }
+    // 头像
+    .wd-stair2-level0-head-avator {
+        img {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 100%;
+            border: 1PX solid $gray-light;
+        }
+    }
+    // 用户信息
+    .wd-stair2-level1-head-info {
+        p {
+            line-height: 2;
+        }
+        .wd-stair2-nickname {
+            color: red;
+        }
+        .icomoon {
+            font-size: $font-size-small;
+        }
+        .icon-tablet,
+        .icon-monitor {
+            margin-left: .5rem;
+        }
+        [class^='wd-user-'] {
+            padding: .1rem .5rem;
+            margin-left: .3rem;
+        }
+    }
+}
+
+// 0级 右侧正文
+.wd-stair2-level0-body {
+    position: relative;
+    width: $stair-width;
+    min-height: 18rem;
+    padding: 1px 1rem 4rem;
+    background-color: $white;
+}
+
+// 0级 发表信息条
+.wd-stair2-level0-deliver {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    font-size: .875rem;
+    line-height: 3rem;
+    // 第几层
+    .wd-stair2-right-tag-level-0 {
+        padding: 0 1rem;
+        font-size: 1rem;
+        line-height: 3rem;
+    }
+    // 图标
+    .icomoon {
+        margin-left: 1rem;
+        font-size: .875rem;
+    }
+    // 图标和后面的数量
+    i,
+    span {
+        float: left;
+        line-height: 3rem;
+        vertical-align: middle;
+    }
+    // 图标后面的span - 数量
+    i+span {
+        margin-left: .2rem;
+    }
+}
+
+// 0级 回复按钮
+.wd-stair2-level0-deliver-btn {
+    display: inline-block;
+    margin: .75rem 0 0 1rem;
+    font-size: .75rem;
+    line-height: 1;
+    border-radius: .2rem;
+    text-decoration: underline;
+    // 用于textarea聚焦
+    label {
+        display: inline-block;
+        padding: .3rem .4rem;
+        cursor: pointer;
+    }
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+// 1级 回复体
+.wd-stair2-level1 {
+    position: relative;
+    margin-top: .5rem;
+    min-height: 6rem;
+    @extend %clearfix;
+}
+
+// 1级 左侧楼层信息
+.wd-stair2-level1-head {
+    width: $stair-width;
+    background-color: $white;
+    font-size: .8rem;
+    padding: .5rem 0;
+    @extend %clearfix;
+    div {
+        float: left;
+        margin-left: 1rem;
+    }
+    img {
+        width: 3rem;
+        height: 3rem;
+        border: 1PX solid $gray-light;
+        border-radius: 100%;
+    }
+}
+
+// 1级 右侧正文
+.wd-stair2-level1-body {
+    width: $stair-width;
+    min-height: 7rem;
+    padding-right: 1rem;
+    padding-bottom: .5rem;
+    background-color: $white;
+}
+
+// 1级回复容器
+.wd-stair-level1-content-wrap {
+    position: relative;
+    padding: 0 0 2rem 0;
+    min-height: 7rem;
+}
+
+// 1级 回复者楼层
+.wd-stair2-level1-index {
+    padding: 0 .5rem 0 0;
+    line-height: 2rem;
+}
+
+// 1级 回复者昵称
+.wd-stair2-level1-nickname {
+    font-weight: bold;
+}
+
+// 1级 回复者等级
+.wd-stair2-level1-level {
+    margin-left: .5rem;
+    padding: 0 .2rem;
+    color: $white;
+    border-radius: .3rem;
+}
+
+// 1级 回复内容
+.wd-stair2-right-wrap-body-level-1 {
+    padding: 0 1rem;
+    font-size: .875rem;
+}
+
+// 1级 发表信息条
+.wd-stair2-level1-deliver {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    font-size: .875rem;
+    line-height: 2rem;
+    // 图标
+    .icomoon {
+        margin-left: 1rem;
+        font-size: .875rem;
+    }
+    // 图标和后面的数量
+    i,
+    span {
+        float: left;
+        line-height: 2rem;
+        vertical-align: middle;
+    }
+    // 图标后面的span - 数量
+    i+span {
+        margin-left: .2rem;
+    }
+}
+
+// 1级 回复按钮
+.wd-stair2-level1-deliver-btn {
+    display: inline-block;
+    margin-left: 1rem;
+    font-size: .75rem;
+    line-height: 1;
+    border-radius: .2rem;
+    background-color: transparent;
+    text-decoration: underline;
+    // 用于textarea聚焦
+    label {
+        display: inline-block;
+        padding: .3rem .4rem;
+        cursor: pointer;
+    }
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+// 2级 回复体
+.wd-stair2-level2 {
+    position: relative;
+    width: $stair-level2-width;
+    margin: 0 auto;
+    min-height: 4rem;
+    border: 1PX solid $gray-light-s;
+    @extend %clearfix;
+}
+
+// 2级 左侧楼层信息
+.wd-stair2-level2-head {
+    font-size: .8rem;
+    background-color: $white;
+    padding: .5rem 0;
+    @extend %clearfix;
+    div {
+        float: left;
+        margin-left: 1rem;
+    }
+    img {
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1PX solid $gray-light;
+        border-radius: 100%;
+    }
+}
+
+// 2级 右侧正文
+.wd-stair2-level2-body {
+    min-height: 4rem;
+    background-color: $white;
+}
+
+// 2级 右侧正文容器
+.wd-stair-level2-content-wrap {
+    position: relative;
+    padding: .5rem 0 2rem 0rem;
+    min-height: 3.5rem;
+}
+
+// 2级 回复者信息
+.wd-stair2-right-wrap-head-level-2 {
+    font-size: .75rem;
+}
+
+// 2级 回复者楼层
+.wd-stair2-level2-index {
+    padding: 0 .5rem 0 0;
+    font-size: .75rem;
+    line-height: 2;
+}
+
+// 2级 回复者昵称
+.wd-stair2-level2-nickname {
+    font-weight: bold;
+    .alt {
+        font-style: normal;
+        font-size: $font-size-normal;
+        font-weight: bold;
+        color: black;
+    }
+}
+
+// 2级 回复者等级
+.wd-stair2-level2-level {
+    margin-left: .1rem;
+    padding: 0 .1rem;
+    color: $white;
+    border-radius: .2rem;
+}
+
+// 2级 回复内容
+.wd-stair2-level2-content {
+    padding: 0.3rem 0 0 1rem;
+    font-size: .75rem;
+}
+
+// 2级 发表信息条
+.wd-stair2-level2-deliver {
+    position: absolute;
+    left: 0;
+    bottom: .3rem;
+    width: 100%;
+    font-size: .75rem;
+    line-height: 1rem;
+    // 图标
+    .icomoon {
+        margin-left: 1rem;
+        font-size: .75rem;
+    }
+    // 图标和后面的数量
+    i,
+    span {
+        float: left;
+        line-height: 1rem;
+        vertical-align: middle;
+    }
+    // 图标后面的span - 数量
+    i+span {
+        margin-left: .1rem;
+    }
+}
+
+// 2级 回复按钮
+.wd-stair2-level2-deliver-btn {
+    display: inline-block;
+    padding: .125rem .2rem;
+    margin-left: 1rem;
+    font-size: .75rem;
+    line-height: 1;
+    border-radius: .2rem;
+    background-color: transparent;
+    text-decoration: underline;
+    // 用于textarea聚焦
+    label {
+        display: inline-block;
+        padding: .1rem .2rem;
+        cursor: pointer;
+    }
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+// 2级回复查看更多
+.wd-stair2-view-more-leve-2 {
+    padding-left: 1rem;
+    font-size: .75rem;
+    text-align: center;
+    // 共多少条回复
+    .comment-count {
+        font-weight: bold;
+    }
+    a {
+        display: inline-block;
+        margin: .3rem;
+        padding: .2rem .4rem;
+        color: $gray;
+        text-decoration: underline;
+        border-radius: .5rem;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $tip: map-get($colors, tip); // 提示色
+    $text: map-get($colors, text); // 字体颜色
+    $title: map-get($colors, title); // 标题颜色
+    $warm-title: map-get($colors, warm-title); // 醒目标题
+    $nav: map-get($colors, nav); // 导航字体颜色
+    $btn: map-get($colors, btn); // 按钮类颜色
+    $hover: map-get($colors, hover); // 悬浮类颜色
+    $active: map-get($colors, active); // 激活类颜色
+    $bg: map-get($colors, bg); // 页面背景色
+    $bc: map-get($colors, bc); // 输入类边框色
+    $vip: map-get($colors, vip); // vip标识色
+    $reverse: map-get($colors, reverse); // 反衬色
+    $help: map-get($colors, help); // 辅助色
+    $common: map-get($colors, common); // 通用色
+    $warn: map-get($colors, warn); // 警示色
+    .#{$theme} {
+        // 0级 右侧正文左侧边框
+        .wd-stair2-level0-body {
+            border-left: 1PX solid $bc;
+        }
+        // 0级 发表信息条
+        .wd-stair2-level0-deliver {
+            border-top: 1PX solid $bc;
+            // 第几层
+            .wd-stair2-right-tag-level-0 {
+                color: $reverse;
+            }
+            // 鼠标悬浮，图标变红
+            a:hover>i {
+                color: $main;
+            }
+        }
+        // 0级 发表信息条
+        .wd-stair2-level0-deliver {
+            color: $tip;
+            a {
+                color: $tip;
+            }
+        }
+        // 0级 回复按钮
+        .wd-stair2-level0-deliver-btn {
+            &:hover {
+                color: $white;
+                background-color: $help;
+            }
+        }
+        // 1级 右侧正文左侧边框
+        .wd-stair2-level1-body {
+            border-left: 1PX solid $bc;
+        }
+        // 1级 回复者楼层
+        .wd-stair2-level1-index {
+            color: $reverse;
+        }
+        // 1级 回复者昵称
+        .wd-stair2-level1-nickname {
+            color: $main
+        }
+        // 1级 回复者等级
+        .wd-stair2-level1-level {
+            background-color: $vip;
+        }
+        // 1级 发表信息条
+        .wd-stair2-level1-deliver {
+            // 鼠标悬浮，图标变红
+            a:hover>i {
+                color: $main;
+            }
+        }
+        // 1级 发表信息条
+        .wd-stair2-level1-deliver {
+            color: $tip;
+            border-bottom: 1PX solid $bc;
+            a {
+                color: $tip;
+            }
+        }
+        // 1级 回复按钮
+        .wd-stair2-level1-deliver-btn {
+            &:hover {
+                color: $white;
+                background-color: $help;
+            }
+        }
+        // 2级 回复者楼层
+        .wd-stair2-level2-index {
+            color: $reverse;
+        }
+        // 2级 回复者昵称
+        .wd-stair2-level2-nickname {
+            color: $main;
+        }
+        // 2级 回复者等级
+        .wd-stair2-level2-level {
+            background-color: $vip;
+        }
+        // 2级 发表信息条
+        .wd-stair2-level2-deliver {
+            // 鼠标悬浮，图标变红
+            a:hover>i {
+                color: $main;
+            }
+        }
+        // 2级 发表信息条
+        .wd-stair2-level2-deliver {
+            color: $tip;
+            a {
+                color: $tip;
+            }
+        }
+        // 2级 回复按钮
+        .wd-stair2-level2-deliver-btn {
+            &:hover {
+                color: $white;
+                background-color: $help;
+            }
+        }
+        // 2级回复查看更多
+        .wd-stair2-view-more-leve-2 {
+            border-top: 1PX solid $bc;
+            .comment-count {
+                color: $main;
+            }
+            a {
+                &:hover {
+                    color: $white;
+                    background-color: $help;
+                }
+            }
+        }
+    }
+}

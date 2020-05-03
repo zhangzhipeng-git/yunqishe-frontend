@@ -18,6 +18,10 @@ export default class AppSecure {
     private static send_sk_api: string = '/security/sendsk';
     /** 生成sk的字典 */
     static DICT: String = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    
+    /** 安全服务请求流程是否完成,默认true-已完成 */
+    private static isOver = true;
+
     constructor() {
         this.setSessionid(Generator.getUUID());
     }
@@ -51,15 +55,25 @@ export default class AppSecure {
     }
 
     /**
-     * 请求公钥并上送密钥
+     * 协商密钥-请求公钥并上送密钥
+     * @param {boolean} isForce ? 是否强制重新上送密钥
      */
-    public async secureInit(): Promise<any> {
-        if (this.pk && this.sk) {
+    public async secureInit(isForce: boolean = false): Promise<any> {
+        if (this.pk && this.sk&&!isForce) {
             return;
         }
-        // 同步执行
-        await this.requestSecurityPK();
-        await this.sendSecuritySK();
+        if (!AppSecure.isOver&&!isForce) return;
+        AppSecure.isOver = false;
+        // 捕获异常
+        try{
+            await this.requestSecurityPK();
+            await this.sendSecuritySK().then(() => {
+                AppSecure.isOver = true;
+            });
+        } catch(e) {
+            e = <Error>e;
+            alert('密钥协商失败~');
+        }
     }
 
     /**
@@ -68,7 +82,7 @@ export default class AppSecure {
     public requestSecurityPK(): Promise<string> {
         return this.http.get<string>(AppSecure.get_pk_api).then(data => {
             if ((<any>data).status === 400) {
-                alert("密钥协商失败!")
+                throw new Error();
             }
             this.pk = (<any>data).data.pk;
             return this.pk;
@@ -90,7 +104,7 @@ export default class AppSecure {
                     sk
                 ).then(data => {
                     if ((<any>data).status === 400) {
-                        alert("密钥协商失败!")
+                        throw new Error();
                     }
                     res();
                 });

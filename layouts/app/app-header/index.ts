@@ -20,6 +20,7 @@ export default class AppHeaderComponent extends BaseComponent {
   get hasLogin(): boolean {
     return this.$store.state.user;
   }
+
   constructor() {
     super();
   }
@@ -40,7 +41,7 @@ export default class AppHeaderComponent extends BaseComponent {
   /**
    * 登出
    */
-  public logout(): void {
+  logout(): void {
     // 未登录
     if (!this.cookie.get("rememberMe")) {
       this.doLogout();
@@ -59,9 +60,9 @@ export default class AppHeaderComponent extends BaseComponent {
   }
 
   /**
-   * 登出后去登录页
+   * 登出成功后去登录页
    */
-  private doLogout() {
+  doLogout() {
     this.commitUser(null);
     this.db.set("user", null);
     // 去登录页
@@ -74,11 +75,27 @@ export default class AppHeaderComponent extends BaseComponent {
   }
 
   /**
+   * 登录去登录页
+   */
+  login() {
+    let path = '';
+    let fromPath = decodeURIComponent(this.$route.fullPath);
+    // 从其他页跳到登录页的（登录页也可以点登录）
+    if (fromPath.indexOf('fromPath')>-1) {
+      fromPath = fromPath.split('fromPath=')[1];
+    }
+    path = '/login?fromPath='+fromPath;
+    this.$router.push({
+      path
+    })
+  }
+
+  /**
    * 去用户中心
    */
   goUserCenter() {
     if (!this.curUser||!this.curUser.id) {
-      this.toLogin();
+      this.toLogin('/user');
       return;
     }
     this.$router.push('/user?id='+this.curUser.id);

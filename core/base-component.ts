@@ -125,8 +125,16 @@ export default class BaseComponent extends Vue {
    * 去登陆页
    */
   protected toLogin(nextPath?: string) {
-    let path = location.pathname +'?'+ location.href.split('?')[1];
-    path = nextPath || path;
+    let path = '';
+    if (nextPath) {
+      path = nextPath;
+    } else {
+      path = location.pathname;
+      let query = location.href.split('?')[1];
+      if (query) {
+        path += '?' + query;
+      }
+    }
     const loginUrl = "/login";
     this.$router.push({
       path: loginUrl,
@@ -393,7 +401,7 @@ export default class BaseComponent extends Vue {
    * 获取内容查看或观看或听的权限，后端同步
    * @param v 需要付费或开通会员的内容
    * @param t 1-话题内容，2-纯媒体内容，3-文档，4-用户
-   * @returns {Promise<number>} 0 - 有权限，1-需要登录，2 - 需全价支付云币，3-用户需要开通会员，4-会员半价，5-半价支付云币（会员特权）
+   * @returns {Promise<number>} 0 - 有权限，1-需要登录，2 - 需全价支付云币，3-用户需要开通会员，4-会员需要开通会员后优惠，5-优惠支付云币（会员特权）
    * 
    * 备注：当v.strategy为4时有两种不通过的情况：
    * 
@@ -422,7 +430,7 @@ export default class BaseComponent extends Vue {
           res(3);
           return;
         }
-        if (4 === strategy && !this.isVip()) { // 会员半价，且用户未开通会员
+        if (4 === strategy && !this.isVip()) { // 会员优惠，且用户未开通会员
           res(4);
           return;
         }
@@ -432,7 +440,7 @@ export default class BaseComponent extends Vue {
             res(0);
             return;
           }
-          if (4 === strategy) { // 需半价支付云币
+          if (4 === strategy) { // 需优惠支付云币
             res(5);
             return;
           }
@@ -452,7 +460,21 @@ export default class BaseComponent extends Vue {
    */
   private getChargeRecord(id: number, type: number): Promise<number> {
     return this.httpRequest(this.http.get('/charge/f/select/count?id=' + id + '&type=' + type)).then((data: any) => {
-      return data.result ? data.result : 0;
+      return data.result|| 0;
+    });
+  }
+
+  /**
+   * 获取vip时长配置参数
+   * @param {number} type vip类型：1-vip,2-svip，默认vip
+   */
+  protected getVipArgs(type: number = 1): Promise<any> {
+    let vipArgs = this.db.get('vipArgs');
+    if (vipArgs) return new Promise(res => res(vipArgs)); 
+    return this.httpRequest(this.http.get('/vipArg/u/select/list?type='+type)).then((data: any) => {
+      vipArgs = data.vipArgs||[];
+      this.db.set('vipArgs', vipArgs);
+      return vipArgs;
     });
   }
 
@@ -530,7 +552,7 @@ export default class BaseComponent extends Vue {
       }
       return data$;
     }).catch((error: Error) => {
-      this.handler.unload();
+      this.handler.unload(); 
       // 频繁请求
       if (error.message === HTTP_ERRORS.HTTP_ERROR_04) {
         this.handler.toast({ text: error.message, duration: 1000 });

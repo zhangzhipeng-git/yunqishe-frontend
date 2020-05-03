@@ -122,7 +122,6 @@ export default class mediaComponent extends BaseComponent{
             success: (data: any) => {
                 this.list = this.level!==3
                 ?data.mediaClasses:data.mediaContents;
-                console.log(this.list);
             }
         });
     }

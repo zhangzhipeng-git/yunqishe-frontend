@@ -159,7 +159,6 @@ export default class ManageUserComponent extends BaseComponent {
             arr.push('roleId=' + roleId);
         }
         this.filterQueryStr = arr.join('&');
-        console.log(this.filterQueryStr)
         this.selectUserList();
     }
     /**

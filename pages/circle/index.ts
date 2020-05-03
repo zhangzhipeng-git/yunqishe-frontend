@@ -37,13 +37,12 @@ export default class ForumComponent extends BaseComponent {
     super();
   }
 
-  async activated() {
-    this.handler.load();
+  activated() {
     // 查近期的帖子
-    await this.getTabInvitations();
-    // 查版块并分类
-    await this.getBlocks();
-    this.handler.unload();
+    this.getTabInvitations().then(() => {
+      // 查版块并分类
+      this.getBlocks();
+    });
   }
 
   /**

@@ -1,0 +1,116 @@
+// 弹窗-支付云币会开通会员
+#id-wd-pop.wd-charge-strategy {
+    .wd-content {
+        // 投影的内容，插槽的内容
+        &>div {
+            padding: 1rem 2rem;
+            // 每行的文字
+            p {
+                line-height: 2rem;
+            }
+            // 支付按钮或开通按钮
+            button {
+                height: 1.5rem;
+                margin-top: .5rem;
+                padding: 0 3rem;
+                line-height: 1.5rem;
+                border-radius: .3rem;
+                color: $white;
+            }
+        }
+    }
+    // 会员时长及费用列表
+    .wd-vip-list {
+        text-align: center;
+        font-size: $font-size-min;
+        a {
+            display: block;
+            width: 5rem;
+            padding: 1rem 0;
+            margin: .2rem;
+            border: 1PX solid $gray-light-s;
+            border-radius: .2rem;
+        }
+        // 会员时长列表
+        ul {
+            width: 20rem+.4*4rem;
+            @extend %clearfix;
+            li {
+                float: left;
+            }
+            span {
+                line-height: 1.5rem;
+            }
+        }
+        // 选择支付策略
+        .wd-charge-type {
+            @extend %clearfix;
+            a {
+                display: block;
+                float: left;
+                width: (20rem+.4*4rem-.4rem*3)/3;
+                padding: .5rem 0;
+                font-size: $font-size-min;
+                text-align: left;
+                i {
+                    font-size: $font-size-normal;
+                    margin: 0 .5rem;
+                    vertical-align: middle;
+                }
+            }
+            // 支付宝
+            .icon-alipay {
+                color: $blue-sky;
+            }
+            // 微信支付
+            .icon-wechat-pay {
+                color: $green-light;
+            }
+        }
+        // 选中激活
+        .active {
+            position: relative;
+            &::before {
+                content: "√";
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                height: 1rem;
+                line-height: 1rem;
+                width: 1rem;
+                text-align: right;
+                border-radius: 2rem 0 0 0;
+                color: $white;
+            }
+        }
+        // 开通会员按钮
+        button {
+            height: 2rem !important;
+            line-height: 2rem !important;
+            width: 20rem+.4*4rem;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    .#{$theme} {
+        #id-wd-pop.wd-charge-strategy {
+            button {
+                background-color: $main;
+            }
+            .wd-vip-list {
+                // 选中激活
+                .active,
+                ul a:hover {
+                    border: 1PX solid $main;
+                }
+                .active::before {
+                    background-color: $main;
+                }
+            }
+        }
+    }
+}

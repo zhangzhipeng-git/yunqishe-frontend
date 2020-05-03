@@ -6,11 +6,11 @@
         >资源管理&nbsp;-&nbsp;媒体管理&nbsp;-&nbsp;一级分类</a
       >
       <template v-if="level > 1 && level < 5">
-        <span class="seperator">&nbsp;/&nbsp;</span>
+        <span class="wd-seperator">&nbsp;/&nbsp;</span>
         <a @click="goClass(2)">二级分类</a>
       </template>
       <template v-if="level > 2 && level < 5 ">
-        <span class="seperator">&nbsp;/&nbsp;</span>
+        <span class="wd-seperator">&nbsp;/&nbsp;</span>
         <a @click="goClass(3)">媒体</a>
       </template>
     </div>

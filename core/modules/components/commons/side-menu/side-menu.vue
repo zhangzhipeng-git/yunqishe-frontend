@@ -10,7 +10,7 @@
  */
 
 <template>
-  <ul v-if="trees" :class="{ 'wd-side-menu-level1': trees && trees[0] && !trees[0].parent }">
+  <ul v-if="trees" class="wd-side-menu" :class="{ 'wd-side-menu-level1': trees && trees[0] && !trees[0].parent }">
     <!-- 递归显示子节点开始 -->
     <li v-for="(node, i) in trees" :key="i">
       <div

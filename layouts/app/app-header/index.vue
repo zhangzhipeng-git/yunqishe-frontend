@@ -39,7 +39,7 @@
               <img else src="@/assets/images/default-avator.png" alt="默认头像" />
             </a>
             <span>
-              <router-link v-if="!hasLogin" to="/login">登录</router-link>
+              <a v-if="!hasLogin" @click="login">登录</a>
               <a v-else @click="logout">登出</a>
             </span>
           </div>

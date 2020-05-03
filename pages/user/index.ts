@@ -75,7 +75,7 @@ export default class UserComponent extends BaseComponent {
     }
 
     public mounted(){
-        this.id = this.$route.query.id;
+        this.id = this.$route.query.id||this.curUser.id;
         // 自己看自己时，动态列表添加‘个性化’和‘资料修改’
         // 当然后端也会做判断是不是自己在操作
         if (Number(this.id) === this.curUser.id){

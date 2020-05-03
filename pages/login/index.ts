@@ -56,11 +56,15 @@ export default class LoginComponent extends BaseComponent {
         super();
     }
 
-    public beforeMount() {
+    activated() {
         // 获取redirect的来源地址
-        this.fromPath = <any>this.$route.query.fromPath;
+        let fromPath = <any>this.$route.query.fromPath;
+        if (fromPath === undefined || fromPath === '/login'){
+            fromPath = '/protal';
+        }
+        this.fromPath = fromPath;
         // 安全服务 => 获取公钥，上送密钥
-        this.secure.secureInit();
+        this.secure.secureInit(true);
     }
 
     /**
@@ -81,7 +85,6 @@ export default class LoginComponent extends BaseComponent {
     /** 验证码达到6位后调用该函数 */
     public recieveInput(code: any) {
         if (code.length === 6) {
-            this.handler.load();
             this.httpRequest(this.http.post('/user/verifycode',code), {
                 success: (data: any) => {
                     this.status = data.status;
@@ -126,10 +129,9 @@ export default class LoginComponent extends BaseComponent {
      */
     public pass(user: any):void {
         this.db.set('user', user);
-        let path = !!this.fromPath&&this.fromPath != '/login'? this.fromPath : '/protal';
         this.$store.commit('setUser', user);
         // 解码2%
-        this.$router.push({path:decodeURIComponent(path)});      
+        this.$router.push({path:decodeURIComponent(this.fromPath)});      
     }
 
 }

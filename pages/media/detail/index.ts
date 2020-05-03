@@ -2,11 +2,15 @@ import { Context } from '@nuxt/types';
 import Component from 'vue-class-component';
 import BaseComponent from '~/core/base-component';
 import mediaComponent from '~/core/modules/components/commons/video/video.vue';
+import PopComponent from '~/core/modules/components/commons/biz-alert/_pop/pop';
 import defaultImg from "@/core/modules/filters/defaultImg";
+import { Ref } from 'vue-property-decorator';
+import { Throttle } from '~/core/annotation/annotation';
 @Component({
     layout:'app',
     components: {
-        mediaComponent
+        mediaComponent,
+        PopComponent
     },
     filters:{
         defaultImg
@@ -56,6 +60,23 @@ export default class mediaPageComponent extends BaseComponent {
     src: string = '';
     /** 获取查看前权限 */
     privilege: any = {};
+    /** pop弹出-支付云币 */
+    @Ref('pop_for_charge')
+    popCharge!: PopComponent;
+    /** pop弹出-开通会员 */
+    @Ref('pop_for_open')
+    popOpen!: PopComponent;
+    /** vip时长参数配置列表 */
+    vipArgs: any[] = [];
+    /** vip时长类型，默认0-第一个会员时长 */
+    timeType: number = 0;
+    /** 支付类型,默认0-使用云币支付 */
+    payType: number = 0;
+
+    /** 获取选择的内容 */
+    get select() {
+        return this.mediaContents[this.activeIndex]||{};
+    }
 
     constructor() {
         super();
@@ -122,17 +143,58 @@ export default class mediaPageComponent extends BaseComponent {
         });
     }
 
-    //获取权限
-    toGetPrivilege() {
+    // 支付云币或开通会员
+    doAction() {
         const t = this.privilege.type;
         if (1 === t) { // 提示去登录
             this.toLogin();
-        } else if (2 === t) { // 全价支付云币
-
+            return;
+        } else if (2 === t || 5 === t) { // 全价支付云币||半价支付云币
+            this.popCharge.open();
+            return;
         } else if (3 === t || 4 === t) { // 开通会员
-
-        } else if (5 === t) { // 半价支付云币
-
+            this.alertOpenVip();
         }
+    }
+
+    /**
+     * 打开vip开通时长参数弹窗
+     */
+    @Throttle(1000)
+    alertOpenVip() {
+        this.getVipArgs(1).then(vipArgs => this.vipArgs = vipArgs).then(() => {
+            this.popOpen.open();
+        });
+    }
+
+    /**
+     * 选择会员时长
+     * @param v 会员时长
+     * @param i 时长类型下标
+     */
+    chooseDuration(v: any, i:number) {
+        this.timeType = i;
+    }
+    /**
+     * 选择支付类型
+     * @param v 支付类型
+     * @param i 类型下标
+     */
+    choosePayType(v: any, i:number) {
+        this.payType = i;
+    }
+
+    /**
+     * 去开通vip
+     */
+    openVip() {
+
+    }
+
+    /**
+     * 支付云币
+     */
+    payYB() {
+
     }
 }

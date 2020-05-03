@@ -45,10 +45,12 @@ export default class ListComponent extends BaseComponent {
     ];
     /** 默认显示所有可见和非可见 */
     searchVisible: number | string = '';
-    /** 是否付费 */
+    /** 付费策略 */
     strategyList: any[] = [
-        { id: 0, description: '免费' },
-        { id: 1, description: '付费' }
+        { id: 1, description: '免费' },
+        { id: 2, description: '全价' },
+        { id: 3, description: 'VIP' },
+        { id: 4, description: 'VIP半价' },
     ];
     list: any[] = [
         { id: 0, description: '否' },
@@ -251,7 +253,7 @@ export default class ListComponent extends BaseComponent {
      * 查看评论
      */
     viewComments({ row }: any) {
-        this.$router.push('/admin/topicClass/topic-content/comment?id=' + row.id);
+        this.$router.push('/admin/topic/topic-content/comment?id=' + row.id);
     }
 
     /** 关闭弹窗 */

@@ -128,7 +128,7 @@ export default class AdminComponent extends BaseComponent {
                     {
                         level: 2,
                         name: '文档',
-                        leftIcon: ['icon-book'],
+                        leftIcon: ['icon-book-open'],
                         url:'/admin/zhixing'
                     },
                     {
@@ -137,6 +137,27 @@ export default class AdminComponent extends BaseComponent {
                         leftIcon: ['icon-video'],
                         url:'/admin/media'
                     }
+                ]
+            },
+            {
+                level:1,
+                name:"会员系统",
+                leftIcon:["icon-dollar-sign"],
+                spread: false,
+                rightIcon: ["icon-caret-left", "icon-caret-down"],
+                child:[
+                    {
+                        level: 2,
+                        name: "参数列表",
+                        leftIcon: ["icon-list-numbered"],
+                        url:'/admin/vip/arg'
+                    },
+                    {
+                        level: 2,
+                        name: "开通记录",
+                        leftIcon: ["icon-list-numbered"],
+                        url:'/admin/vip/record'
+                    },
                 ]
             },
             {
@@ -164,7 +185,7 @@ export default class AdminComponent extends BaseComponent {
                     {
                         name: "文章",
                         level: 2,
-                        leftIcon: ["icon-book"]
+                        leftIcon: ["icon-book-open"]
                     }
                 ]
             },

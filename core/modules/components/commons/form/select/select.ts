@@ -41,7 +41,7 @@ export default class SelectComponent extends Vue {
   @Prop({ default: () => null })
   model!: any[] | any;
   /** key数组,提取了_model的key,单选时，其长度为1 */
-  model$: any[] = [''];
+  model$: any[] = [];
   /** 是否多选 */
   @Prop({ type: Boolean, default: false })
   multiple!: boolean;
@@ -72,6 +72,8 @@ export default class SelectComponent extends Vue {
         o[this.key$] = "";
         o[this.value$] = "请选择";
         this.list$.unshift(o);
+      } else if(this.model===undefined) { // 开启了强制选择，没有设置model则默认选择第一个
+        this.$emit('change', this.list$[0][this.key$]);
       }
       this.inputValue = this.inputValue$;
     }
@@ -85,9 +87,7 @@ export default class SelectComponent extends Vue {
 
   echo() {
     // 单选和多选都是用checkbox来实现
-    if (this.model === null || this.model === undefined) {
-      this.model$ = [''];
-    } else if (!(this.model instanceof Array)) {
+    if (!(this.model instanceof Array)) {
       this.model$ = [this.model];
     } else {
       this.model$ = this.model;
