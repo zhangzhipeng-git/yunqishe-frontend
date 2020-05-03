@@ -188,7 +188,7 @@ export default class mediaPageComponent extends BaseComponent {
      * 去开通vip
      */
     openVip() {
-
+        
     }
 
     /**
