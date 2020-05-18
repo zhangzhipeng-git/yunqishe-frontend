@@ -11,7 +11,6 @@
     border-bottom: 1PX solid $gray-light-s;
     background-color: $white;
     a {
-        color: $red-warm;
         cursor: pointer;
         vertical-align: middle;
         &:hover {
@@ -21,5 +20,16 @@
     i {
         color: gray;
         vertical-align: middle;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    .#{$theme} {
+        .wd-nav-bar a {
+            color: $main;
+        }
     }
 }

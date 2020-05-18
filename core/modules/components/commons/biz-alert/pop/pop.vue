@@ -11,6 +11,7 @@
     <div class="wd-mask" ref="mask"></div>
     <div class="wd-content">
       <div
+        class="wd-content-wrap"
         :style="{ transition: 'all ' + (active ? enter : leave) / 1000 + 's' }"
         :class="[
           animation === 'scale' ? 'wd-pop-for-scale' : 'wd-pop',

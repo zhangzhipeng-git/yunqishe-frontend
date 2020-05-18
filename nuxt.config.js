@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 const appConfig = require("@bigbigbird/mock/app.config");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 const $theme_main_colors = {
     r: "#ef6ea8",
     p: "#5a06f5",
@@ -50,7 +50,7 @@ module.exports = {
             'data-n-head': 'yqs-v.1.0'
         },
         bodyAttrs: {
-            class: "r",
+            class: "d",
             env: process.env.NODE_ENV,
             'data-n-head': '1029512956'
         }

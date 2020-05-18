@@ -3,7 +3,7 @@
  * FileName: side-menu.ts
  * Author: zzp-dog
  * File Created: Saturday, 22nd February 2020 8:16:02 pm
- * description: 菜单树列表
+ * description: 菜单树列表(本组件已全局注册，否则生产环境不渲染)
  * Last Modified: Friday, 10th April 2020 4:23:22 pm
  * Modified By: zzp-dog
  * Copyright © zzp-dog, All rights reserved.
@@ -13,7 +13,12 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 
-@Component
+@Component({
+    name: 'SideMenuComponent',
+    components: {
+        SideMenuComponent
+    }
+})
 export default class SideMenuComponent extends Vue {
     /** 传入的菜单树 */
     @Prop({
@@ -185,6 +190,7 @@ export default class SideMenuComponent extends Vue {
         return count;
     }
 }
+Vue.component('SideMenuComponent', SideMenuComponent);
 
 /**
  * 菜单树

@@ -83,6 +83,127 @@
         display: inline-block;
         margin: 0rem .5rem;
     }
+    // 工具列表
+    .ui-tool-list {
+        position: fixed;
+        top:50%;
+        right: 1rem;
+        text-align: center;
+        font-size: $font-size-normal;
+        transform: translateY(-50%);
+        a {
+            height: 1.5rem;
+            width: 1.5rem;
+            text-align: center;
+            display: block;
+            background-color: $white;
+            box-shadow: 0 0 2PX 1PX $gray-light;
+            border-radius: 100%;
+            &.active{
+                color:$white !important;
+            }
+        }
+    }
+    // 主题设置
+    .ui-page-set {
+        position: fixed;
+        bottom: 0;
+        color:$white;
+        width: 100%;
+        transition: height .5s;
+        &.show{
+            height:6rem;
+        }
+        &.hide{
+            height:0;
+        }
+        .ui-mask{
+           position: absolute;
+           z-index:1;
+           top:0;
+           bottom:0;
+           width:100%;
+           background-color: black;
+           opacity: .5;
+        }
+        .ui-close {
+            position: absolute;
+            z-index:3;
+            right:.5rem;
+            color:$white;
+            cursor: pointer;
+            .icommon {
+                font-size: $font-size-big;
+            }
+        }
+        // 变换头部底部背景色
+        .ui-bg{
+            position: relative;
+            z-index:2;
+            line-height: 2rem;
+            & > span, & > div {
+                margin:0 1rem;
+                vertical-align: middle;
+            }
+            // 变换头部底部背景色的开关
+            .ui-switch /deep/ {
+                .open{
+                    background-color: #202223 !important;
+                }
+            }
+        }
+        // 变换主题
+        .ui-theme{
+            position: relative;
+            z-index:2;
+            .ui-r{
+                margin-left:1rem;
+                background-color: $red-warm;
+                border:2PX solid  $red-warm;
+            }
+            .ui-b{
+                background-color: $blue-sky;
+                border:2PX solid  $blue-sky;
+            }
+            .ui-p{
+                background-color: $purple-light;
+                border:2PX solid  $purple-light;
+            }
+            .ui-g{
+                background-color: $green-middle;
+                border:2PX solid  $green-middle;
+            }
+            li{
+                float: left;
+            }
+            a{
+                display: block;
+                margin: .5rem;
+                height:3rem;
+                width: 3rem;
+                color:$white;
+                border-radius: .4rem;
+                font-size: $font-size-min;
+                text-align: center;
+                &.active{
+                    border:2PX solid $white;
+                }
+            }
+        }
+    }
+    // 头部暗黑
+    &.dark{
+        background-color: #202223;
+        .wd-header-bar {
+            .wd-site-name,
+            .wd-app-root-nav a {
+                color: $white;
+            }
+            .wd-user-info a {
+                color:$white
+            }
+        }
+    }
 }
 
 // 主题相关
@@ -102,7 +223,6 @@
     $bg: map-get($colors, bg); // 页面背景色
     $bc: map-get($colors, bc); // 输入类边框色
     $vip: map-get($colors, vip); // vip标识色
-    $reverse: map-get($colors, reverse); // 反衬色
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
@@ -120,12 +240,21 @@
                 }
             }
             a.nuxt-link-active {
-                color: $main-deep;
+                color: $main-deep !important;
                 @include link-active($main-deep, false)
             }
             // 用户信息
             .wd-user-info a {
                 color: $main;
+            }
+            // 工具列表
+            .ui-tool-list {
+                a.active{
+                    background-color: $main;
+                }
+                a{
+                    color: $main;
+                }
             }
         }
     }

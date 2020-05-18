@@ -2,7 +2,7 @@
   <div id="id-ui-media">
     <!-- 头部视频 -->
     <div class="ui-media-header">
-      <mediaComponent :src="src"/>
+      <VideoComponent :src="src" :options="{autoplay: true}"/>
     </div>
     <div class="ui-class" v-for="(v,i) in lists" :key="i">
       <h1 v-if="v.mediaClasses.length" class="ui-class-title">{{v.name}}</h1>

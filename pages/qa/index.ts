@@ -107,14 +107,16 @@ export default class qaComponent extends BaseComponent {
      * @param ids 新的关注话题的id数组
      */
     updateConcern(ids: any) {
+        this.handler.load();
         if (!this.curUser) {
             this.toLogin();
         }
         this.httpRequest(this.http.post('/concern/f/qa/batch/insert', ids), {
+            success: () => this.handler.unload(),
             error: () => {
-                this.handler.toast({text:'关注失败~'});
-                const classes = JSON.parse(JSON.stringify(this.classify));
+                const classes = this.clone(this.classify);
                 this.classify = classes;
+                return true;
             }
         });
     }

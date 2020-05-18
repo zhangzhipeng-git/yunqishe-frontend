@@ -55,7 +55,8 @@ export default class AppSecure {
     }
 
     /**
-     * 协商密钥-请求公钥并上送密钥
+     * 协商密钥-请求公钥并上送密钥,且控制只执行一次！！！
+     * 阻断后续axios中的拦截器执行
      * @param {boolean} isForce ? 是否强制重新上送密钥
      */
     public async secureInit(isForce: boolean = false): Promise<any> {

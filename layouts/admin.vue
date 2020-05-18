@@ -6,7 +6,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import AdminComponent from "@/layouts/admin/index.vue";
+import AdminComponent from "@/layouts/admin/index";
 
 @Component({
   components: { AdminComponent }

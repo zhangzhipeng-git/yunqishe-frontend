@@ -8,9 +8,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from "vue-class-component";
-import AppHeaderComponent from "@/layouts/app/app-header/index.vue";
-import AppBodyComponent from "@/layouts/app/app-body/index.vue";
-import AppFooterComponent from "@/layouts/app/app-footer/index.vue";
+import AppBodyComponent from "@/layouts/app/app-body/index";
+import AppHeaderComponent from "@/layouts/app/app-header/index";
+import AppFooterComponent from "@/layouts/app/app-footer/index";
 
 @Component({
   components: {

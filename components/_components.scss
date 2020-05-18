@@ -1,0 +1,7 @@
+// 兑换云币或开通/续费会员等弹窗的公共样式
+@import './alerts/index';
+// 支付云币弹窗样式
+@import './privilege/pay/index';
+// 权限提示如：去登录，支付云币，开通会员等提示组件
+@import './privilege/no-privilege/index';
+

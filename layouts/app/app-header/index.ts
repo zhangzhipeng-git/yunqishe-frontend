@@ -9,50 +9,61 @@
 import Component from "vue-class-component";
 import BaseComponent from "~/core/base-component";
 import SearchComponent from "@/core/modules/components/commons/search/search.vue";
+import SwitchComponent from '../../../core/modules/components/commons/form/switch/switch';
 
 @Component({
   components: {
-    SearchComponent
+    SearchComponent,
+    SwitchComponent
   }
 })
 export default class AppHeaderComponent extends BaseComponent {
   public searchText: string = "";
+  /** 是否显示主题设置 */
+  showPageSet: any = false;
+  /** 头部或底部背景色: 1-#202223, 0-white */
+  bg: any = '';
+  /** 主题色 */
+  theme: any = '';
+
   get hasLogin(): boolean {
-    return this.$store.state.user;
+    if (process&&process.server) return false;
+    return this.curUser&&this.curUser.id;
+  }
+
+  get img() {
+    if (this.curUser) return this.curUser.avator;
+    return '';
   }
 
   constructor() {
     super();
   }
 
- 
-  /**
-   * 向vuex提交登录状态
-   * @param status true-已登录，false-未登录
-   */
-  private commitUser(user: any): void {
-    this.$store.commit("setUser", user);
-  }
   public beforeMount() {
     // 请求是否已登录或记住我
     this.isRecord();
+    
+    this.bg = this.localStorage.getItem('bg')||0;
+    this.theme = this.localStorage.getItem('theme')||'r';
+    this.showPageSet = this.localStorage.getItem('pageSet')||false;
+    const header: any = document.getElementById('id-app-header');
+    const footer: any = document.getElementById('id-app-footer');
+    header&&(header.className = this.bg === 1?'dark':'');
+    footer&&(footer.className = this.bg=== 1?'dark':'');
+    document.body.className = this.theme;
   }
 
   /**
    * 登出
    */
   logout(): void {
-    // 未登录
-    if (!this.cookie.get("rememberMe")) {
-      this.doLogout();
-    }
-    // 上送token清除session登陆状态和数据库token
+    // 清除session登陆状态和rememberMe
     this.httpRequest(this.http.get("/user/logout"), {
       success: () => {
         this.doLogout();
       },
       error: () => {
-        // token可能解密失败
         this.doLogout();
         return true;
       }
@@ -63,8 +74,7 @@ export default class AppHeaderComponent extends BaseComponent {
    * 登出成功后去登录页
    */
   doLogout() {
-    this.commitUser(null);
-    this.db.set("user", null);
+    this.db.$set("user", null);
     // 去登录页
     this.$router.push({
       path: "/login",
@@ -105,6 +115,37 @@ export default class AppHeaderComponent extends BaseComponent {
    * 去搜索
    */
   public toSearch() {
-    console.log(this.searchText);
+    this.handler.toast({text:'暂未实现~'});
   }
+
+  /**
+   * 隐藏和显示设置主题样式的下拉框
+   */
+  togglePageSet() {
+    this.showPageSet = !this.showPageSet;
+    this.localStorage.setItem('pageSet', this.showPageSet);
+  }
+
+  /**
+   * 改变头部/底部背景色
+   * @param {number} 1- #202223, 0- white;
+   */
+  changeBg(v: number) {
+    const header: any = document.getElementById('id-app-header');
+    const footer: any = document.getElementById('id-app-footer');
+    header&&(header.className = v === 1?'dark':'');
+    footer&&(footer.className = v === 1?'dark':'');
+    this.localStorage.setItem('bg', v);
+  }
+
+  /**
+   * 选择主题
+   * @param v 主题对象
+   */
+  chooseTheme(v: any) {
+    document.body.className = v.clz;
+    this.theme = v.clz;
+    this.localStorage.setItem('theme', this.theme);
+  }
+
 }

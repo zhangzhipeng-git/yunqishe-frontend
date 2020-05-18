@@ -26,10 +26,24 @@ if (process && process.server) {
     (<any>global).filterXss = require('xss');
   }
 }
-@Component
+
+@Component({
+  mixins: [{
+    beforeMount() {
+      const _this: any = this;
+      const ctx = App.getAppContext();
+      _this.$$ = DomUtil;
+      _this.secure = ctx.getSecure();
+      // @ts-ignore
+      _this.cookie = ctx.getCookie();
+      // @ts-ignore
+      _this.localStorage = ctx.getLocalStorage();
+    }
+  }]
+})
 export default class BaseComponent extends Vue {
   /** 全局存储服务 */
-  db!: AppDB;
+  db: AppDB = <AppDB>{};
   /** http请求服务 */
   http!: AppHttp;
   /** 安全服务，用于生成会话id，获取公钥和上送密钥 */
@@ -45,6 +59,8 @@ export default class BaseComponent extends Vue {
   cookie!: Cookie;
   /** localStorage,本地持久化 */
   localStorage!: LocalStorage;
+  /** 用于转存asyncData在客户端设置的组件数据 */
+  static data: any;
 
   /**
    * 服务端和客户端都会执行
@@ -52,11 +68,10 @@ export default class BaseComponent extends Vue {
   constructor() {
     super();
     const ctx: AppContext = App.getAppContext();
+    // 服务端也要用到全局db，用于存储公用的后台的响应数据，如经验等级表
     this.db = ctx.getDB();
     this.http = ctx.getHttp();
-    this.secure = ctx.getSecure();
     this.context = ctx.getContext();
-    this.$store = this.$store || this.context.store;
     // 服务端的handler为undefined，服务端不会用到handler，这里只有客户端有handler
     // 由于asyncData的存在，客户端会在beforeMount前就用到handler！！！
     this.handler = ctx.getHandler();
@@ -66,17 +81,140 @@ export default class BaseComponent extends Vue {
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////client（仅客户端可用）开始/////////////////////
   //////////////////////////////////////////////////////////////////////////////
+  
+  /** 获取当前用户 */
+  get curUser() {
+    if (!process || !process.server) {
+      let user = this.db.user;
+      if (!user) return null;
+      this.getUserLevel(user);
+      return user;
+    }
+    return null;
+  }
+
   /**
-   * 只在客户端执行
+   * 判断当前用户是否svip
+   * @returns {boolean} true - 是，false - 否
    */
-  beforeMount() {
-    const _this: any = this;
-    const ctx = App.getAppContext();
-    // @ts-ignore
-    _this.cookie = ctx.getCookie();
-    // @ts-ignore
-    _this.localStorage = ctx.getLocalStorage();
-    _this.$$ = DomUtil;
+  protected isSVip(): boolean {
+    if (!this.curUser) return false;
+    return (this.curUser.roleNames || []).includes('svip') > -1;
+  }
+
+  /**
+   * 判断当前用户是否vip
+   * @returns {boolean} true - 是，false - 否
+   */
+  protected isVip(): boolean {
+    if (!this.curUser) return false;
+    return (this.curUser.roleNames || []).indexOf('vip') > -1;
+  }
+
+  /**
+   * 计算用户等级和段位
+   * @param user 用户
+   */
+  public getUserLevelAndDan(user: any) {
+    return this.getUserLevel(user).then(() => {
+      this.getUserDan(user);
+    });
+  }
+
+  /**
+   * 根据用户经验计算用户等级
+   * @param  {any} user - 用户
+   * @param {boolean} force - 是否强制计算用户等级
+   */
+  public async getUserLevel(user: any, force: boolean = false) {
+    if (!user||!user.nickname) return;
+    if (user.level && !force) return;
+    const experience = user.experience || 0;
+    let levels = this.db.get("userLevels");
+    if (!levels) {
+      await this.http.get("/level/f/select/list").then((data: any) => {
+        levels = data.data.levels;
+        this.db.set("userLevels", levels);
+      });
+    }
+    let i = 0;
+    let lv = 0;
+    let len = levels.length;
+    // 计算等级
+    for (; i < len; i++) {
+      const level = levels[i];
+      if (level.experience > experience && i - 1 >= 0) {
+        lv = levels[i - 1].level;
+      }
+    }
+    if (i === len) lv = levels[len - 1].level;
+    this.$set(user, 'level', lv);
+  }
+
+  /**
+   * 黑铁，黄铜，白银，黄金，铂金，钻石，大师，星耀，王者，神行
+   */
+  public getUserDan(user: any) {
+    if (!user) return ''
+    if (!user.level) return '黑铁';
+    const level = user.level;
+    let d = '';
+    if (0 <= level && level <= 10) d = '黑铁';
+    else if (level <= 20) d = '黄铜';
+    else if (level <= 30) d = '白银';
+    else if (level <= 40) d = '黄金';
+    else if (level <= 50) d = '铂金';
+    else if (level <= 60) d = '钻石';
+    else if (level <= 70) d = '大师';
+    else if (level <= 80) d = '星耀';
+    else if (level <= 90) d = '王者';
+    else if (level <= 100) d = '神行';
+    this.$set(user,'dan', d);
+  }
+
+  /**
+   * 获取登录状态
+   */
+  public isRecord(): Promise<any> {
+    // 请求是否已登录或记住我
+    let config: any = {};
+    if (this.curUser&&this.curUser.id) {
+      return new Promise(res => res(this.curUser));
+    };
+    this.handler.load();
+    return this.httpRequest(this.http.get("/user/isrecord",config), {
+      success: async (data: any) => {
+        this.db.$set('user', data.user);
+        await this.secure.secureInit();
+        this.handler.unload();
+      },
+      error: () => {
+        this.db.set("user", null);
+      }
+    }).then((data: any) => { return data.user ? data.user : data });
+  }
+
+  /**
+   * 仅限客户端执行
+   * 
+   * 用于asyncData无法在客户端设置组件数据的问题
+   * 
+   * 设置数据
+   * @param data 设置的数据
+   */
+  setAsyncData(data: any) {
+    if (process&&process.server) return;
+    (<any>BaseComponent).data = null;
+    (<any>BaseComponent).data = data;
+  }
+
+  /**
+   * 仅限客户端执行
+   * 获取响异步应式数据数据
+   */
+  getAsyncData(): any {
+    if (process&&process.server) return;
+    return (<any>BaseComponent).data;
   }
 
   /**
@@ -157,6 +295,25 @@ export default class BaseComponent extends Vue {
   }
 
   /**
+   * 对所有html进行转义和过滤，用于用户的回复等
+   * @param v 字符串
+   */
+  public xss(v: string) {
+    if (!v || (process && process.server)) return '';
+    let myxss1 = (<any>this).myxss1;
+    if (!myxss1) {
+      if (!(<any>global || window).filterXSS) return v;
+      myxss1 = new (<any>global || window).filterXSS.FilterXSS({
+        whiteList: [], // 白名单为空，表示过滤所有标签，stripIgnoreTag: true时会去掉tag
+        // stripIgnoreTag: true, // 过滤所有非白名单标签的HTML
+        stripIgnoreTagBody: ["script"] // script标签较特殊，需要过滤标签中间的内容
+      });
+      (<any>this).myxss1 = myxss1;
+    }
+    return myxss1.process(v);
+  }
+
+  /**
    * 高亮代码
    * @param  {any} ...args 参数
    * 
@@ -191,6 +348,33 @@ export default class BaseComponent extends Vue {
         // 在页面加载后执行，不适用于单页应用！！！
         // hljs.initHighlightingOnLoad();
       });
+    });
+  }
+
+    /**
+   * 获取vip时长配置参数
+   * @param {number} type vip类型：1-vip,2-svip，默认vip
+   */
+  protected getVipArgs(type: number = 1): Promise<any> {
+    let vipArgs = this.db.get('vipArgs');
+    if (vipArgs) return new Promise(res => res(vipArgs)); 
+    return this.httpRequest(this.http.get('/vipArg/u/select/list?type='+type)).then((data: any) => {
+      vipArgs = data.vipArgs||[];
+      this.db.set('vipArgs', vipArgs);
+      return vipArgs;
+    });
+  }
+
+   /**
+   * 获取兑换云币的配置参数
+   */
+  protected getExchangeArgs(): Promise<any> {
+    let exchangeArgs = this.db.get('exchangeArgs');
+    if (exchangeArgs) return new Promise(res => res(exchangeArgs)); 
+    return this.httpRequest(this.http.get('/exchangeArg/u/select/list')).then((data: any) => {
+      exchangeArgs = data.exchangeArgs||[];
+      this.db.set('exchangeArgs', exchangeArgs);
+      return exchangeArgs;
     });
   }
 
@@ -240,42 +424,9 @@ export default class BaseComponent extends Vue {
 
 
   //////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////universal（两端通用）开始////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-  /** 当前用户 */
-  get curUser() {
-    const user = this.$store.state.user;
-    const me = this.clone(user);
-    // 只在客户端计算用户等级
-    if (!process || !process.server) {
-      this.getUserLevel(me);
-    }
-    return me;
-  }
+  /////////////////////////////////universal（两端通用）开始/////////////////////
+  /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * 获取登录状态
-   */
-  public isRecord(): Promise<any> {
-    // 请求是否已登录或记住我
-    let config: any = {};
-    if (process&&process.server) { // 服务端
-      config.headers['Cookie'] = this.context.req.headers['cookie'];
-    }
-    if (this.curUser) {
-      return new Promise(res => res(this.curUser));
-    };
-    return this.httpRequest(this.http.get("/user/isrecord",config), {
-      success: (data: any) => {
-        this.db.set('user', data.user);
-        this.$store.commit("setUser", data.user);
-      },
-      error: () => {
-        this.db.set("user", null);
-        this.$store.commit("setUser", null);
-      }
-    }).then((data: any) => { return data.user ? data.user : data });
-  }
 
   /**
    * 深复制
@@ -283,84 +434,6 @@ export default class BaseComponent extends Vue {
    */
   public clone(o: any) {
     return JSON.parse(JSON.stringify(o));
-  }
-
-  /**
-   * 计算用户等级和段位
-   * @param user 用户
-   */
-  public async getUserLevelAndDan(user: any) {
-    this.getUserLevel(user).then(() => {
-      this.getUserDan(user);
-    });
-  }
-
-  /**
-   * 根据用户经验计算用户等级
-   * @param  {any} user - 用户
-   */
-  public async getUserLevel(user: any) {
-    if (!user) return;
-    const experience = user.experience || 0;
-    let levels = this.db.get("userLevels");
-    if (!levels) {
-      await this.http.get("/level/f/select/list").then((data: any) => {
-        levels = data.data.levels;
-        this.db.set("userLevels", levels);
-      });
-    }
-    let i = 0;
-    let lv = 0;
-    let len = levels.length;
-    // 计算等级
-    for (; i < len; i++) {
-      const level = levels[i];
-      if (level.experience > experience && i - 1 >= 0) {
-        lv = levels[i - 1].level;
-      }
-    }
-    if (i === len) lv = levels[len - 1].level;
-    user.level = lv;
-  }
-
-  /**
-   * 黑铁，黄铜，白银，黄金，铂金，钻石，大师，星耀，王者，神行
-   */
-  public getUserDan(user: any) {
-    if (!user) return ''
-    if (!user.level) return '黑铁';
-    const level = user.level;
-    let d = '';
-    if (0 <= level && level <= 10) d = '黑铁';
-    else if (level <= 20) d = '黄铜';
-    else if (level <= 30) d = '白银';
-    else if (level <= 40) d = '黄金';
-    else if (level <= 50) d = '铂金';
-    else if (level <= 60) d = '钻石';
-    else if (level <= 70) d = '大师';
-    else if (level <= 80) d = '星耀';
-    else if (level <= 90) d = '王者';
-    else if (level <= 100) d = '神行';
-    user.dan = d;
-  }
-
-  /**
-   * 对所有html进行转义和过滤，用于用户的回复等
-   * @param v 字符串
-   */
-  public xss(v: string) {
-    if (!v || (process && process.server)) return '';
-    let myxss1 = (<any>this).myxss1;
-    if (!myxss1) {
-      if (!(<any>global || window).filterXSS) return v;
-      myxss1 = new (<any>global || window).filterXSS.FilterXSS({
-        whiteList: [], // 白名单为空，表示过滤所有标签，stripIgnoreTag: true时会去掉tag
-        // stripIgnoreTag: true, // 过滤所有非白名单标签的HTML
-        stripIgnoreTagBody: ["script"] // script标签较特殊，需要过滤标签中间的内容
-      });
-      (<any>this).myxss1 = myxss1;
-    }
-    return myxss1.process(v);
   }
 
   /**
@@ -378,104 +451,6 @@ export default class BaseComponent extends Vue {
       (<any>this).myxss2 = myxss2;
     }
     return myxss2.process(v);
-  }
-
-  /**
-   * 判断当前用户是否svip，服务端也会判断
-   * @returns {boolean} true - 是，false - 否
-   */
-  protected isSVip(): boolean {
-    return (this.curUser.roleNames || '').indexOf('svip') > -1;
-  }
-
-  /**
-   * 判断当前用户是否vip，服务端也会判断
-   * @returns {boolean} true - 是，false - 否
-   */
-  protected isVip(): boolean {
-    return (this.curUser.roleNames || '').indexOf('vip') > -1;
-  }
-
-
-  /**
-   * 获取内容查看或观看或听的权限，后端同步
-   * @param v 需要付费或开通会员的内容
-   * @param t 1-话题内容，2-纯媒体内容，3-文档，4-用户
-   * @returns {Promise<number>} 0 - 有权限，1-需要登录，2 - 需全价支付云币，3-用户需要开通会员，4-会员需要开通会员后优惠，5-优惠支付云币（会员特权）
-   * 
-   * 备注：当v.strategy为4时有两种不通过的情况：
-   * 
-   * -用户不是会员，
-   * 
-   * -用户未付费
-   */
-  protected getPrivilege(v: any, t: number): Promise<boolean | any> {
-    return new Promise(res => {
-      const strategy = v.strategy;
-      if (1 === strategy) { // 免费
-        res(0);
-        return;
-      }
-      // 获取用户登录状态
-      this.isRecord().then(() => {
-        if (!this.curUser) { // 未登录
-          res(1);
-          return;
-        }
-        if (3 === strategy && this.isVip()) { // 只需开通会员，且用户已开通会员
-          res(0);
-          return;
-        }
-        if (3 === strategy && !this.isVip()) { // 只需开通会员，且用户未开通会员
-          res(3);
-          return;
-        }
-        if (4 === strategy && !this.isVip()) { // 会员优惠，且用户未开通会员
-          res(4);
-          return;
-        }
-        // 查询是否支付云币
-        this.getChargeRecord(v.id, t).then(result => {
-          if (1 === result) { // 已支付云币
-            res(0);
-            return;
-          }
-          if (4 === strategy) { // 需优惠支付云币
-            res(5);
-            return;
-          }
-          if (2 === strategy) { // 需全价支付云币
-            res(2);
-          }
-        });
-      })
-    });
-  }
-
-  /**
-   * 查询付费记录
-   * @param {number} id - 内容id
-   * @param {number} type - 1-话题内容，2-纯媒体内容，3-文档，4-用户
-   * @returns {Promise<number>} 1-成功，0-失败
-   */
-  private getChargeRecord(id: number, type: number): Promise<number> {
-    return this.httpRequest(this.http.get('/charge/f/select/count?id=' + id + '&type=' + type)).then((data: any) => {
-      return data.result|| 0;
-    });
-  }
-
-  /**
-   * 获取vip时长配置参数
-   * @param {number} type vip类型：1-vip,2-svip，默认vip
-   */
-  protected getVipArgs(type: number = 1): Promise<any> {
-    let vipArgs = this.db.get('vipArgs');
-    if (vipArgs) return new Promise(res => res(vipArgs)); 
-    return this.httpRequest(this.http.get('/vipArg/u/select/list?type='+type)).then((data: any) => {
-      vipArgs = data.vipArgs||[];
-      this.db.set('vipArgs', vipArgs);
-      return vipArgs;
-    });
   }
 
   /**
@@ -533,7 +508,7 @@ export default class BaseComponent extends Vue {
           result = await options.error(data$);
           result = result === true;
         }
-      } else { // 未知状态，算做系统错误
+      } else { // 未知状态，系统错误
         this.handler.unload();
         this.handler.alert({
           content: '系统错误，请稍后重试',
@@ -546,7 +521,7 @@ export default class BaseComponent extends Vue {
       this.handler.unload();
       if (result) {
         this.handler.alert({
-          content: data.tip, // 外层提示
+          content: data$.message||data.tip, // 优先取内层提示
           buttons: ['确认']
         })
       }
@@ -576,6 +551,7 @@ export default class BaseComponent extends Vue {
     }
     return (<any>BaseComponent).instance;
   }
+
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////universal（两端通用）结束////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////

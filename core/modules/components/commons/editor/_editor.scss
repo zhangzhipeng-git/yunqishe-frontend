@@ -279,7 +279,6 @@
     $main: map-get($colors, main); // 主色
     $title: map-get($colors, title); // 标题色
     $text: map-get($colors, text); // 文字色
-    $reverse: map-get($colors, reverse); // 反衬色
     $main-deep: map-get($colors, main-deep); // 深主色
     $main-light: map-get($colors, main-light); // 浅主色
     $main-light-s: map-get($colors, main-light-s); // 超浅主色
@@ -304,13 +303,13 @@
                 }
                 pre{
                     background-color: $main-light-s;
-                    color: $reverse;
+                    color: $main;
                 }
             }
             // 提交按钮容器及按钮
             .wd-edit-footer-btn {
                 button{
-                    background-color: $reverse;
+                    background-color: $main;
                 }
             }
         }

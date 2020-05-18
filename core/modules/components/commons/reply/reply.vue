@@ -23,12 +23,11 @@
     <template v-if="disabled">
       <slot>
         <p>您好，请登录后再进行评论~</p>
-        <button class="btn" @click="$emit('login', $event)">登录</button>
+        <button class="btn" @click="$emit('disabled', $event)">登录</button>
       </slot>
     </template>
     <!-- 已登录 -->
     <template v-else>
-      <!-- textarea输入回复内容 -->
       <textarea ref="textarea" @focus="focus" :style="{height: (spread$?5:1.5)+'rem'}" :id="id" v-model="model$" class="reply-textarea" :placeholder="placeholder$"></textarea>
       <div>
         <!-- 表情 -->

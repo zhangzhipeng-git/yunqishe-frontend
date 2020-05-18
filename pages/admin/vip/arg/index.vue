@@ -1,7 +1,7 @@
 <template>
     <div id="id-vip-arg">
     <!-- 标题 -->
-    <div class="wd-title">会员系统<span class="wd-seperator">&nbsp;/&nbsp;</span>参数列表</div>
+    <div class="wd-title">充值系统<span class="wd-seperator">&nbsp;/&nbsp;</span>VIP时长参数列表</div>
     <!-- curd -->
     <div class="wd-curd-bar">
       <ButtonComponent @click="insert$" class="wd-insert"
@@ -29,9 +29,9 @@
         ref="table"
         :list="list"
         :thead="['ID', '类型', '时长（月）', '云币（枚）', '人名币（元）']"
-        :columns="['id', 'type', 'duration','coin', 'money']"
+        :columns="['id', 'type', 'duration','coin', 'price']"
         :operate="{ update: '保存', delete: '删除' }"
-        :slots="['type', 'duration', 'coin', 'money']"
+        :slots="['type', 'duration', 'coin', 'price']"
         :rows.sync="rows"
         @update="updateOne($event)"
         @delete="deleteOne($event)"
@@ -48,9 +48,9 @@
         <template v-slot:coin="{ row }">
           <input type="text" v-model.number="row.coin"/>
         </template>
-        <!-- money -->
-        <template v-slot:money = "{ row }">
-            <input type="text" v-model.number="row.money"/>        </template>
+        <!-- price -->
+        <template v-slot:price = "{ row }">
+            <input type="text" v-model.number="row.price"/>        </template>
       </TableComponent>
     </div>
     </div>

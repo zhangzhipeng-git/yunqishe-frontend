@@ -20,7 +20,6 @@
     .ui-topic-filter {
         margin: .5rem 0 0;
         padding: .5rem 1rem;
-        ;
         border-bottom: 1PX solid $gray-light-s;
         background-color: $white;
         @extend %clearfix;
@@ -36,13 +35,12 @@
             a {
                 display: inline-block;
                 padding: 0 .5rem;
-                color: $blue-sky;
                 border-radius: .3rem;
             }
             a:hover,
             a:focus,
             .active {
-                color: $white;
+                color: $white !important;
             }
         }
     }
@@ -121,7 +119,6 @@
     $bg: map-get($colors, bg); // 页面背景色
     $bc: map-get($colors, bc); // 输入类边框色
     $vip: map-get($colors, vip); // vip标识色
-    $reverse: map-get($colors, reverse); // 反衬色
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
@@ -130,14 +127,14 @@
             // 帖子过滤 
             .ui-topic-filter {
                 li {
-                    color: $reverse;
                     a {
-                        border: 1PX solid $reverse;
+                        color: $main;
+                        border: 1PX solid $main;
                     }
                     a:hover,
                     a:focus,
                     .active {
-                        background-color: $reverse;
+                        background-color: $main;
                     }
                 }
             }

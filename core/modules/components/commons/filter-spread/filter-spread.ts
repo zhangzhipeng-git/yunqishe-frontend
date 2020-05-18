@@ -139,11 +139,11 @@ export default class FilterSpreadComponent extends Vue {
      */
     confirm() {
         this.isSpread = false;
-        // 关注的只有全站则不发射
+        // 没有关注的话题分类
         if (this.copy_classify.concern.length === 1 && 
             this.copy_classify.concern[0].name === '全站'
         ) {
-            return;
+            this.$emit('confirm', []);
         }
         // 未进行修改也不发射
         if (this.equals(this.copy_classify, this.classify)) {

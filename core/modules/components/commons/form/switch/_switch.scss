@@ -14,7 +14,7 @@
     cursor: pointer;
     .wd-switch-bg {
         height: 1.5rem;
-        transition: width .1s;
+        transition: width .05s;
     }
     .wd-switch-handle {
         position: absolute;
@@ -24,7 +24,7 @@
         border: 1PX solid $gray-light;
         border-radius: 100%;
         background-color: white;
-        transition: left .1s;
+        transition: left .05s;
     }
 }
 
@@ -34,8 +34,7 @@
     $colors: map-get($theme-colors, #{$theme});
     $main-light: map-get($colors, main-light);
     .#{$theme} {
-        .wd-switch .wd-switch-bg {
-            // 秒数
+        .wd-switch .open {
             background-color: $main-light;
         }
     }

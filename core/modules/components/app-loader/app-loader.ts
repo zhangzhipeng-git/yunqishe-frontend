@@ -15,7 +15,7 @@ export default class LoaderComponent extends Vue {
     /**
      * 添加遮罩
      */
-    public static load(type: string = 'timer') {
+    public static load(type: string = 'circle') {
         if (LoaderComponent.exist) return;
         if (LoaderComponent.el) {
             document.body.appendChild(LoaderComponent.el);

@@ -22,7 +22,6 @@ interface TWemoji {
     parse(el: HTMLElement| Node, args?: any): Function;
 
 }
-const twemoji = <TWemoji>((<any>window).twemoji);
 
 @Component
 export default class EmojiComponent extends Vue {
@@ -83,6 +82,7 @@ export default class EmojiComponent extends Vue {
     }
     
     mounted() {
+        const twemoji = <TWemoji>((<any>window).twemoji);
         twemoji&&twemoji.parse(this.emojiList);   
     }
 

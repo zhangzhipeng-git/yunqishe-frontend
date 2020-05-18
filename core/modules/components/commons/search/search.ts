@@ -7,6 +7,7 @@ export default class SearchComponent extends Vue {
         type: String,
         default: ''
     })
+    @Model('input')
     /** 父组件传过来的值 */
     public value!: string;
     @Prop({
@@ -20,16 +21,20 @@ export default class SearchComponent extends Vue {
         super();
     }
 
-    private mounted(): void {
+    /**
+     * 输入时，把输入值发射出去
+     */
+    @Emit('input')
+    emitInput(): string {
+        return this.value;
     }
 
     /**
-     * 把输入值发射出去
-     * @param event 输入事件
+     * 点击搜索icon时，把输入值发射出去
      */
-    @Emit('input')
-    public emitValue(event: any): string {
-        return event.target.value;
+    @Emit('click')
+    emitClick(): string {
+        return this.value;
     }
 
 }

@@ -8,7 +8,7 @@
         overflow: hidden;
         background: url(https://ae01.alicdn.com/kf/Uea457966cf554f699dc93ec16a7e8859c.jpg) no-repeat;
         background-position: center;
-        background-attachment: fixed;
+        // background-attachment: fixed;
         background-size: cover;
         animation: bg-color 20s infinite;
         // 大标题
@@ -115,14 +115,13 @@
     $bg: map-get($colors, bg); // 页面背景色
     $bc: map-get($colors, bc); // 输入类边框色
     $vip: map-get($colors, vip); // vip标识色
-    $reverse: map-get($colors, reverse); // 反衬色
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
     .#{$theme} {
         #id-ui-learn {
             .ui-banner-mask {
-                background-color: $reverse;
+                background-color: $main;
             }
             .ui-banner-text {
                 text-shadow: 3PX 3PX 3PX $main-deep;

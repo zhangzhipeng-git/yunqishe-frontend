@@ -20,4 +20,12 @@
     .wd-footer-powered-by {
         margin: .5rem auto;
     }
+    // 底部暗黑
+    &.dark{
+        background-color: #202223;
+        color: $white;
+        .wd-footer-bar li a {
+            color: $white;
+        }
+    }
 }

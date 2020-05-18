@@ -68,6 +68,7 @@ export default class LogForSysComponent extends BaseComponent {
     }
 
     public beforeMount() {
+        document.body.className = <any>this.localStorage.getItem('admin-theme')||'r';
         // 获取redirect的来源地址
         this.fromPath = <any>this.$route.query.fromPath;
         // 安全服务 => 获取公钥，上送密钥
@@ -140,9 +141,8 @@ export default class LogForSysComponent extends BaseComponent {
      * 登录成功放行
      */
     public pass(user: any):void {
-        this.db.set('user', user);
+        this.db.$set('user', user);
         let path = !!this.fromPath? this.fromPath : '/admin';
-        this.$store.commit('setUser', user);
         this.$router.push({path});        
     }
 

@@ -1,3 +1,15 @@
+/*
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\media\detail\index.scss
+ * Created Date: Saturday, April 18th 2020, 4:50:04 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 
+ * Last Modified: Monday May 4th 2020 2:20:11 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
+ */
+
 #id-ui-media-detail {
     // 头部媒体播放器
     .ui-media-header {
@@ -76,25 +88,6 @@
             &:hover {
                 color: $white;
             }
-        }
-    }
-    // 权限提示
-    .ui-privilege-tip {
-        font-size: $font-size-min;
-        color: $gray-light-s;
-        margin: 1rem;
-    }
-    // 权限获取的按钮，如登录，开通vip等
-    .ui-privilege-btn {
-        button {
-            display: inline-block;
-            height: 2rem;
-            padding: 0 1rem;
-            font-size: $font-size-normal;
-            line-height: 2rem;
-            color: $white;
-            border-radius: 3rem;
-            background: linear-gradient(to right, rgb(231, 205, 119), rgb(250, 164, 5));
         }
     }
 }

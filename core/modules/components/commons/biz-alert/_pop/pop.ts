@@ -41,7 +41,7 @@ export default class PopComponent extends Vue {
      * @param e 事件
      */
     @Emit('close')
-    close(e: any) {
+    close(e?: any) {
         // 离开
         this.active = false;
         (<any>this.$refs.mask).style.display = 'none';

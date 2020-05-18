@@ -16,6 +16,7 @@ import vip from '@/core/modules/filters/vip';
 import strCut from '~/core/modules/filters/strCut';
 import { Ref } from "vue-property-decorator";
 import DateUtil from "~/core/modules/util/date-util";
+import { Throttle } from "~/core/modules/annotations";
 
 const options: any = {
   layout: "app",
@@ -249,6 +250,7 @@ export default class DetailComponent extends BaseComponent {
    * @param p - 父回复，一级回复不需要父回复
    */
   openAndSetChildReply(ref: any, v: any, type: number, p: any) {
+    if (!this.curUser) {return this.handler.toast({text:'请先登录~'})};
     // 显示子级回复组件
     if (!this.showChildReply) this.showChildReply = true;
     const c = ref[0];
@@ -259,13 +261,12 @@ export default class DetailComponent extends BaseComponent {
       c.insertBefore(o, childs[clen]);
     }
     this.replyObj1.text = '';
-    // 设置对谁回复
+    // 设置父回复,2级及以上回复的父回复都是这个
     this.parentComment = p;
-    // 对1级回复的回复
-    let pid = -1;
+    // 设置2机以及上的父回复id
+    let pid = p.id;
     if (type === 1) this.replyObj1.placeholder = "跟评:";
     else {
-      pid = p.id;
       this.toWho = v.user;
       this.replyObj1.placeholder = "@" + v.user.nickname + ":";
     }
@@ -294,10 +295,10 @@ export default class DetailComponent extends BaseComponent {
         if(type === 0) { // 对贴回复
           this.topReplys.unshift(reply$);
         } else if (type === 1) { // 对1级或2级及以上回复
-          reply.who = this.toWho;
+          reply$.who = this.toWho;
           this.parentComment.commentCount++;
           if (this.parentComment.commentCount <= this.GTLv1CommentPageSize) {
-            this.parentComment.comments.push(reply);
+            this.parentComment.comments.push(reply$);
             return;
           }
           if (this.parentComment.pageNum === undefined) {
@@ -345,8 +346,11 @@ export default class DetailComponent extends BaseComponent {
    * 收藏话题内容/关注版块，无则插入，有则更新
    * @param v 话题内容
    */
+  @Throttle(3000, (o: DetailComponent) => {
+    o.handler.toast({text: '请不要频繁操作~'});
+  })
   collect(v: any){
-    if (!this.curUser) {this.handler.toast({text:'请先登录~'})};
+    if (!this.curUser) {return this.handler.toast({text:'请先登录~'})};
     // 1-收藏，0-取消收藏
     let concern = this.getConcern(v) === 1? 0 : 1;
     // 1-收藏话题内容，2-关注话题
@@ -359,7 +363,7 @@ export default class DetailComponent extends BaseComponent {
       uid: this.curUser.id
     }
     const flag = concern === 1;
-    this.httpRequest(this.http.post('/concern/f/insertOrUpdate/one', obj, {throttle:3000}), {
+    this.httpRequest(this.http.post('/concern/f/insertOrUpdate/one', obj), {
       success: () => {
         this.handler.toast({text: (flag?'':'取消')+(type===2?'关注':'收藏')+'成功~'});
         if (!flag) { // 取消收藏
@@ -393,8 +397,11 @@ export default class DetailComponent extends BaseComponent {
    * @param v 话题内容或回复
    * @param {number} type 1 - 话题内容，2-话题内容回复
    */
+  @Throttle(3000, (o: DetailComponent) => {
+    o.handler.toast({text: '请不要频繁操作~'});
+  })
   thumbup(v: any, type: number) {
-    if (!this.curUser) {this.handler.toast({text:'请先登录~'})};
+    if (!this.curUser) {return this.handler.toast({text:'请先登录~'})};
     let thumb = this.getThumb(v);
     // 1-点赞，3-取消点赞
     thumb = (thumb === 3 || thumb === 2) ? 1 : 3;
@@ -405,7 +412,7 @@ export default class DetailComponent extends BaseComponent {
       uid: this.curUser.id
     }
     const flag = thumb === 1;
-    this.httpRequest(this.http.post('/thumb/f/insertOrUpdate/one', obj, {throttle: 3000}), {
+    this.httpRequest(this.http.post('/thumb/f/insertOrUpdate/one', obj), {
       success: () => {
         this.handler.toast({text: (flag?'':'取消')+'点赞成功~'});
         if (!flag) { // 取消点赞
@@ -427,8 +434,11 @@ export default class DetailComponent extends BaseComponent {
    * @param v 话题内容或回复
    * @param {number} type 1 - 话题内容，2-话题内容回复
    */
+  @Throttle(3000, (o: DetailComponent) => {
+    o.handler.toast({text: '请不要频繁操作~'});
+  })
   thumbdown(v: any, type: number) {
-    if (!this.curUser) {this.handler.toast({text:'请先登录~'})};
+    if (!this.curUser) {return this.handler.toast({text:'请先登录~'})};
     let thumb = this.getThumb(v);
     // 2-反对，3-取消反对
     thumb = (thumb === 3 || thumb === 1) ? 2 : 3;
@@ -439,7 +449,7 @@ export default class DetailComponent extends BaseComponent {
       uid: this.curUser.id
     }
     const flag = thumb === 2;
-    this.httpRequest(this.http.post('/thumb/f/insertOrUpdate/one', obj,{throttle: 3000}), {
+    this.httpRequest(this.http.post('/thumb/f/insertOrUpdate/one', obj), {
       success: () => {
         this.handler.toast({text: (flag?'':'取消')+'反对成功~'});
         if (!flag) { // 取消反对

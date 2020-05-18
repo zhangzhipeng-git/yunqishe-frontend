@@ -3,7 +3,7 @@
     <div class="wd-video-player">
       <video
         ref="video"
-        :src="!$slots.default&&src"
+        :src="src"
         :poster="poster"
         :loop="loop"
         :autoplay="options$.autoplay"
@@ -34,11 +34,8 @@
       <template v-else>
         <!-- 加载视频 -->
         <div v-if="!canplay$" class="loading">
-          <div class="loading-tip">
-            <p>LODDING</p>
-            <div class="line">
-              <div class="light-dot"></div>
-            </div>
+          <div class="loading-icon">
+            <i class="icommon icon-loading-wheel"></i>
           </div>
         </div>
         <!-- 未开始播放或当前暂停或已播放完 -->

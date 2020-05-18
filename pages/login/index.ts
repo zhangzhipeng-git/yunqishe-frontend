@@ -9,10 +9,9 @@
 
 import Component from 'vue-class-component';
 import BaseComponent from '@/core/base-component';
-import EncryptUtil from '~/core/modules/util/encrypt-util.ts';
+import EncryptUtil from '~/core/modules/util/encrypt-util';
 import SMSComponent from '@/core/modules/components/commons/form/sms/sms';
 import ButtonComponent from '@/core/modules/components/commons/form/button/button';
-import { Watch } from 'vue-property-decorator';
 @Component({
     layout:'app',
     components: {
@@ -128,10 +127,8 @@ export default class LoginComponent extends BaseComponent {
      * 登录成功放行
      */
     public pass(user: any):void {
-        this.db.set('user', user);
-        this.$store.commit('setUser', user);
+        this.db.$set('user', user);
         // 解码2%
         this.$router.push({path:decodeURIComponent(this.fromPath)});      
     }
-
 }

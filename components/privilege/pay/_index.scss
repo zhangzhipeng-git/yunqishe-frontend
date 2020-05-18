@@ -1,0 +1,31 @@
+.wd-my-pop {
+    // 支付云币
+    .wd-content-wrap {
+        padding: 1rem 2rem;
+        // 每行的文字
+        p {
+            line-height: 2rem;
+        }
+        // 支付按钮或开通按钮
+        button {
+            height: 1.5rem;
+            margin-top: 0.5rem;
+            padding: 0 3rem;
+            line-height: 1.5rem;
+            border-radius: 0.3rem;
+            color: $white;
+        }
+    }
+}
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    .#{$theme} {
+        .wd-my-pop {
+            .wd-content-wrap button {
+                background-color: $main;
+            }
+        }
+    }
+}

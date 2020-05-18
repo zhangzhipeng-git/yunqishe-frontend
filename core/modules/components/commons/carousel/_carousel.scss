@@ -68,8 +68,16 @@
         background-color: white;
         cursor: pointer;
     }
-    
-    #wd-carousel-dot-active {
-        background-color: $red-warm;
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors , #{$theme});
+    $main: map-get($colors, main);
+    .#{$theme} {
+        #wd-carousel-dot-active {
+            background-color: $main;
+        }
     }
 }

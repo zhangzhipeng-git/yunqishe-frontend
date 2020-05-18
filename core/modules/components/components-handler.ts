@@ -18,6 +18,9 @@ export default interface ComponentsHandler {
 
 }
 export default class ComponentsHandler {
+    public alert(options: AlertOption): Promise<number> {
+        return AlertComponent.alert(options);        
+    }
     public load(type?:string) {
         LoaderComponent.load();
     }
@@ -37,8 +40,5 @@ export default class ComponentsHandler {
             (<any>this).toastInstance.untoast();
             (<any>this).toastInstance = null;
         }
-    }
-    public alert(options: AlertOption): Promise<number> {
-        return AlertComponent.alert(options);        
     }
 }

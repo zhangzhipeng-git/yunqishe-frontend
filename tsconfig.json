@@ -29,7 +29,7 @@
       ]
     },
     "types": [
-      "@nuxt/types",
+      "@nuxt/types"
     ]
   },
   "exclude": [

@@ -9,7 +9,7 @@
  * Copyright © zzp-dog, All rights reserved.
  */
 
-export default function vip(v: string) {
+export default function vip(v: Array<string>|string) {
     if (v.indexOf('svip') > -1) return 'svip';
     if (v.indexOf('vip') > -1) return 'vip';
     return v;

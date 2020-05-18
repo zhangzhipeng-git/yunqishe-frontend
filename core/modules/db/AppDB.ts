@@ -1,25 +1,51 @@
 /**
  * app存贮类
  */
+import Vue from 'vue';
 export default class AppDB {
     constructor() {
     };
-    /** app全局存贮，相当于spa中的sessionStorage */
-    static db: {[k: string]: any} = {};
+    [index: string]: any;
     /**
-     * 设置键值
+     * 响应式设置键值
      * @param k 键
      * @param v 值
      */
-    public set(k: string, v: any): void {
-        AppDB.db[k] = v;
+    public $set(k: string, v: any): void {
+        Vue.set(this, k, v);
     }
 
     /**
-     * 根据键值获取value
+     * 根据键值获取响应式value
+     * @param k 键值
+     */
+    public $get(k: string): any {
+        return this[k];
+    }
+
+    /**
+     * 根据key删除value
+     * @param k 键值
+     */
+    public $delete(k: string): any {
+        Vue.delete(this, k);
+    }
+
+     /**
+     * 非响应式设置键值
+     * @param k 键
+     * @param v 值
+     */
+    public set(k:string, v: any) {
+        (<any>AppDB)[k]=v;
+    }
+
+    /**
+     * 根据键值获取非响应式value
      * @param k 键值
      */
     public get(k: string): any {
-        return AppDB.db[k];
+        return (<any>AppDB)[k];
     }
+
 }

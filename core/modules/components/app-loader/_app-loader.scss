@@ -9,97 +9,53 @@
     background-color: $gray;
     opacity: 0.1;
   }
-
-  .animation {
-    z-index: 99998;
+  .three-circle-scale{
+    z-index: 99999;
     position: fixed;
-    top: 40%;
+    top: 50%;
     left: 50%;
-    width: 60px;
-    height: 60px;
-    margin-top: -30px;
-    margin-left: -30px;
-    border-radius: 50%;
-    display: inline-block;
-    vertical-align: middle;
+    width: 4rem;
+    height: 4rem;
+    margin-left:-2rem;
+    margin-top:-2rem;
   }
-
-  .animation-outter {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    -webkit-animation: animation-1-outter 1s
-      cubic-bezier(0.42, 0.61, 0.58, 0.41) infinite;
-    animation: animation-1-outter 1s cubic-bezier(0.42, 0.61, 0.58, 0.41)
-      infinite;
-  }
-
-  .animation-inner {
+  .circle1,.circle2,.circle3{
     position: absolute;
-    // border: 4px solid #f50057;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    left: calc(50% - 20px); // ie9，ie9+支持calc
-    top: calc(50% - 20px);
-    -webkit-animation: animation-1-inner 1s cubic-bezier(0.42, 0.61, 0.58, 0.41)
-      infinite;
-    animation: animation-1-inner 1s cubic-bezier(0.42, 0.61, 0.58, 0.41)
-      infinite;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    border-radius: 100%;
+    transform: scale(0);
+    animation: opacity-scale 1s 0s infinite;
   }
-
-  @-webkit-keyframes animation-1-outter {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-    }
-
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
+  .circle1{
+    animation-delay: 0;
   }
-
-  @keyframes animation-1-outter {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-    }
-
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
+  .circle2{
+    animation-delay: .2s;
   }
-
-  @-webkit-keyframes animation-1-inner {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-    }
-
-    100% {
-      -webkit-transform: rotate(-360deg);
-      transform: rotate(-360deg);
-    }
+  .circle3{
+    animation-delay: .4s;
   }
-
-  @keyframes animation-1-inner {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+  @include keyframes(opacity-scale) {
+    0%{
+      transform: scale(0);
+      opacity: 0;
     }
-
-    100% {
-      -webkit-transform: rotate(-360deg);
-      transform: rotate(-360deg);
+    5%{
+      opacity: 1;
+    }
+    100%{
+      transform: scale(1);
+      opacity: 0;
     }
   }
 
   // timer
   .timer {
     position: fixed;
-    z-index: 99999999999;
+    z-index: 99999;
     top: 50%;
     left: 50%;
     width: 5rem;
@@ -153,7 +109,7 @@
     animation: hrhand 4s linear infinite;
   }
 
-  @-webkit-keyframes minhand {
+  @include keyframes(minhand) {
     0% {
       -webkit-transform: rotate(0deg);
     }
@@ -163,53 +119,13 @@
     }
   }
 
-  @-moz-keyframes minhand {
-    0% {
-      -moz-transform: rotate(0deg);
-    }
-
-    100% {
-      -moz-transform: rotate(360deg);
-    }
-  }
-
-  @keyframes minhand {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @-webkit-keyframes hrhand {
+  @include keyframes(hrhand) {
     0% {
       -webkit-transform: rotate(0deg);
     }
 
     100% {
       -webkit-transform: rotate(360deg);
-    }
-  }
-
-  @-moz-keyframes hrhand {
-    0% {
-      -moz-transform: rotate(0deg);
-    }
-
-    100% {
-      -moz-transform: rotate(360deg);
-    }
-  }
-
-  @keyframes hrhand {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
     }
   }
 }
@@ -220,28 +136,18 @@
   $colors: map-get($theme-colors, #{$theme});
   $main: map-get($colors, main);
   $main-deep: map-get($colors, main-deep);
+  $main-light: map-get($colors, main-light);
 
   .#{$theme} {
-    .animation-outter,
-    .animation-inner {
-      border: 4px solid $main-deep;
-    }
-
-    .animation-outter {
-      border-left-color: transparent;
-      border-bottom: 0;
-    }
-
-    .animation-inner {
-      border-right: 0;
-      border-top-color: transparent;
-    }
     .timer {
       border: 0.1rem solid $main-deep;
       &::before,
       &::after,.center {
         background-color: $main-deep;
       }
+    }
+    .three-circle-scale div{
+      background-color: $main-light;
     }
   }
 }

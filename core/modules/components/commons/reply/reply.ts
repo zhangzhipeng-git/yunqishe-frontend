@@ -30,7 +30,7 @@ export default class ReplyComponent extends Vue {
     /** 是否全部展开 的副本，默认true */
     spread$!: boolean;
     /** 未登录禁用 */
-    @Prop({type: Boolean, default: true})
+    @Prop({type: Boolean, default: false})
     disabled!: boolean;
     /** 占位文字 placeholder*/ 
     @Prop({

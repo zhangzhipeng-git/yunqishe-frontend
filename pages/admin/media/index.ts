@@ -23,7 +23,7 @@ import BaseComponent from '~/core/base-component';
         strCut
     }
 })
-export default class mediaComponent extends BaseComponent{
+export default class VideoComponent extends BaseComponent{
     
     /** 1-一级分类，2-二级分类，3-媒体*/
     level: number = 1;

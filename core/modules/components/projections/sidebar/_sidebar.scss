@@ -126,12 +126,11 @@ $sidebar-width: $wd-main-right;
     $main: map-get($colors, main); // 主色
     $title: map-get($colors, title); // 标题色
     $text: map-get($colors, text); // 文字色
-    $reverse: map-get($colors, reverse); // 反衬色
     .#{$theme} {
         .wd-sidebar {
             // 标题 - 左侧有一道杠
             .wd-sidebar-ctn-title {
-                color: $reverse;
+                color: $main;
                 &:before {
                     background-color: $main;
                 }
@@ -140,7 +139,7 @@ $sidebar-width: $wd-main-right;
             .wd-sidebar-recommend-list {
                 a:hover {
                     padding: 0;
-                    border: 1PX solid $reverse;
+                    border: 1PX solid $main;
                 }
             }
             // 推荐内容标题

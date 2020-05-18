@@ -10,6 +10,7 @@ import SelectComponent from '@/core/modules/components/commons/form/select/selec
 import ButtonComponent from '@/core/modules/components/commons/form/button/button';
 import BaseComponent from "@/core/base-component";
 import EncryptUtil from "@/core/modules/util/encrypt-util";
+import SwitchComponent from '../../core/modules/components/commons/form/switch/switch';
 @Component({
     components: {
         SideMenuComponent,
@@ -17,7 +18,8 @@ import EncryptUtil from "@/core/modules/util/encrypt-util";
         SelectComponent,
         SMSComponent,
         ButtonComponent,
-        WindowComponent
+        WindowComponent,
+        SwitchComponent
     }
 })
 export default class AdminComponent extends BaseComponent {
@@ -35,9 +37,9 @@ export default class AdminComponent extends BaseComponent {
     vtype: string = 'email';
     /** 性别 */
     sexList: any[] = [
-        {id:-1,description:'保密'},
-        {id:0,description:'男'},
-        {id:1,description:'女'},
+        { id: -1, description: '保密' },
+        { id: 0, description: '男' },
+        { id: 1, description: '女' },
     ];
     /** 重复密码 */
     repassword: string = '';
@@ -46,160 +48,169 @@ export default class AdminComponent extends BaseComponent {
     window!: any;
     /** 左侧菜单树 */
     tree: Tree = [
-            {
-                name: '首 页',
-                level: 1,
-                url: '/admin',
-                leftIcon: ['icon-home']
-            },
-            {
-                name: "系统管理",
-                level: 1,
-                spread: false,
-                leftIcon: ["icon-settings"],
-                rightIcon: ["icon-caret-left", "icon-caret-down"],
-                child: [
-                    { name: "登录设置", level: 2, leftIcon: ["icon-log-in"] },
-                    { name: "验证设置", level: 2, leftIcon: ["icon-key"] },
-                    { name: "操作设置", level: 2, leftIcon: ["icon-pencil-thin"] },
-                    { name: "接口设置", level: 2, leftIcon: ["icon-at-sign"] }
-                ]
-            },
-            {
-                name: "用户管理",
-                spread: false,
-                leftIcon: ["icon-user-circle"],
-                level: 1,
-                rightIcon: ["icon-caret-left", "icon-caret-down"],
-                child: [
-                    {
-                        name: "角色管理",
-                        spread: false,
-                        url: '/admin/user/manage-role',
-                        leftIcon: ["icon-github-alt"],
-                        level: 2
-                    },
-                    {
-                        name: "权限管理",
-                        spread: false,
-                        url: '/admin/user/manage-power',
-                        leftIcon: ["icon-shield"],
-                        level: 2
-                    },
-                    {
-                        name: "人员管理",
-                        spread: false,
-                        url: '/admin/user/manage-user',
-                        leftIcon: ["icon-user"],
-                        level: 2
-                    }
-                ]
-            },
-            {
-                level: 1,
-                name: "话题管理",
-                spread: false,
-                leftIcon: ["icon-box"],
-                rightIcon: ["icon-caret-left", "icon-caret-down"],
-                child: [
-                    // 帖子板块和问云分类
-                    {
-                        level: 2,
-                        name: '话题分类',
-                        leftIcon: ['icon-copy'],
-                        url: '/admin/topic/topic-class'
-                    },
-                    // 论坛帖子和问云问答
-                    {
-                        level: 2,
-                        name: '话题列表',
-                        leftIcon: ['icon-list'],
-                        url: '/admin/topic/topic-content'
-                    }
-                ]
-            },
-            {
-                level: 1,
-                name: "资源管理",
-                spread: false,
-                leftIcon: ["icon-send"],
-                rightIcon: ["icon-caret-left", "icon-caret-down"],
-                child: [
-                    {
-                        level: 2,
-                        name: '文档',
-                        leftIcon: ['icon-book-open'],
-                        url:'/admin/zhixing'
-                    },
-                    {
-                        level: 2,
-                        name: '视频',
-                        leftIcon: ['icon-video'],
-                        url:'/admin/media'
-                    }
-                ]
-            },
-            {
-                level:1,
-                name:"会员系统",
-                leftIcon:["icon-dollar-sign"],
-                spread: false,
-                rightIcon: ["icon-caret-left", "icon-caret-down"],
-                child:[
-                    {
-                        level: 2,
-                        name: "参数列表",
-                        leftIcon: ["icon-list-numbered"],
-                        url:'/admin/vip/arg'
-                    },
-                    {
-                        level: 2,
-                        name: "开通记录",
-                        leftIcon: ["icon-list-numbered"],
-                        url:'/admin/vip/record'
-                    },
-                ]
-            },
-            {
-                level: 1,
-                name: "回收站",
-                leftIcon: ["icon-trash"],
-                spread: false,
-                rightIcon: ["icon-caret-left", "icon-caret-down"],
-                child: [
-                    {
-                        name: "用户",
-                        leftIcon: ["icon-user"],
-                        level: 2
-                    },
-                    {
-                        name: "帖子",
-                        leftIcon: ["icon-send"],
-                        level: 2
-                    },
-                    {
-                        name: "问答",
-                        leftIcon: ["icon-help-circle"],
-                        level: 2
-                    },
-                    {
-                        name: "文章",
-                        level: 2,
-                        leftIcon: ["icon-book-open"]
-                    }
-                ]
-            },
-            { name: "日志信息", level: 1, leftIcon: ["icon-database"] }
-        ];
+        {
+            level: 1,
+            name: '首 页',
+            url: '/admin',
+            leftIcon: ['icon-home']
+        },
+        {
+            level: 1,
+            name: "系统管理",
+            spread: false,
+            leftIcon: ["icon-settings"],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                { name: "登录设置", level: 2 },
+                { name: "验证设置", level: 2 },
+                { name: "操作设置", level: 2 },
+                { name: "接口设置", level: 2 }
+            ]
+        },
+        {
+            level: 1,
+            name: "RBAC管理",
+            spread: false,
+            leftIcon: ["icon-user-circle"],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                {
+                    name: "角色管理",
+                    spread: false,
+                    url: '/admin/user/manage-role',
+                    level: 2
+                },
+                {
+                    name: "权限管理",
+                    spread: false,
+                    url: '/admin/user/manage-power',
+                    level: 2
+                },
+                {
+                    name: "用户管理",
+                    spread: false,
+                    url: '/admin/user/manage-user',
+                    level: 2
+                }
+            ]
+        },
+        {
+            level: 1,
+            name: "话题管理",
+            spread: false,
+            leftIcon: ["icon-box"],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                // 帖子板块和问云分类
+                {
+                    level: 2,
+                    name: '话题分类',
+                    url: '/admin/topic/topic-class'
+                },
+                // 论坛帖子和问云问答
+                {
+                    level: 2,
+                    name: '话题列表',
+                    url: '/admin/topic/topic-content'
+                }
+            ]
+        },
+        {
+            level: 1,
+            name: "资源管理",
+            spread: false,
+            leftIcon: ["icon-send"],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                {
+                    level: 2,
+                    name: '文档列表',
+                    url: '/admin/zhixing'
+                },
+                {
+                    level: 2,
+                    name: '视频列表',
+                    url: '/admin/media'
+                }
+            ]
+        },
+        {
+            level: 1,
+            name: "充值系统",
+            leftIcon: ["icon-bitcoin"],
+            spread: false,
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                {
+                    level: 2,
+                    name: "VIP参数列表",
+                    url: '/admin/vip/arg'
+                },
+                {
+                    level: 2,
+                    name: "VIP开通记录",
+                    url: '/admin/vip/record'
+                },
+                {
+                    level: 2,
+                    name: "云币参数列表",
+                    url: '/admin/exchange/arg'
+                },
+                {
+                    level: 2,
+                    name: "云币兑换记录",
+                    url: '/admin/exchange/record'
+                },
+            ]
+        },
+        {
+            level: 1,
+            name: "回收站",
+            leftIcon: ["icon-trash"],
+            spread: false,
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                {
+                    name: "用户",
+                    level: 2
+                },
+                {
+                    name: "话题内容",
+                    level: 2
+                },
+                {
+                    name: "文档",
+                    level: 2
+                },
+                {
+                    name: "微媒体",
+                    level: 2
+                }
+            ]
+        },
+        { name: "日志信息", level: 1, leftIcon: ["icon-database"] }
+    ];
     /** 验证码状态 */
     SMSStatus: number = 0;
+    /** 是否显示主题设置 */
+    showPageSet: any = false;
+    /** 头部或底部背景色: 1-#202223, 0-white */
+    bg: any = '';
+    /** 主题色 */
+    theme: any = '';
 
-    // 获取登录后或记住我后，进入应用的用户信息
-    get easyUser() {
-        return this.$store.state.user || {};
-    }
     constructor() {
         super();
+    }
+
+    beforeMount(): void {
+        this.bg = this.localStorage.getItem('admin-bg')||0;
+        this.theme = this.localStorage.getItem('admin-theme')||'r';
+        this.showPageSet = this.localStorage.getItem('admin-pageSet')||false;
+        const header: any = document.getElementsByClassName('wd-sys-header')[0];
+        
+        header&&(header.className += this.bg === 1?' dark':'');
+        document.body.className = this.theme;
     }
 
     mounted() {
@@ -225,7 +236,7 @@ export default class AdminComponent extends BaseComponent {
     showCenter() {
         this.isOpen = !this.isOpen;
         if (!this.user.id) { // 没有查用户详细信息
-            this.httpRequest(this.http.get('/user/select/one?id=' + this.easyUser.id), {
+            this.httpRequest(this.http.get('/user/select/one?id=' + this.curUser.id), {
                 success: (data: any) => {
                     this.user = data.user;
                 }
@@ -262,7 +273,7 @@ export default class AdminComponent extends BaseComponent {
     }
 
     /**
-     * 更行管理信息
+     * 更新管理信息
      */
     async updateUser() {
         if (this.operate === 'changePassword') {
@@ -306,5 +317,34 @@ export default class AdminComponent extends BaseComponent {
     confirm() {
         this.window.close();
         this.updateUser();
+    }
+
+    /**
+     * 隐藏和显示设置主题样式的下拉框
+     */
+    togglePageSet() {
+        this.showPageSet = !this.showPageSet;
+        this.localStorage.setItem('admin-pageSet', this.showPageSet);
+    }
+
+    /**
+     * 改变头部/底部背景色
+     * @param {number} 1- #202223, 0- white;
+     */
+    changeBg(v: number) {
+        const header: any = document.getElementsByClassName('wd-sys-header')[0];
+        header.className = header.className.replace('dark', '');
+        header && (header.className += v === 1 ? ' dark' : '');
+        this.localStorage.setItem('admin-bg', v);
+    }
+
+    /**
+     * 选择主题
+     * @param v 主题对象
+     */
+    chooseTheme(v: any) {
+        document.body.className = v.clz;
+        this.theme = v.clz;
+        this.localStorage.setItem('admin-theme', this.theme);
     }
 }

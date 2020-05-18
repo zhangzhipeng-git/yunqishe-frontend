@@ -1,3 +1,4 @@
+import SideMenuComponent from './side-menu.vue';
 /*
  * Project: nuxt-ssr
  * FileName: side-menu.vue

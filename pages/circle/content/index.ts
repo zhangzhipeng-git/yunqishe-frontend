@@ -120,8 +120,7 @@ export default class IDComponent extends BaseComponent {
     const concern = 
     this.getConcern === 0 ? 1 : 0;
     const obj = {
-      type1: 0,
-      type2: 2,
+      type: 2,
       concern,
       oid: this.topic.id,
       uid: this.curUser.id

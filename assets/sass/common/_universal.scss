@@ -33,7 +33,6 @@
     line-height: 2rem;
     margin: 1rem auto;
     text-align: center;
-    color: $blue-sky;
     background-color: $white;
     border-radius: 2rem;
     box-shadow: 0 0 10PX 0 $gray-light;
@@ -191,7 +190,6 @@
     $bg: map-get($colors, bg); // 页面背景色
     $bc: map-get($colors, bc); // 输入类边框色
     $vip: map-get($colors, vip); // vip标识色
-    $reverse: map-get($colors, reverse); // 反衬色
     $help: map-get($colors, help); // 辅助色
     $common: map-get($colors, common); // 通用色
     $warn: map-get($colors, warn); // 警示色
@@ -199,6 +197,9 @@
         // 左侧带竖杠的标题
         .wd-title::before {
             background-color: $main;
+        }
+        .wd-view-more{
+            color:$main;
         }
     }
 }

@@ -42,11 +42,13 @@
         <!-- 备注：经验转化位等级，等级转化位段位！！！ -->
         <p>
           <!-- 角色 -->
-          <span
-            class="user-label wd-user-vip"
-            v-for="(v1, i1) in (user.roleNames || '').split(',')"
-            :key="'i1'+i1"
-          >{{ v1 }}</span>
+          <template v-if="user.roleNames">
+            <span
+              class="user-label wd-user-role"
+              v-for="(v1, i1) in user.roleNames"
+              :key="'i1'+i1"
+            >{{ v1 }}</span>
+          </template>
           <!-- 标签 -->
           <span
             class="user-label wd-user-description"
@@ -108,7 +110,11 @@
                   </div>
                   <!-- 头部信息结束 -->
                   <!-- 动态简介开始 -->
-                  <div class="ui-dynamic-content-body" @click="toDynamicDetail(v4)" v-if="v4.show===4">
+                  <div
+                    class="ui-dynamic-content-body"
+                    @click="toDynamicDetail(v4)"
+                    v-if="v4.privilegeType === 0"
+                  >
                     <!-- 标题开始 -->
                     <h3>{{v4.title}}</h3>
                     <!-- 标题结束 -->
@@ -123,17 +129,8 @@
                   </div>
                   <!-- 动态简介结束 -->
                   <!-- 需要开通会员或付费后查看开始 -->
-                  <div v-else-if="v4.strategy===2" class="ui-no-permission">
-                    <p>付费后可查看~</p>
-                    <ButtonComponent>购买</ButtonComponent>
-                  </div>
-                  <div v-else-if="v4.strategy===3" class="ui-no-permission">
-                    <p>开通会员后可查看~</p>
-                    <ButtonComponent>开通会员</ButtonComponent>
-                  </div>
-                  <div v-else-if="v4.strategy===4" class="ui-no-permission">
-                    <p>开通会员半价购买后可查看~</p>
-                    <ButtonComponent>开通会员</ButtonComponent>
+                  <div v-else-if="v4.privilegeType > 0">
+                    <NoPrivilegeComponent :content="v4" :pay="$refs.pay" />
                   </div>
                   <!-- 需要开通会员或付费后查看结束 -->
                   <!-- 底部信息，收藏，点赞，观看，转发，评论开始 -->
@@ -148,16 +145,19 @@
                     {{v4.forwardCount}}
                     <i class="icommon icon-message-square"></i>
                     {{v4.commentCount}}
-                    <span class="ui-dynamic-detail" @click="toDynamicDetail(v4)"><button>全文</button></span>
+                    <span
+                      class="ui-dynamic-detail"
+                      @click="toDynamicDetail(v4)"
+                    >
+                      <button>全文</button>
+                    </span>
                   </p>
                   <!-- 底部信息，收藏，点赞，观看，转发，评论结束 -->
                 </div>
               </li>
             </ul>
             <!-- 查看更多 -->
-            <p v-if="list.length" class="wd-view-more" @click="seeMore">
-              {{!noMore?'查看更多':'暂无更多~'}}
-            </p>
+            <p v-if="list.length" class="wd-view-more" @click="seeMore">{{!noMore?'查看更多':'暂无更多~'}}</p>
           </div>
           <!-- 左侧内容结束 -->
           <!-- 右侧内容开始 -->
@@ -239,6 +239,8 @@
       </div>
       <!-- 用户冬态结束 -->
     </div>
+    <!-- 支付弹窗组件 -->
+    <PayComponent ref="pay" />
   </div>
 </template>
 <script lang="ts" src="./index.ts"></script>

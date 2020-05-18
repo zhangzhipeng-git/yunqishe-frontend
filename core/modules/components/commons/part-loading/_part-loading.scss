@@ -46,7 +46,6 @@
     $main: map-get($colors, main);
     $main-deep: map-get($colors, main-deep);
     $main-light: map-get($colors, main-light);
-    $reverse: map-get($colors, reverse);
     .#{$theme} {
         .wd-part-loading-list,
         .wd-part-loading-text {

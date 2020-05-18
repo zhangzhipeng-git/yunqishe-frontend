@@ -9,7 +9,7 @@ export default class VideoComponent extends Vue {
     duration: number = 0;
     /** 当前播放时间偏移量,单位s,默认0 */
     currentTime: number = 0;
-    /** 已缓冲偏移量 0~1,默认0 */
+    /** 已缓冲时长 0~总时长duration,默认0 */
     bufferedLength: number = 0;
     /** 音量 0~1,默认.8 */
     volume: number = .8;
@@ -60,7 +60,7 @@ export default class VideoComponent extends Vue {
      * 侦听参数设置输入
      * @param nv 新的输入
      */
-    @Watch("optinos", { immediate: true })
+    @Watch("options", { immediate: true, deep:true})
     watchOptions(nv: any) {
         Object.assign(this.options$, nv);
         this.paused = !this.options$.autoplay;
@@ -69,7 +69,7 @@ export default class VideoComponent extends Vue {
      * 侦听src输入变化
      * @param nv 新输入
      */
-    @Watch("src", { immediate: true })
+    @Watch("src", { immediate: true})
     watchSrc(nv: any, ov: any) {
         if (ov !== nv) {
             this.duration = 0;
@@ -207,6 +207,13 @@ export default class VideoComponent extends Vue {
         if (buffered.length === 0) return;
         // 获取最后一个缓冲段的结束时间，作为已缓冲长度
         this.bufferedLength = buffered.end(buffered.length-1);
+        // 快进时长小于已缓冲时长时，可播放且不显示加载动画
+        if (this.duration&&(this.currentTime<=this.bufferedLength)) {
+            this.canplay$ = true;
+        } else {
+        // 快进时长大于已缓冲时长时，不可播放且显示加载动画
+            this.canplay$ = false;
+        }
     }
 
     /**
@@ -245,14 +252,16 @@ export default class VideoComponent extends Vue {
      * 监听播放时间
      */
     timeupdate() {
+        if (!this.video) return;
         // 播放结束
-        if (this.video&&this.video.ended){
+        if (this.video.ended){
             if (this.loop) {
                 this.play();
             } else {
                 this.pause();
             }
         };
+        
         // 节流
         if (!this.throttleOver)return;
         this.throttleOver = false;
@@ -286,8 +295,6 @@ export default class VideoComponent extends Vue {
         const rate = dis/(<any>this).$refs.bar.offsetWidth;
         this.currentTime =  this.duration*(rate>1?1:rate);
         this.video.currentTime = this.currentTime;
-        this.progress();
-        this.pause();
     }
 
     /**
@@ -459,7 +466,7 @@ export default class VideoComponent extends Vue {
     /**
      * 调控按钮或悬浮提示在总体进度范围之内
      * @param len1 当前进度
-     * @param len2 进度调节按钮或悬浮提示长度
+     * @param len2 进度调节按钮或悬浮提示占用进度的长度，如快进按钮的宽度和调节音量按钮的高度
      * @param len3 总体进度长度
      */
     getPositionValue(len1: number, len2: number, len3: number) {

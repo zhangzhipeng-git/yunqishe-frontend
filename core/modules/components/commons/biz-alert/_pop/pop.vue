@@ -7,10 +7,11 @@
  * @FilePath: \nuxt-ssr\components\commons\alert\pop\pop.vue
  -->
 <template>
-  <div id="id-wd-pop" class="wd-alert" v-show="show">
+  <div class="wd-alert wd-my-pop" v-show="show">
     <div class="wd-mask" ref="mask"></div>
     <div class="wd-content">
       <div
+        class="wd-content-wrap"
         :style="{ transition: 'all ' + (active ? enter : leave) / 1000 + 's' }"
         :class="[
           animation === 'scale' ? 'wd-pop-for-scale' : 'wd-pop',

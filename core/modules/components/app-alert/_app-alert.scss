@@ -1,14 +1,17 @@
 @charset 'utf-8';
-$alert-button-border: rgb(180, 201, 247);
+$alert-button-border: rgb(236, 239, 241);
 $alert-border-shadow: rgba(128, 128, 128, 0.123);
 .app-alert {
     user-select: none;
     .mask {
         position: fixed;
+        z-index: 99999;
         height:100%;
         width: 100%;
         top:0;
-        z-index: 99999;
+        left:0;
+        background-color: black;
+        opacity: .5;
     }
     .alert {
         position: fixed;
@@ -17,11 +20,10 @@ $alert-border-shadow: rgba(128, 128, 128, 0.123);
         top: 50%;
         left: 50%;
         text-align: center;
-        margin-top: -80px;
         margin-left: -120px;
+        transform: translateY(-50%);
         background-color: white;
         border-radius: 10px;
-        box-shadow: 0 0 1px 1px rgba(181, 197, 240, 0.589);
         z-index: 999999;
     }
     
@@ -36,24 +38,25 @@ $alert-border-shadow: rgba(128, 128, 128, 0.123);
     }
     
     .buttons {
-        display: flex;
         width:100%;
         font-size: $font-size-normal;
         border-top: 1px solid $alert-button-border;
-    
-        div {
-            flex: 1;
+        // @extend %clearfix;
+        .left,.right {
+            float: left;
+            width: 50%;
             text-align: center;
             line-height: 40px;
             border-right: 1px solid $alert-button-border;
         }
-    
-        & > div:last-child{
+        .right{
             border-right: none;
         }
-
         .left {
             color:$gray;
+        }
+        .width-100{
+            width:100%;
         }
     }
 }
@@ -66,7 +69,7 @@ $alert-border-shadow: rgba(128, 128, 128, 0.123);
     $main-deep: map-get($colors, main-deep);
   
     .#{$theme} {
-        .wd-alert {
+        .app-alert {
             .right {
                 color: $main-deep;
             }

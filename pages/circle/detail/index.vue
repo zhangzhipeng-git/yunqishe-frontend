@@ -5,7 +5,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
   <div id="id-ui-circle-detail">
     <!-- 帖子头部导航条 -->
     <div class="wd-nav-bar">
-      <router-link to="/circle">论坛</router-link>
+      <router-link to="/circle">圈子</router-link>
       <i class="icomoon icon-chevron-right"></i>
       <a @click="$router.push('/circle/content')">{{ topic&&topic.name }}</a>
       <i class="icomoon icon-chevron-right"></i>
@@ -50,13 +50,11 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
             </p>
             <p class="wd-stair-neck">{{ user.nickname }}</p>
             <!-- vip或svip，额外标识 -->
-            <p v-if="vip.identity" class="wd-user-vip">{{ vip.identity }}</p>
+            <p v-if="vip.identity" class="wd-user-role">{{ vip.identity }}</p>
             <!-- 用户角色名 -->
             <p v-if="vip&&vip.name" class="wd-user-description">{{ vip&&vip.name }}</p>
             <!-- 用户称号(黑铁-最强王者) -->
             <p v-if="user.designation" class="wd-user-designation">{{ user.designation }}</p>
-            <!-- 神秘标识 -->
-            <p v-if="user.extraname" class="wd-user-extranmae">{{ invitation.user.extraname }}</p>
             <!-- 用户等级 -->
             <p class="wd-user-level">Lv.{{ user.level }}</p>
           </div>
@@ -104,19 +102,22 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
         <!-- 1级回复 -->
         <div class="ui-reply">
           <div class="ui-reply-img">
-            <img :src="user.avator" :alt="!$store.state.user ? '未登录' : '用户头像'" />
+            <img :src="curUser&&curUser.avator" :alt="!curUser ? '未登录' : '用户头像'" />
           </div>
           <div class="ui-reply-wrap">
-            <ReplyComponent
-              v-model="replyObj0.text"
-              @submit="submit(replyObj0, 0)"
-              @focus="setTopReply(invitation)"
-              :id="'topReply'"
-              :showEmoji="true"
-              :placeholder="replyObj0.placeholder"
-              :disabled="!curUser"
-              :anchorPoint="{ name: 'topReply$', top: '-6rem' }"
-            />
+            <client-only>
+              <ReplyComponent
+                v-model="replyObj0.text"
+                @submit="submit(replyObj0, 0)"
+                @focus="setTopReply(invitation)"
+                @disabled="toLogin"
+                :id="'topReply'"
+                :showEmoji="true"
+                :placeholder="replyObj0.placeholder"
+                :disabled="!curUser"
+                :anchorPoint="{ name: 'topReply$', top: '-6rem' }"
+              />
+            </client-only>
           </div>
         </div>
         <!-- 帖子1级回复 -->
@@ -136,11 +137,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                 <!-- 1级回复 - 第几层 -->
                 <span class="wd-stair-right-wrap-head-tag-level-1">#{{ index + 2 }}楼</span>
                 <!-- 1级回复者昵称 -->
-                <span class="wd-stair-right-wrap-head-neck-level-1">
-                  {{
-                  item.user.nickname
-                  }}
-                </span>
+                <span class="wd-stair-right-wrap-head-neck-level-1">{{item.user.nickname}}</span>
                 <!-- 1级回复者等级 -->
                 <span class="wd-stair-right-wrap-head-level-level-1">Lv.{{ item.user.level }}</span>
               </h4>
@@ -197,30 +194,18 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                   <h4 class="wd-stair-right-wrap-head-level-2">
                     <!-- 2级回复第几层，没点击查看更多，item是没有响应式属性pageInfo的 -->
                     <span class="wd-stair-right-wrap-head-tag-level-2">
-                      #{{
-                      index +
-                      2 +
-                      "-" +
-                      ((((item.pageInfo && item.pageInfo.pageNum) || 1) - 1) *
-                      GTLv1CommentPageSize +
-                      (index_ + 1))
-                      }}楼
+                      #{{index +2 +"-" +((((item.pageInfo && item.pageInfo.pageNum) || 1) - 1) * GTLv1CommentPageSize +(index_ + 1))}}楼
                     </span>
                     <!-- 2级回复者昵称 -->
-                    <span class="wd-stair-right-wrap-head-neck-level-2">
-                      {{
-                      item_.user.nickname
-                      }}
-                    </span>
+                    <span class="wd-stair-right-wrap-head-neck-level-2">{{item_.user.nickname}}</span>
                     <!-- 2级回复者等级 -->
                     <span class="wd-stair-right-wrap-head-level-level-2">Lv.{{ item_.user.level }}</span>
                     <!-- 不是对1级回复的回复需要显示@对谁回复 -->
                     <span
                       class="wd-stair-right-wrap-head-neck-level-2"
-                      v-if="item.uid !== item_.who.id"
+                      v-if="item.uid !== item_.who.id && item_.who.id"
                     >
-                      <i class="alt">@</i>
-                      {{ item_.who.nickname }}
+                      <i class="alt">@</i>{{ item_.who.nickname }}
                     </span>
                   </h4>
                   <!-- 2级回复内容 -->
@@ -295,20 +280,21 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
       </div>
 
       <!-- 对1级或2级及以上的回复组件 -->
-      <ReplyComponent
-        class="seconde-reply"
-        @submit="submit(replyObj1, 1)"
-        v-model="replyObj1.text"
-        :spread="false"
-        :showEmoji="true"
-        :id="'childReply'"
-        :disabled="!curUser"
-        :placeholder="replyObj1.placeholder"
-        :anchorPoint="{ name: 'childReply$', top: '-12rem' }"
-        ref="childReply"
-        v-show="showChildReply"
-      />
-
+      <client-only>
+        <ReplyComponent
+          class="seconde-reply"
+          @submit="submit(replyObj1, 1)"
+          v-model="replyObj1.text"
+          :spread="false"
+          :showEmoji="true"
+          :id="'childReply'"
+          :disabled="!curUser"
+          :placeholder="replyObj1.placeholder"
+          :anchorPoint="{ name: 'childReply$', top: '-12rem' }"
+          ref="childReply"
+          v-show="showChildReply"
+        />
+      </client-only>
       <!-- 右侧 -->
       <!-- 侧边栏组件 投影内容的样式会同时加上父子组件的样式标识-->
       <SidebarComponent :threshold="'-4rem'" class="wd-main-right">

@@ -1,4 +1,6 @@
-// @ts-nocheck
+/**
+ * 本项目未使用vuex，这个是范例
+ */
 export const state = () => ({
   user: null
 })

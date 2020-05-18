@@ -98,7 +98,6 @@
     $main: map-get($colors, main);
     $main-deep: map-get($colors, main-deep);
     $main-light: map-get($colors, main-light);
-    $reverse: map-get($colors, reverse);
     .#{$theme} {
         // 改变每页记录条数大小的交互样式
         .wd-page-bar {

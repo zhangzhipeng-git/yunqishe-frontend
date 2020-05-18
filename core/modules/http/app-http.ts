@@ -117,7 +117,7 @@ export default class AppHttp {
      * @param needToken 是否启用防重复提交
      */
     public post<T>(url: string, data: Object, o: { config?: AxiosRequestConfig; needToken?: boolean; throttle?: number } = {}): Promise<T> {
-        return new Promise(res => {
+        return new Promise((res, rej) => {
             this.secure.secureInit().then(() => {
                 const config = o.config || {};
                 const throttle = o.throttle || 0;
@@ -131,7 +131,7 @@ export default class AppHttp {
                         const now = Date.now();
                         const lastTime = this.reqMap[url].lastTime;
                         if (now - lastTime < throttle) {
-                            throw new Error(HTTP_ERRORS.HTTP_ERROR_04);
+                            rej(new Error(HTTP_ERRORS.HTTP_ERROR_04));
                         }
                         this.reqMap[url].lastTime = now;
                     }
@@ -176,7 +176,7 @@ export default class AppHttp {
      * @param needToken 是否启用防重复提交
      */
     public $post<T>(url: string, data: Object, o: { config?: AxiosRequestConfig; needToken?: boolean; throttle?: number } = {}): Promise<T> {
-        return new Promise(res => {
+        return new Promise((res, rej) => {
             const config = o.config || {};
             const throttle = o.throttle || 0;
             const needToken = o.needToken || false;
@@ -189,7 +189,7 @@ export default class AppHttp {
                     const now = Date.now();
                     const lastTime = this.reqMap[url].lastTime;
                     if (now - lastTime < throttle) {
-                        throw new Error(HTTP_ERRORS.HTTP_ERROR_04);
+                        rej(new Error(HTTP_ERRORS.HTTP_ERROR_04));
                     }
                     this.reqMap[url].lastTime = now;
                 }

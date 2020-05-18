@@ -5,11 +5,15 @@ import NoResultComponent from '@/core/modules/components/commons/no-result/no-re
 import SidebarComponent from '@/core/modules/components/projections/sidebar/sidebar.vue';
 import ButtonComponent from '@/core/modules/components/commons/form/button/button';
 import PartLoadingComponent from '@/core/modules/components/commons/part-loading/part-loading.vue';
+import NoPrivilegeComponent from '../../components/privilege/no-privilege/index';
+import PayComponent from '../../components/privilege/pay/index';
 @Component({layout: 'app2',components: {
     NoResultComponent,
     SidebarComponent,
     ButtonComponent,
-    PartLoadingComponent
+    PartLoadingComponent,
+    NoPrivilegeComponent,
+    PayComponent
 }})
 export default class UserComponent extends BaseComponent {
     activeIndex: number = 0;
@@ -78,12 +82,12 @@ export default class UserComponent extends BaseComponent {
         this.id = this.$route.query.id||this.curUser.id;
         // 自己看自己时，动态列表添加‘个性化’和‘资料修改’
         // 当然后端也会做判断是不是自己在操作
-        if (Number(this.id) === this.curUser.id){
+        if (this.curUser && Number(this.id) === this.curUser.id){
             this.dynamicList.push('个性化');
             this.dynamicList.push('修改资料');
         }
         this.getUserInfo();
-        this.selectEntitiesByType();
+        this.selectEntitiesByType(this.type);
     }
 
     /**
@@ -124,9 +128,10 @@ export default class UserComponent extends BaseComponent {
         const type = i+1;
         this.activeIndex = i;
         if (type < 7){
-            this.type = type;
-            this.reset();
-            this.selectEntitiesByType();
+            // this.type = type;
+            this.pageNum = 1;
+            this.noMore = false;
+            this.selectEntitiesByType(type);
             return;
         }
         // 个性化和修改资料
@@ -135,11 +140,16 @@ export default class UserComponent extends BaseComponent {
     /**
      * 根据类型查动态
      */
-    selectEntitiesByType() {
+    selectEntitiesByType(type: number) {
         this.isLoading=true;
         this.httpRequest(this.http.get('/user/f/select/dynamic/list?type='
-        + this.type+'&id='+this.id+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize), {
+        + type+'&id='+this.id+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize), {
             success: (data: any) => {
+                if (this.type !== type) { // 不同类型置空
+                    this.list = [];
+                    this.type = type;
+                }
+                // 相同类型连接
                 this.list = this.list.concat(data.contents);
                 this.isLoading = false;
                 this.hasQuery = true;
@@ -157,7 +167,7 @@ export default class UserComponent extends BaseComponent {
     seeMore() {
         if (this.noMore) return;
         this.pageNum++;
-        this.selectEntitiesByType();
+        this.selectEntitiesByType(this.type);
     }
 
     /**
@@ -181,7 +191,7 @@ export default class UserComponent extends BaseComponent {
             this.httpRequest(this.http.get('/mediaClass/f/select/one?id='+pid), {
                 success: (data: any) => {
                     this.localStorage.setItem('media-'+key, data.mediaClass);
-                    this.$router.push('/media/detail?id='+pid); // 这里媒体用pid传过去
+                    this.$router.push('/media/detail?id='+pid+'&mid='+id); // 这里媒体用pid传过去
                 }
             });
         }

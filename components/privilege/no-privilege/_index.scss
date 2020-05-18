@@ -1,0 +1,51 @@
+.wd-no-privilege {
+    position: absolute;
+    z-index: 7;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    // 播放器权限校验提示和按钮包裹
+    .no-privilege-wrap {
+        position: absolute;
+        text-align: center;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    // 权限提示
+    .no-privilege-tip {
+        font-size: $font-size-min;
+        color: $gray-light-s;
+        margin: 1rem;
+    }
+    // 权限获取的按钮，如登录，开通vip等
+    .no-privilege-btn {
+        button {
+            display: inline-block;
+            height: 2rem;
+            padding: 0 1rem;
+            font-size: $font-size-normal;
+            line-height: 2rem;
+            color: $white;
+            border-radius: 3rem;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    $main-deep: map-get($colors, main-deep);
+    $main-light: map-get($colors, main-light);
+    .#{$theme} {
+        .wd-no-privilege {
+            .no-privilege-btn {
+                button {
+                    background: linear-gradient(to right, $main-light,$main-deep);
+                }
+            }
+        }
+    }
+}

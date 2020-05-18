@@ -56,11 +56,11 @@
     // @debug $theme; 
     $colors: map-get($theme-colors, #{$theme});
     $main-deep: map-get($colors, main-deep);
-    $reverse: map-get($colors, reverse);
+    $main: map-get($colors, main);
     .#{$theme} {
         .wd-ui-annex {
             .wd-upload-local{
-                background-color:  $reverse;
+                background-color:  $main;
             }
             .wd-use-link-confirm{
                 background-color: $main-deep;

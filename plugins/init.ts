@@ -8,6 +8,7 @@
 import App from "@/core/context/app-context.ts";
 import Component from "vue-class-component";
 import { Context } from "@nuxt/types";
+import {calculator} from '../core/modules/util/cal-util';
 export default function(context: Context) {
 
   const app = App.getAppContext();
@@ -20,4 +21,6 @@ export default function(context: Context) {
     "beforeRouteUpdate" // for vue-router 2.2+
   ]);
 
+  // 精确加减乘除挂载到Number原型对象上
+  calculator();
 }

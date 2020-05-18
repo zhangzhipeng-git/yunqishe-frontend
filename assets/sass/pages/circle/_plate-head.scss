@@ -36,14 +36,13 @@
     line-height: 2rem;
     text-align: center;
     border-radius: 2rem;
-    background-color: $red-warm;
     cursor: pointer;
 }
 
 // 板块标题
 .wd-content-name {
     font-size: 2rem;
-    color: $blue-sky;
+    color: $common;
 }
 
 // 右侧信息上部
@@ -74,5 +73,14 @@
 .wd-number-red {
     color: $red-warm;
 }
-
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    .#{$theme} {
+        .wd-content-concern {
+            background-color: $main;
+        }
+    }
+        
+}
 /*********************板块/帖子头部板块信息 -- end ****************/

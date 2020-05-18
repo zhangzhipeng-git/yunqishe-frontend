@@ -6,9 +6,10 @@ import { AxiosRequestConfig } from "axios";
 // 不需要加密的接口
 const PUBLIC_API = [
   // 用户
+  "/user/setup",
   "/user/logout",
   "/user/isrecord",
-  "/user/setup",
+  "/user/f/select/detail/one",
   "/user/f/select/active/list",
   // 用户动态
   "/user/f/select/dynamic/list",

@@ -11,9 +11,9 @@
     <div class="mask"></div>
     <div class="alert">
       <h4 v-if="title">{{title}}</h4>
-      <p>{{content}}</p>
+      <p v-html="content"></p>
       <div class="buttons">
-        <div v-tap ref="button1" :class="buttons.length === 2 ? 'left':'right'">{{buttons[0]}}</div>
+        <div v-tap ref="button1" :class="buttons.length === 2 ? 'left':'right width-100'">{{buttons[0]}}</div>
         <div v-tap ref="button2" class="right" v-if="buttons.length === 2">{{buttons[1]}}</div>
       </div>
     </div>

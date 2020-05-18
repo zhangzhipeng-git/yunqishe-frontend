@@ -1,0 +1,106 @@
+// 兑换云币和开通或续费会员的公共样式
+.wd-my-pop{
+    // 开通会员，兑换云币
+    .wd-open-renewal-list,
+    .wd-exchange-list{
+        // 列表
+        // ul {
+            text-align: center;
+            font-size: $font-size-min;
+            width: 20rem+0.4 * 4rem;
+            @extend %clearfix;
+        // }
+        li {
+            float: left;
+        }
+        a {
+            display: block;
+            width: 5rem;
+            padding: 1rem 0;
+            margin: 0.2rem;
+            border: 1px solid $gray-light-s;
+            border-radius: 0.2rem;
+        }
+        span {
+            line-height: 1.5rem;
+        }
+    }
+    // 支付方式，兑换方式
+    .wd-open-renewal-type,
+    .wd-exchange-type {
+        @extend %clearfix;
+        a {
+            display: block;
+            float: left;
+            width: (20rem+0.4 * 4rem-0.4rem * 3)/3;
+            padding: 0.5rem 0;
+            margin: 0.2rem;
+            font-size: $font-size-min;
+            text-align: left;
+            border: 1px solid $gray-light-s;
+            border-radius: 0.2rem;
+            i {
+                font-size: $font-size-normal;
+                margin: 0 0.5rem;
+                vertical-align: middle;
+            }
+        }
+        // 支付宝
+        .icon-alipay {
+            color: $blue-sky;
+        }
+        // 微信支付
+        .icon-wechat-pay {
+            color: $green-light;
+        }
+    }
+    // 兑换方式
+    .wd-exchange-type {
+        a{
+            width:(20rem+0.4 * 4rem-0.4rem * 2)/2;
+        }
+    }
+    // 选中激活
+    .active {
+        position: relative;
+        &::before {
+            content: "√";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 1rem;
+            line-height: 1rem;
+            width: 1rem;
+            text-align: right;
+            border-radius: 2rem 0 0 0;
+            color: $white;
+        }
+    }
+    // 开通会员或兑换云币的按钮
+    &.wd-pay button {
+        height: 2rem !important;
+        line-height: 2rem !important;
+        width: 20rem+0.4 * 4rem;
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    $colors: map-get($theme-colors, #{$theme}); // 颜色map
+    $main: map-get($colors, main); // 主色
+    .#{$theme} {
+        .wd-my-pop {
+            // 开通会员或兑换云币的激活样式
+            &.wd-pay {
+                // 选中激活
+                .active,
+                ul a:hover {
+                    border: 1PX solid $main;
+                }
+                .active::before {
+                    background-color: $main;
+                }
+            }
+        }
+    }
+}

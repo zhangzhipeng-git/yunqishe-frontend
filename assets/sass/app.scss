@@ -6,6 +6,7 @@
     height: 100%;
     // 字体默认.875rem
     font-size: $font-size-small;
+    font-family: $font-family-y;
 }
 
 // 全局动画
@@ -45,7 +46,9 @@
 @import "./common/all";
 // 布局组件样式
 @import "../../layouts/layout";
-// core
+// app components
+@import '../../components/components';
+// app core
 @import "../../core/modules/components/core-components";
 // 主题相关
 @each $theme in $themes {
@@ -53,7 +56,6 @@
     $colors: map-get($theme-colors, #{$theme});
     #id-app.#{$theme},
     body.#{$theme} {
-        font-family:map-get($theme-font-familys, #{$theme});
         background-color: map-get($colors, bg);
     }
 }
