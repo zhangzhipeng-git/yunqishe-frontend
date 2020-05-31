@@ -198,7 +198,7 @@ export default class AppHttp {
                 const formtoken = this.db.get('formtoken') || null;
                 config.headers.formtoken = formtoken;
             }
-            config.headers['Content-Type'] = 'application/json;charset=UTF-8';
+            config.headers['Content-Type'] = config.headers['Content-Type']||'application/json;charset=UTF-8';
             Log.debug('post请求', COLORS.RED);
             Log.debug('请求url:' + url, COLORS.GREEN);
             Log.debug('请求体:', COLORS.GREEN);

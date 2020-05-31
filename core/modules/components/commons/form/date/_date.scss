@@ -1,0 +1,117 @@
+.wd-calendar-component {
+    display: inline-block;
+    position: relative;
+    user-select: none;
+    // 日历输入
+    .wd-date-input{
+        // 日历icon
+        input + i {
+            position: relative;
+            font-size: 1rem;
+            margin-left: -1.5rem;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+    }
+    // 日历面板
+    .wd-date-pannel {
+        position: absolute;
+        z-index:10;
+        width:100%;
+        top: 2.01rem;
+        left:0;
+        background-color: $white;
+        border: 1PX solid lightgray;
+        &.reverse{
+            top:unset;
+            bottom: 2.01rem;
+        }
+    }
+    // 面板头部
+    .wd-date-pannel-head{
+        text-align: center;
+        height: 2rem;
+        line-height: 2rem;
+        padding:0 .5rem;
+        border-bottom: 1PX solid lightgray;
+        span{
+            display: inline-block;
+        }
+        .icomoon {
+            font-size: 1rem;
+            margin:.5rem;
+            cursor: pointer;
+        }
+        .pre {
+            float: left;
+        }
+        .nex {
+            float: right;
+        }
+    }
+    // 日期面板
+    table{
+        border-collapse: collapse;
+        border-spacing: 0;
+        margin: .5rem 0;
+        width:100%;
+        text-align: center;
+        th {
+            font-weight: normal;
+        }
+        td,th {
+            border: 1PX solid lightgray;
+        }
+        td a, th {
+            padding: .25rem;
+        }
+        a {
+            display: inline-block;
+            width:100%;
+            height:100%;
+        }
+        .previousMonth, .nextMonth{
+            color:gray;
+            cursor: not-allowed;
+        }
+    }
+    // 面板脚部
+    .wd-date-pannel-foot {
+        text-align: right;
+        line-height: 2rem;
+        border-top: 1PX solid lightgray;
+        button{
+            font-size: 1rem;
+            padding:0 .5rem;
+            margin-right:.2rem;
+            border: 1PX solid lightgray;
+        }
+    }
+}
+
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+    $main-light: map-get($colors, main-light);
+    .#{$theme} {
+        .wd-calendar-component {
+            .wd-date-pannel-head{
+                a:hover{
+                    color:$main;
+                }
+            }
+            table {
+                a:hover, .active {
+                    color:$white;
+                    background-color: $main;
+                }
+            }
+            .wd-date-pannel-foot button:hover{
+                color: $main;
+            }
+        }
+    }
+}

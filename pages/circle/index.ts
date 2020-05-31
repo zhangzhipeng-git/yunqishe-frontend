@@ -3,7 +3,7 @@
  * Path: d:\frontend\vue\nuxt-ssr
  * Created Date: Saturday, December 7th 2019, 1:21:06 pm
  * Author: zzp-dog
- * 论坛首页
+ * 圈子首页
  * Copyright (c) 2019 Your Company
  */
 

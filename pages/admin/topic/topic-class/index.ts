@@ -23,11 +23,11 @@ export default class TopicClassifyComponent extends BaseComponent {
     list: any[] = [
         {id:0,description:'否'},{id:1,description:'是'}
     ];
-    /** 按模块搜索分类，默认论坛 */
+    /** 按模块搜索分类，默认圈子 */
     searchModule:number = 0;
-    /** 所属模块0-论坛，1-问云 */
+    /** 所属模块0-圈子，1-问云 */
     modules: any[] = [
-        {id: 0, description: '论坛'},
+        {id: 0, description: '圈子'},
         {id: 1, description: '问云'}
     ];
     @Ref('table')

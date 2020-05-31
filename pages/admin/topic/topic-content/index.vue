@@ -126,7 +126,7 @@
           <!-- 所属模块 -->
           <div class="wd-form-unit-v">
             <label class="required" for>模块</label>
-            <input :disabled="true" :value="searchModule===0?'论坛':'问云'" type="text" />
+            <input :disabled="true" :value="searchModule===0?'圈子':'问云'" type="text" />
           </div>
           <!-- 所属话题分类 -->
           <div class="wd-form-unit-v">

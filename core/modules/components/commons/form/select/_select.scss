@@ -8,8 +8,8 @@
         line-height: 2rem;
         border-radius: 0;
     }
-    // 下拉箭头icon
-    .icon-chevron-down {
+    // 下/上拉箭头icon
+    .icon-chevron-down,.icon-chevron-up {
         display: inline-block;
         position: relative;
         z-index: 2;
@@ -32,6 +32,10 @@
         overflow: auto;
         background-color: $white;
         transition: height .3s;
+        &.reverse {
+            top: unset;
+            bottom: 2.01rem;
+        }
     }
     // 关闭
     .close {

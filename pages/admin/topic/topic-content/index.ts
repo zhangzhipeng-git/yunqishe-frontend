@@ -33,10 +33,10 @@ import { Ref } from 'vue-property-decorator';
 export default class ListComponent extends BaseComponent {
     /** 所属模块 ,先写死 */
     moduleList: any[] = [
-        { id: 0, description: '论坛' },
+        { id: 0, description: '圈子' },
         { id: 1, description: '问云' },
     ];
-    /** 默认所属模块为论坛, 必填 */
+    /** 默认所属模块为圈子, 必填 */
     searchModule: number = 0;
     /** 是否可见 */
     visibleList: any[] = [

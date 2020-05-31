@@ -1,0 +1,23 @@
+.wd-input{
+    @extend %clearfix;
+    label{
+        line-height:2rem;
+    }
+    .wd-input-wrap{
+        padding-bottom: .9rem;
+        position: relative;
+        display: inline-block;
+        .remender{
+            position: absolute;
+            bottom: 0;
+            right:0;
+            color: red;
+            font-size: $font-size-min;
+            text-align: right;
+        }
+        textarea {
+            border-color: #c8c8c8;
+            border-radius: .3rem;
+        }
+    }
+}

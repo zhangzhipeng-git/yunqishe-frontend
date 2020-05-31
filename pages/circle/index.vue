@@ -11,7 +11,7 @@
 
 <template>
   <div id="id-ui-circle">
-    <!-- 论坛页内容头部开始 -->
+    <!-- 圈子页内容头部开始 -->
     <div class="ui-circle-header">
       <!-- 头部左侧banner开始 -->
       <div class="ui-circle-cover">
@@ -41,9 +41,9 @@
       </div>
       <!-- 右侧推荐面板结束 -->
     </div>
-    <!-- 论坛页内容头部结束-->
+    <!-- 圈子页内容头部结束-->
 
-    <!-- 论坛版块开始 -->
+    <!-- 圈子版块开始 -->
     <!-- 大众和系统版块 -->
     <div v-for="(v, i) in blocks" :key="i">
       <div v-if="v.plates.length" class="ui-circle-content">
@@ -94,7 +94,7 @@
         </ul>
       </div>
     </div>
-    <!-- 论坛版块结束 -->
+    <!-- 圈子版块结束 -->
   </div>
 </template>
 <script lang="ts" src="./index.ts"></script>

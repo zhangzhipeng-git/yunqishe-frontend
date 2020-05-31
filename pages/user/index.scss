@@ -1,12 +1,12 @@
 $opacity: 0.8;
-$wd-main-right: 17.5rem;
-$wd-main-left: $main-width - $wd-main-right - 1.5rem;
+$wd-main-left: 17.5rem;
+$wd-main-right: $main-width - $wd-main-left - 1.5rem;
 // 左侧方块尺寸
-$size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
+$size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
 #id-user {
     // 局部加载列表
     .ui-part-loading-list {
-        width: $wd-main-left;
+        width: $wd-main-right;
     }
     position: relative;
     width: 100%;
@@ -138,11 +138,11 @@ $size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
         margin: 0 3px;
         @extend %clearfix;
     }
-    // 用户主体详情左侧
-    .user-main-left {
-        width: $wd-main-left;
+    // 用户主体详情右侧
+    .user-main-right {
+        width: $wd-main-right;
         border-radius: 0.3rem;
-        float: left;
+        float: right;
     }
     // 无数据
     .ui-no-data {
@@ -172,8 +172,8 @@ $size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
     .ui-user-avator {
         margin-right: 1rem;
         img {
-            height: 2rem;
             width: 2rem;
+            height: 2rem;
             border-radius: 100%;
             border: 1PX solid $gray-light;
         }
@@ -233,13 +233,14 @@ $size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
             }
         }
     }
-    // 用户详情主体右侧
-    .user-main-right {
+    // 用户详情主体左侧
+    .user-main-left {
         @include flex();
         @include flex-direction();
         position: relative;
-        float: right;
-        width: $wd-main-right;
+        float: left;
+        left:0;
+        width: $wd-main-left;
         border-left: none;
         border-radius: 0.3rem;
         background-color: transparent;
@@ -299,7 +300,6 @@ $size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
         font-weight: bold;
     }
     // 用户礼物
-    // 用户捕捉
     // 用户最近访客
     .user-gifts,
     .user-captures,
@@ -368,6 +368,78 @@ $size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
     .user-visitors {
         @include flex-1();
     }
+    // 资料设置
+    .ui-user-info-set {
+        padding: 1rem 0;
+        background-color: $white;
+        opacity: .8;
+        border-radius: .3rem;
+        li {
+            padding: .2rem 4rem ;
+            text-align: left;
+            @extend %clearfix;
+            label {
+                line-height: 2rem;
+            }
+            // input组件样式覆盖
+            /deep/ .wd-input-wrap{
+                float: right;
+                input,textarea {
+                    width:20rem;
+                }
+                textarea {
+                    height:5rem;
+                }
+            }
+            // 性别选择select组件样式覆盖,日历组件样式覆盖
+            /deep/ .wd-select-component,
+            /deep/ .wd-calendar-component{
+                float: right;
+                input {
+                    width: 20rem;
+                }
+            }
+        }
+        // 上传头像
+        .ui-upload {
+            line-height: 5rem;
+            /deep/ .wd-upload-file{
+                height:5rem;
+                width:5rem;
+            }
+        }
+        // 上传组件
+        .ui-upload-component{
+            float: right;
+        }
+        // 图片和icon容器
+        .ui-img-box{
+            position: relative;
+            height:5rem;
+            width:5rem;
+            line-height: 5rem;
+            border-radius: .5rem;
+            text-align: center;
+            border: 2PX solid $gray;
+            box-sizing: content-box;
+            img{
+                display: inline-block;
+                position: absolute;
+                left:0;
+                top:0;
+                z-index:2;
+                width:5rem;
+                height:5rem;
+                border-radius: .5rem;
+            }
+            i{
+                position: relative;
+                z-index:1;
+                line-height: 5rem;
+                font-size: $font-size-huge;
+            }
+        }
+    }
 }
 
 // 主题相关
@@ -405,6 +477,13 @@ $size: ($wd-main-right - 1rem - 3 * 0.5rem)/3-.1rem;
             // 查看全文
             .ui-dynamic-detail button {
                 color: $main;
+            }
+            // 上传
+            .ui-img-box{
+                border-color:$main;
+                i {
+                    color:$main;
+                }
             }
         }
     }

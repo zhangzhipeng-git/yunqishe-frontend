@@ -56,20 +56,7 @@ export default class AdminComponent extends BaseComponent {
         },
         {
             level: 1,
-            name: "系统管理",
-            spread: false,
-            leftIcon: ["icon-settings"],
-            rightIcon: ["icon-caret-left", "icon-caret-down"],
-            child: [
-                { name: "登录设置", level: 2 },
-                { name: "验证设置", level: 2 },
-                { name: "操作设置", level: 2 },
-                { name: "接口设置", level: 2 }
-            ]
-        },
-        {
-            level: 1,
-            name: "RBAC管理",
+            name: "RBAC",
             spread: false,
             leftIcon: ["icon-user-circle"],
             rightIcon: ["icon-caret-left", "icon-caret-down"],
@@ -96,6 +83,19 @@ export default class AdminComponent extends BaseComponent {
         },
         {
             level: 1,
+            name: "系统管理",
+            spread: false,
+            leftIcon: ["icon-settings"],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                { name: "登录设置", level: 2 },
+                { name: "验证设置", level: 2 },
+                { name: "操作设置", level: 2 },
+                { name: "接口设置", level: 2 }
+            ]
+        },
+        {
+            level: 1,
             name: "话题管理",
             spread: false,
             leftIcon: ["icon-box"],
@@ -107,7 +107,7 @@ export default class AdminComponent extends BaseComponent {
                     name: '话题分类',
                     url: '/admin/topic/topic-class'
                 },
-                // 论坛帖子和问云问答
+                // 圈子话题和问云问答
                 {
                     level: 2,
                     name: '话题列表',

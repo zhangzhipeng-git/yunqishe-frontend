@@ -4,16 +4,24 @@ import BaseComponent from '~/core/base-component';
 import NoResultComponent from '@/core/modules/components/commons/no-result/no-result.vue';
 import SidebarComponent from '@/core/modules/components/projections/sidebar/sidebar.vue';
 import ButtonComponent from '@/core/modules/components/commons/form/button/button';
+import InputComponent from '@/core/modules/components/commons/form/input/input';
 import PartLoadingComponent from '@/core/modules/components/commons/part-loading/part-loading.vue';
 import NoPrivilegeComponent from '../../components/privilege/no-privilege/index';
 import PayComponent from '../../components/privilege/pay/index';
+import UploadComponent from '../../core/modules/components/commons/upload/upload';
+import SelectComponent from '@/core/modules/components/commons/form/select/select';
+import CalendarComponent from '../../core/modules/components/commons/form/date/date';
 @Component({layout: 'app2',components: {
     NoResultComponent,
     SidebarComponent,
     ButtonComponent,
     PartLoadingComponent,
     NoPrivilegeComponent,
-    PayComponent
+    PayComponent,
+    UploadComponent,
+    InputComponent,
+    SelectComponent,
+    CalendarComponent
 }})
 export default class UserComponent extends BaseComponent {
     activeIndex: number = 0;
@@ -27,8 +35,8 @@ export default class UserComponent extends BaseComponent {
     @Ref('user_bar')
     userBar!:any;
     /** 用户动态主体左侧 */
-    @Ref('main_left')
-    mainLeft!:any;
+    @Ref('main_right')
+    mainRight!:any;
 
     /** 路由传过来的用户id */
     id: number|any = -1;
@@ -44,6 +52,8 @@ export default class UserComponent extends BaseComponent {
 
     /** 用户 */
     user: any = {};
+    /** 用户副本 */
+    user$: any = {};
     /** 定制标签 */
     tags: any = [];
     /** 礼物列表 */
@@ -74,20 +84,32 @@ export default class UserComponent extends BaseComponent {
     /** 是否有更多,默认有 */
     noMore:boolean = false;
 
+    /** 要修改的用户的model */
+    userModel: any = {}
+
+    /** 上传头像的最大字节 */
+    max: number = 1024;
+    /** 上传文件的名称 */
+    name: string = 'file';
+
     constructor() {
         super();
     }
 
-    public mounted(){
+    public async mounted(){
         this.id = this.$route.query.id||this.curUser.id;
         // 自己看自己时，动态列表添加‘个性化’和‘资料修改’
-        // 当然后端也会做判断是不是自己在操作
+        // 后端也会做判断是不是自己在操作
+        if (null === this.curUser) {
+            await this.isRecord();
+        }
         if (this.curUser && Number(this.id) === this.curUser.id){
-            this.dynamicList.push('个性化');
             this.dynamicList.push('修改资料');
+            this.dynamicList.push('个性化');
         }
         this.getUserInfo();
         this.selectEntitiesByType(this.type);
+        this.user$ = this.clone(this.curUser);
     }
 
     /**
@@ -135,6 +157,7 @@ export default class UserComponent extends BaseComponent {
             return;
         }
         // 个性化和修改资料
+        this.type = type;
     }
 
     /**
@@ -198,19 +221,53 @@ export default class UserComponent extends BaseComponent {
     }
 
 
-
     /**
      * 异步查询后，主体高度变化
      */
     public setHeight() {
-        this.mainLeft.style.height = 'auto'; // 异步查询后，自动设置一下高度
+        this.mainRight.style.height = 'auto'; // 异步查询后，自动设置一下高度
         this.$nextTick(() => {
             // 页面下边儿动态列表补满一屏
             const userDetailHeight = this.userDetail.scrollHeight;
             const userInfoHeight = this.userInfo.offsetHeight;
             const userBarHeight = this.userBar.offsetHeight;
             const rsize = parseFloat(this.$$.getcomputedStyle(document.body, 'fontSize'));
-            this.mainLeft.style.height = (userDetailHeight - userInfoHeight - userBarHeight - (5+3+.5)*rsize) + 'px';
+            this.mainRight.style.height = (userDetailHeight - userInfoHeight - userBarHeight - (5+3+.5)*rsize) + 'px';
         })
     }
+
+    /** 选择头像 */
+    onchange(e: any) {
+        this.handler.load();
+        const file = e.currentTarget.files[0];
+        // 未选择文件
+        if (!file) return;
+        const param = new FormData();
+        param.append('file', file);
+        const config = {
+            headers:{"Content-Type": "multipart/form-data"},
+            // 监听进度，这里不需要
+            // onUploadProgress: e => {
+            // var completeProgress = ((e.loaded / e.total * 100) | 0) + "%";
+            //     this.progress = completeProgress;
+            // }
+        };
+        this.httpRequest(this.http.$post('/upload/user/avator',param, {config}), {
+            success: (data: any) => {
+                this.handler.unload();
+                this.curUser.avator = data.url;
+                if (this.user.id === this.curUser.id) { // 当前浏览的用户是自己
+                    this.user.avator = data.url;
+                }
+            }
+        });
+    };
+
+    /**
+     * 保存用户资料
+     */
+    updateUser() {
+        
+    }
+
 }

@@ -3,7 +3,7 @@
  * Path: d:\frontend\vue\nuxt-ssr
  * Created Date: Saturday, December 7th 2019, 1:21:11 pm
  * Author: zzp-dog
- * 论坛首页样式
+ * 圈子首页样式
  * Copyright (c) 2019 Your Company
  */
 
@@ -13,7 +13,7 @@
     $content-width: $main-width - $global-padding*2;
     // 主体内容宽度 - 中间间隔后 均分
     $avg-width: ($content-width - $global-margin) / 2;
-    // 论坛首页头部
+    // 圈子首页头部
     .ui-circle-header {
         padding: $global-padding;
         background-color: $white;

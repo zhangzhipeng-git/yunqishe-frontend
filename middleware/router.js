@@ -20,8 +20,44 @@ export const whiteList = [
     /** 后台 */
     "/admin/login_for_sys"
 ];
+
+if (process&&process.server) {
+    global.reqLimit = (req, error) => {
+        let hostMap = global.hostMap;
+        const host = req.headers['host'];
+        if (!hostMap) {
+            hostMap = global.hostMap = {};
+        }
+        if (!hostMap[host]){
+            hostMap[host] = {
+                lastTime: Date.now(),
+                count: 1
+            }
+        }
+        const hostInfo = hostMap[host];
+        if (hostInfo.count > 25) { // 请求超过最大次数，暂且设为后端的1/2
+            if (hostInfo.count === 26) {
+                setTimeout(() => { // 1小时候解除请求限制
+                    delete hostMap[host];
+                }, 1000 * 60 * 60);
+            }
+            hostInfo.count++;
+            error({ statusCode: 500, message: '已达到最大请求次数，请1小时后再访问。' });
+            return;
+        }
+        const now = Date.now();
+        if (now - hostInfo.lastTime < 5 * 1000) { // 在指定间隔时间内才累计请求数
+            hostInfo.count++;
+        } else { // 重置请求数为1
+            hostInfo.count = 1;
+        }
+        hostInfo.lastTime = now;
+    }
+}
+
 // 刷新页面时，只在服务端执行。。。导致刷新页面会丢失密钥
-const router = async({ route, redirect, req, store }) => {
+const router = async({ route, redirect, req, error }) => {
+    if (process&&process.server)global.reqLimit(req, error);
     const fullPath = route.fullPath;
     // 路由地址在白名单内
     const path = fullPath.split("?")[0];
@@ -39,12 +75,12 @@ const router = async({ route, redirect, req, store }) => {
         // 和sotore.state.user一样，这两处都存了user，任选一个判断即可
         if (app.getDB().get("user")) return;
     }
-    let config = { headers: {} };
+    // 以下只在客户端执行
     // 路由地址不在白名单内，需要判断是否登录
     // 查询是否已登录或记住我，返回成功则协商密钥
     await app
         .getHttp()
-        .get("/user/isrecord", config)
+        .get("/user/isrecord")
         .then(data => {
             if (data.status !== 200) { // 失败去登录页
                 redirect(login_url, { fromPath: fullPath });

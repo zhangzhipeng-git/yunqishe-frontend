@@ -96,8 +96,6 @@ export default class qaComponent extends BaseComponent {
      */
     select(v: any) {
         this.topicId = v.id;
-        this.pageNum = 1;
-        this.noMore = false;
         this.reset();
         this.getContentList();
     }

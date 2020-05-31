@@ -18,7 +18,7 @@ export default class RadioGroupComponent extends Vue {
     model: any;
     /** radio配置数组 */
     @Prop({type: Array, default: () => []})
-    list!: any[];
+    list!: Radio[];
     /** 是否禁用radio组 */
     @Prop({type:Boolean,default: false})
     disabled!: boolean;

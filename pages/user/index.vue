@@ -79,89 +79,7 @@
         <!-- 主体内容开始 -->
         <div class="user-detail-main">
           <!-- 左侧内容开始 -->
-          <div class="user-main-left" ref="main_left">
-            <PartLoadingComponent class="ui-part-loading-list" v-if="isLoading" :type="1" />
-            <NoResultComponent class="ui-no-data" v-else-if="hasQuery&&!isLoading&&!list.length" />
-            <ul>
-              <li v-for="(v4, i4) in list" :key="'i4'+i4">
-                <div class="ui-dynamic-content">
-                  <!-- 头部信息开始 -->
-                  <div class="ui-dynamic-content-head">
-                    <!-- 用户头像开始 -->
-                    <div class="ui-user-avator">
-                      <img :src="user.avator" alt="用户头像" />
-                    </div>
-                    <!-- 用户头像结束 -->
-                    <!-- 用户信息和发表信息开始 -->
-                    <div class="ui-top-info">
-                      <p>
-                        {{user.nickname}}
-                        <span class="wd-user-level">lv.{{user.level}}</span>
-                      </p>
-                      <p>
-                        来自{{v4.device===1?'PC端':'移动端'}}
-                        <i
-                          class="icommon"
-                          :class="'icon-'+(v4.device===1?'monitor' : 'tablet')"
-                        ></i>
-                      </p>
-                    </div>
-                    <!-- 用户信息和发表信息结束 -->
-                  </div>
-                  <!-- 头部信息结束 -->
-                  <!-- 动态简介开始 -->
-                  <div
-                    class="ui-dynamic-content-body"
-                    @click="toDynamicDetail(v4)"
-                    v-if="v4.privilegeType === 0"
-                  >
-                    <!-- 标题开始 -->
-                    <h3>{{v4.title}}</h3>
-                    <!-- 标题结束 -->
-                    <!-- 封面（有则显示）和简介开始 -->
-                    <div class="ui-body-info-main">
-                      <div class="ui-dynamic-cover" v-if="v4.cover">
-                        <img :src="v4.cover" alt="内容封面" />
-                      </div>
-                      <p class="ui-dynamic-introduce">{{v4.introduce}}</p>
-                    </div>
-                    <!-- 封面（有则显示）和简介结束 -->
-                  </div>
-                  <!-- 动态简介结束 -->
-                  <!-- 需要开通会员或付费后查看开始 -->
-                  <div v-else-if="v4.privilegeType > 0">
-                    <NoPrivilegeComponent :content="v4" :pay="$refs.pay" />
-                  </div>
-                  <!-- 需要开通会员或付费后查看结束 -->
-                  <!-- 底部信息，收藏，点赞，观看，转发，评论开始 -->
-                  <p class="ui-dynamic-content-foot">
-                    <i class="icommon icon-star-o"></i>
-                    {{v4.concernCount}}
-                    <i class="icommon icon-thumbs-up-o"></i>
-                    {{v4.thumbupCount}}
-                    <i class="icommon icon-eye"></i>
-                    {{v4.viewCount}}
-                    <i class="icommon icon-external-link"></i>
-                    {{v4.forwardCount}}
-                    <i class="icommon icon-message-square"></i>
-                    {{v4.commentCount}}
-                    <span
-                      class="ui-dynamic-detail"
-                      @click="toDynamicDetail(v4)"
-                    >
-                      <button>全文</button>
-                    </span>
-                  </p>
-                  <!-- 底部信息，收藏，点赞，观看，转发，评论结束 -->
-                </div>
-              </li>
-            </ul>
-            <!-- 查看更多 -->
-            <p v-if="list.length" class="wd-view-more" @click="seeMore">{{!noMore?'查看更多':'暂无更多~'}}</p>
-          </div>
-          <!-- 左侧内容结束 -->
-          <!-- 右侧内容开始 -->
-          <SidebarComponent class="user-main-right">
+          <SidebarComponent class="user-main-left">
             <div class="user-evaluate">
               <ul>
                 <li
@@ -233,6 +151,181 @@
               </ul>
             </div>
           </SidebarComponent>
+          <!-- 左侧内容结束 -->
+          <!-- 右侧内容开始 -->
+          <div class="user-main-right" ref="main_right">
+            <!-- 内容列表开始 -->
+            <template v-if="type < 7">
+              <PartLoadingComponent class="ui-part-loading-list" v-if="isLoading" :type="1" />
+              <NoResultComponent class="ui-no-data" v-else-if="hasQuery&&!isLoading&&!list.length" />
+              <ul>
+                <li v-for="(v4, i4) in list" :key="'i4'+i4">
+                  <div class="ui-dynamic-content">
+                    <!-- 头部信息开始 -->
+                    <div class="ui-dynamic-content-head">
+                      <!-- 用户头像开始 -->
+                      <div class="ui-user-avator">
+                        <img :src="user.avator" alt="用户头像" />
+                      </div>
+                      <!-- 用户头像结束 -->
+                      <!-- 用户信息和发表信息开始 -->
+                      <div class="ui-top-info">
+                        <p>
+                          {{user.nickname}}
+                          <span class="wd-user-level">lv.{{user.level}}</span>
+                        </p>
+                        <p>
+                          来自{{v4.device===1?'PC端':'移动端'}}
+                          <i
+                            class="icommon"
+                            :class="'icon-'+(v4.device===1?'monitor' : 'tablet')"
+                          ></i>
+                        </p>
+                      </div>
+                      <!-- 用户信息和发表信息结束 -->
+                    </div>
+                    <!-- 头部信息结束 -->
+                    <!-- 动态简介开始 -->
+                    <div
+                      class="ui-dynamic-content-body"
+                      @click="toDynamicDetail(v4)"
+                      v-if="v4.privilegeType === 0"
+                    >
+                      <!-- 标题开始 -->
+                      <h3>{{v4.title}}</h3>
+                      <!-- 标题结束 -->
+                      <!-- 封面（有则显示）和简介开始 -->
+                      <div class="ui-body-info-main">
+                        <div class="ui-dynamic-cover" v-if="v4.cover">
+                          <img :src="v4.cover" alt="内容封面" />
+                        </div>
+                        <p class="ui-dynamic-introduce">{{v4.introduce}}</p>
+                      </div>
+                      <!-- 封面（有则显示）和简介结束 -->
+                    </div>
+                    <!-- 动态简介结束 -->
+                    <!-- 需要开通会员或付费后查看开始 -->
+                    <div v-else-if="v4.privilegeType > 0">
+                      <NoPrivilegeComponent :content="v4" :pay="$refs.pay" />
+                    </div>
+                    <!-- 需要开通会员或付费后查看结束 -->
+                    <!-- 底部信息，收藏，点赞，观看，转发，评论开始 -->
+                    <p class="ui-dynamic-content-foot">
+                      <i class="icommon icon-star-o"></i>
+                      {{v4.concernCount}}
+                      <i class="icommon icon-thumbs-up-o"></i>
+                      {{v4.thumbupCount}}
+                      <i class="icommon icon-eye"></i>
+                      {{v4.viewCount}}
+                      <i class="icommon icon-external-link"></i>
+                      {{v4.forwardCount}}
+                      <i
+                        class="icommon icon-message-square"
+                      ></i>
+                      {{v4.commentCount}}
+                      <span
+                        class="ui-dynamic-detail"
+                        @click="toDynamicDetail(v4)"
+                      >
+                        <button>全文</button>
+                      </span>
+                    </p>
+                    <!-- 底部信息，收藏，点赞，观看，转发，评论结束 -->
+                  </div>
+                </li>
+              </ul>
+              <!-- 查看更多 -->
+              <p v-if="list.length" class="wd-view-more" @click="seeMore">{{!noMore?'查看更多':'暂无更多~'}}</p>
+            </template>
+            <!-- 内容列表结束 -->
+            <!-- 资料设置开始 -->
+            <template v-else-if="type === 7">
+              <ul class="ui-user-info-set" formgroup ref="formGroup">
+                <li class="ui-upload">
+                  头像
+                  <UploadComponent
+                    class="ui-upload-component"
+                    :multiply="false"
+                    @onchange="onchange($event)"
+                  >
+                    <div class="ui-img-box">
+                      <i class="icomoon icon-plus"></i>
+                      <img :src="this.curUser.avator" alt=""/>
+                    </div>
+                  </UploadComponent>
+                </li>
+                <li>
+                  <InputComponent
+                    :label="'姓名'"
+                    :pattern="'required'"
+                    v-model="user$.name"
+                  />
+                </li>
+                <li>
+                  <InputComponent
+                    :label="'昵称'"
+                    :pattern="'required'"
+                    v-model="user$.nickname"
+                  />
+                </li>
+                <li>
+                  <InputComponent
+                    :label="'手机号'"
+                    v-model="user$.phone"
+                  />
+                </li>
+                <li>
+                  <InputComponent
+                    :label="'QQ'"
+                    v-model="user$.qq"
+                  />
+                </li>
+                <li>
+                  <InputComponent
+                    :label="'微信号'"
+                    v-model="user$.wechat"
+                  />
+                </li>
+                <li :style="{'padding-bottom':'.9rem'}">
+                  <label for="userSex">性别</label>
+                  <SelectComponent
+                    :id="'userSex'"
+                    :reverse="true"
+                    :list="[{id: 0, description:'男'}, {id: 1, description: '女'}]"
+                    v-model="user$.sexual"
+                  />
+                </li>
+                <!-- CalendarComponent -->
+                <li :style="{'padding-bottom':'.9rem'}">
+                  <label for="birthday">生日</label>
+                  <CalendarComponent
+                    :id="'birthday'"
+                    :reverse="true"
+                    v-model="user$.birthday"
+                  />
+                </li>
+                <!-- 个人说明 -->
+                <li>
+                  <InputComponent
+                    :label="'个人说明'"
+                    :multiple="true"
+                    v-model="user$.say"
+                  />
+                </li>
+                <li :style="{'text-align':'right'}">
+                  <ButtonComponent :disabled="$refs.formGroup&&$refs.formGroup.invalid" @click="updateUser">保存</ButtonComponent>
+                </li>
+              </ul>
+            </template>
+            <!-- 资料设置结束-->
+            <!-- 个性化开始 -->
+            <template v-else>
+              <ul>
+                <li></li>
+              </ul>
+            </template>
+            <!-- 个性化结束 -->
+          </div>
           <!-- 右侧内容结束 -->
         </div>
         <!-- 主体内容结束 -->

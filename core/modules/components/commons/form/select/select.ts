@@ -48,6 +48,9 @@ export default class SelectComponent extends Vue {
   /** 是否开启搜索,只有单选时生效 */
   @Prop({ type: Boolean, default: false })
   isSearch!: boolean;
+  /** 是否反转位置 */
+  @Prop({default: false})
+  reverse!: boolean;
   /** 记录window之前绑定的的onclick */
   handler: any;
   /** 输入框v-model */

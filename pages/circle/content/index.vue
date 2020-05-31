@@ -11,7 +11,7 @@
   <div id="id-ui-topic-content">
     <!-- 板块头部导航条 -->
     <div class="wd-nav-bar">
-      <a @click="$router.back()">论坛</a>
+      <a @click="$router.back()">圈子</a>
       <i class="icomoon icon-chevron-right"></i>
       <a @click="$router.go(0)">{{topic.name}}</a>
     </div>

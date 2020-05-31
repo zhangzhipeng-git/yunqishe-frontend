@@ -9,11 +9,12 @@
 
 import Component from "vue-class-component";
 import BaseComponent from "~/core/base-component";
+import { Throttle } from '../../../core/modules/annotations/index';
 const options: any = {
   layout: "app"
 };
 @Component(options)
-export default class IDComponent extends BaseComponent {
+export default class IndexComponent extends BaseComponent {
   /** 所属版块 */
   topic: any = {};
   /** 筛选列表 */
@@ -49,7 +50,7 @@ export default class IDComponent extends BaseComponent {
   }
 
   /**
-   * 获取论坛话题内容列表
+   * 获取圈子话题内容列表
    */
   getPagingList() {
     const queryStr = '&type=' + this.searchFilter + '&pid=' + this.topic.id
@@ -112,6 +113,9 @@ export default class IDComponent extends BaseComponent {
   /**
    * 关注版块
    */
+  @Throttle(3000, (o: IndexComponent) => {
+    o.handler.toast({text: '请不要频繁操作~'});
+  })
   concernTopic() {
     if(!this.curUser){
       this.handler.toast({text: '请先登录~'});
@@ -127,7 +131,7 @@ export default class IDComponent extends BaseComponent {
     }
     const isConcern = concern === 1;
     const v = this.topic;
-    this.httpRequest(this.http.post('/concern/f/insertOrUpdate/one', obj, {throttle:3000}), {
+    this.httpRequest(this.http.post('/concern/f/insertOrUpdate/one', obj), {
       success: () => {
         this.handler.toast({text: (isConcern?'':'取消')+'关注成功~'});
         if (!isConcern) { // 取消关注

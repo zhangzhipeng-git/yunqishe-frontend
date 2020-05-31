@@ -59,9 +59,9 @@
             v-model="row.visible"
           />
         </template>
-        <!-- 是论坛板块还是问云分类 -->
+        <!-- 是圈子板块还是问云分类 -->
         <template v-slot:type = "{ row }">
-          {{ searchModule === 0 ? (row.type=0, "论坛") : (row.type=1,"问云") }}
+          {{ searchModule === 0 ? (row.type=0, "圈子") : (row.type=1,"问云") }}
         </template>
       </TableComponent>
     </div>

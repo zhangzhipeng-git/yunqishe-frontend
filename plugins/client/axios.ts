@@ -41,7 +41,9 @@ const PUBLIC_API = [
   // 媒体内容
   ,"/mediaContent/f/select/one",
   // vip时长配置参数列表
-  "/vipArg/u/select/list"
+  "/vipArg/u/select/list",
+  // 云币兑换配置参数列表
+  "/exchangeArg/u/select/list"
 ];
 export default function({ $axios}: any) {
   if (process && process.server) return;

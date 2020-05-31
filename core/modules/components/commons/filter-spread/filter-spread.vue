@@ -40,7 +40,7 @@
       </div>
     </div>
     <!-- 推荐分类面板,取消和确认按钮面板 -->
-    <div class="wd-list-pannel" :class="isSpread ? 'ui-height-15rem': 'ui-height-0'">
+    <div class="wd-list-pannel" :class="isSpread ? 'ui-height-9rem': 'ui-height-0'">
       <!-- 推荐的 -->
       <div class="wd-list-recommend">
         <div class="wd-list-tip">

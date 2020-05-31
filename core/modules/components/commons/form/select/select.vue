@@ -18,13 +18,15 @@
       @input="!multiple && isSearch && search($event)"
       :disabled="disabled || !isSearch || multiple"
     /><i
-      :style="{ cursor: disabled ? 'not-allowed' : 'pointer' }"
+      class="icomoon"
       @click="toggle"
-      class="icomoon icon-chevron-down"
+      :class="'icon-chevron-'+(reverse?'up':'down')"
+      :style="{ cursor: disabled ? 'not-allowed' : 'pointer' }"
     ></i>
     <ul
       v-if="!disabled"
       :class="[
+        reverse ? 'reverse' : '',
         isSpread ? 'open' : 'close',
         noBorder ? 'no-border' : '',
         noScrollBar ? 'no-scrollbar' : ''

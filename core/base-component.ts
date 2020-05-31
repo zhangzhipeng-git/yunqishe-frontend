@@ -173,7 +173,7 @@ export default class BaseComponent extends Vue {
   }
 
   /**
-   * 获取登录状态
+   * 获取登录或记住登录的用户
    */
   public isRecord(): Promise<any> {
     // 请求是否已登录或记住我
