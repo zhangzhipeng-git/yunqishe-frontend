@@ -113,7 +113,7 @@
     <div class="wd-page-bar-wrap">
       <PageBarComponent :pageInfo="pageInfo" @toPage="toPage($event)" />
     </div>
-    <!-- 增加或修改用户 -->
+    <!-- 增加或修改话题内容 -->
     <WindowComponent
       id="id-manage-topic-content-window"
       ref="window"

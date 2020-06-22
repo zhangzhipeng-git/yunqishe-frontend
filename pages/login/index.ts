@@ -127,8 +127,8 @@ export default class LoginComponent extends BaseComponent {
      * 登录成功放行
      */
     public pass(user: any):void {
-        this.db.$set('user', user);
-        // 解码2%
+        this.$store.commit('setUser', user);
+        // 解码
         this.$router.push({path:decodeURIComponent(this.fromPath)});      
     }
 }

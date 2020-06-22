@@ -20,7 +20,7 @@ export const whiteList = [
     /** 后台 */
     "/admin/login_for_sys"
 ];
-
+// 限制频繁请求
 if (process&&process.server) {
     global.reqLimit = (req, error) => {
         let hostMap = global.hostMap;
@@ -55,41 +55,33 @@ if (process&&process.server) {
     }
 }
 
-// 刷新页面时，只在服务端执行。。。导致刷新页面会丢失密钥
-const router = async({ route, redirect, req, error }) => {
-    if (process&&process.server)global.reqLimit(req, error);
+const router = async({route, redirect, req, error, store }) => {
+    if (process && process.server) global.reqLimit(req, error);
     const fullPath = route.fullPath;
     // 路由地址在白名单内
     const path = fullPath.split("?")[0];
     if (path && whiteList.includes(path)) return;
     const app = App.getAppContext();
-    /** 登录页地址，前台为'/login',后台为'/admin/login_for_sys' */
-    const login_url =
-        path.indexOf("/admin") !== 0 ? "/login" : "/admin/login_for_sys";
-    
-    if (process.server) { // 服务端不请求登录状态，避免session冲突！！！
+    // 登录url
+    const login_url = path.indexOf("/admin") !== 0 ?
+     "/login" : "/admin/login_for_sys";
+    if (store.state.user) { // 用户已登录，放行
+        return;
+    }
+    // 服务端在nuxtServerInit中已判断过用户是否登录，
+    // 未登录直接重定向到登录页
+    if (process && process.server) {
         redirect(login_url, { fromPath: fullPath });
         return;
-    } else {
-        // client
-        // 和sotore.state.user一样，这两处都存了user，任选一个判断即可
-        if (app.getDB().get("user")) return;
     }
-    // 以下只在客户端执行
-    // 路由地址不在白名单内，需要判断是否登录
-    // 查询是否已登录或记住我，返回成功则协商密钥
-    await app
-        .getHttp()
-        .get("/user/isrecord")
-        .then(data => {
-            if (data.status !== 200) { // 失败去登录页
-                redirect(login_url, { fromPath: fullPath });
-                return;
-            }
-            const user = data.data.user;
-            app.getDB().set('user', user);
-            app.getSecure().secureInit();
-        });
+    // 用户是否已登录
+    await app.getHttp().get("/user/isrecord").then(data => {
+        if (data.status !== 200) { // 失败去登录页
+            redirect(login_url, { fromPath: fullPath });
+            return;
+        }
+        const user = data.data.user;
+        store.commit('setUser', user);
+    });
 };
-// 看来这个是可以用异步函数的，
 export default router;

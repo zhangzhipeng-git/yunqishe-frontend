@@ -74,7 +74,7 @@ export default class AppHeaderComponent extends BaseComponent {
    * 登出成功后去登录页
    */
   doLogout() {
-    this.db.$set("user", null);
+    this.$store.commit("setUser", null);
     // 去登录页
     this.$router.push({
       path: "/login",

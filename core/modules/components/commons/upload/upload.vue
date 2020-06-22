@@ -1,11 +1,12 @@
 <template>
     <div class="wd-upload">
-        <!-- 文件表单 -->
-        <div class="wd-upload-file">
-            <input type="file" :accept="accept" ref="file" />
-        </div>
         <!-- 插槽 -->
         <slot/>
+        <!-- 文件表单，无上传按钮时position为绝对定位，否则为相对定位 -->
+        <div class="wd-upload-file" :style="{'position': hasBtn?'relative':'absolute'}">
+            <input type="file" :accept="accept" ref="file" />
+            <button v-if="hasBtn">{{text}}</button>
+        </div>
     </div>
 </template>
 <script lang="ts" src="./upload.ts"></script>

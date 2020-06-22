@@ -9,7 +9,7 @@
  * Copyright © zzp-dog, All rights reserved.
  */
 /**
- * 节流装饰器
+ * 节流装饰器，作用在类的方法上
  * @param n 节流时间 ms
  * @param callback  节流提前返回的回调
  */
@@ -20,7 +20,7 @@ export function Throttle(n: number, callback?: Function) {
     return (target: any, name: any, descriptor: PropertyDescriptor) => {
         let isOver = true;
         const pre = target[name];
-        descriptor.value = function() { // 因为name编译后可能变化，这里用descriptor进行value重写
+        descriptor.value = function() { // 这里用descriptor进行value重写
             const args = arguments;
             if (!isOver) {
                 return callback&&callback(this);
@@ -32,4 +32,31 @@ export function Throttle(n: number, callback?: Function) {
             }, n);
         }
     }
+}
+
+/**
+ * 添加响应式表单，需放在@Component装饰器的后面，作用在类上
+ * @param target 需要添加响应式表单的组件类
+ */
+export const ReactiveForm: Function = (target: any) => {
+    const proto: any = target.prototype;
+    proto.refs = {}; // 响应式表单集合
+    const mounted = proto.mounted || function(){};
+    proto.mounted = function() { // 生成新的mounted
+        mounted.apply(this, arguments);
+        this.$nextTick(() => { // 等input挂载并校验完毕后设置响应式校验结果
+            const refs = this.$refs;
+            const keys = Object.keys(refs);
+            for (let i = 0, len = keys.length; i < len; i++) {
+                const k = keys[i];
+                const elem = this.$refs[k];
+                const flag = elem.getAttribute&&elem.getAttribute('formgroup');
+                if (flag == null && elem.tagName !== 'FORM') {
+                    continue; 
+                }
+                const checkForm = this.$refs[k].checkForm;
+                this.$set(this.refs, k, checkForm);
+            }
+        });
+    };
 }

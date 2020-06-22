@@ -89,7 +89,6 @@
         font-size: $font-size-small;
         line-height: $font-size-small;
         font-weight: bold;
-        color: green;
     }
     input[type='checkbox'],
     .checkbox {
@@ -114,6 +113,9 @@
         .wd-select-component {
             a:hover {
                 background-color: lighten($color: $main-light, $amount: 10);
+            }
+            .icon-check{
+                color:$main;
             }
         }
     }

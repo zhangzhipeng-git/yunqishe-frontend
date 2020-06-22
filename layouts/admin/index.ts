@@ -88,10 +88,45 @@ export default class AdminComponent extends BaseComponent {
             leftIcon: ["icon-settings"],
             rightIcon: ["icon-caret-left", "icon-caret-down"],
             child: [
-                { name: "登录设置", level: 2 },
-                { name: "验证设置", level: 2 },
-                { name: "操作设置", level: 2 },
-                { name: "接口设置", level: 2 }
+                {
+                    name: "网站信息",
+                    url: '/admin/system/site',
+                    level: 2
+                },
+                {
+                    name: "操作开关",
+                    url: '/admin/system/switch',
+                    level: 2
+                },
+                {
+                    name: "图片配置",
+                    url: '/admin/system/image-api',
+                    level: 2
+                },
+                {
+                    name:'风控管理',
+                    url:'/admin/system/risk-manage',
+                    level: 2
+                }
+            ]
+        },
+        {
+            level:1,
+            name: '邮件设置',
+            spread: false,
+            leftIcon: ['icon-mail'],
+            rightIcon: ["icon-caret-left", "icon-caret-down"],
+            child: [
+                {
+                    level: 2,
+                    name: '参数列表',
+                    url: '/admin/email/dispose'
+                },
+                {
+                    level: 2,
+                    name: '消息模板',
+                    url: '/admin/email/template'
+                }
             ]
         },
         {
@@ -204,12 +239,12 @@ export default class AdminComponent extends BaseComponent {
     }
 
     beforeMount(): void {
-        this.bg = this.localStorage.getItem('admin-bg')||0;
-        this.theme = this.localStorage.getItem('admin-theme')||'r';
-        this.showPageSet = this.localStorage.getItem('admin-pageSet')||false;
+        this.bg = this.localStorage.getItem('admin-bg') || 0;
+        this.theme = this.localStorage.getItem('admin-theme') || 'r';
+        this.showPageSet = this.localStorage.getItem('admin-pageSet') || false;
         const header: any = document.getElementsByClassName('wd-sys-header')[0];
-        
-        header&&(header.className += this.bg === 1?' dark':'');
+
+        header && (header.className += this.bg === 1 ? ' dark' : '');
         document.body.className = this.theme;
     }
 

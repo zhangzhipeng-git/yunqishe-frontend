@@ -5,7 +5,7 @@ import ToastComponent,{Toast} from "./app-toast/app-toast";
  * 全局静态调用组件持有者
  */
 export default interface ComponentsHandler {
-    /** 打开遮罩 @param {string} type - 'timer' 时钟[默认]*/
+    /** 打开遮罩 @param {string} type - 'circle' 涟漪[默认]*/
     load(type?:string): void;
     /** 关闭遮罩 */
     unload(): void;

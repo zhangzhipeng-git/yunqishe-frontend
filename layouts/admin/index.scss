@@ -113,6 +113,10 @@ $wd-main-left: 12.5rem;
     &.left-close {
         width: 0;
     }
+    // 二级菜单a标签
+    /deep/ .wd-side-menu-level2 a {
+        padding-left:3rem;
+    }
 }
 
 .wd-side-menu {

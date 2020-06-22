@@ -11,6 +11,7 @@ import PayComponent from '../../components/privilege/pay/index';
 import UploadComponent from '../../core/modules/components/commons/upload/upload';
 import SelectComponent from '@/core/modules/components/commons/form/select/select';
 import CalendarComponent from '../../core/modules/components/commons/form/date/date';
+import { ReactiveForm } from '~/core/modules/annotations';
 @Component({layout: 'app2',components: {
     NoResultComponent,
     SidebarComponent,
@@ -23,6 +24,7 @@ import CalendarComponent from '../../core/modules/components/commons/form/date/d
     SelectComponent,
     CalendarComponent
 }})
+@ReactiveForm
 export default class UserComponent extends BaseComponent {
     activeIndex: number = 0;
     /** user页面 */
@@ -37,6 +39,8 @@ export default class UserComponent extends BaseComponent {
     /** 用户动态主体左侧 */
     @Ref('main_right')
     mainRight!:any;
+    /** 音乐是否暂停 */
+    paused: boolean = true;
 
     /** 路由传过来的用户id */
     id: number|any = -1;
@@ -52,8 +56,6 @@ export default class UserComponent extends BaseComponent {
 
     /** 用户 */
     user: any = {};
-    /** 用户副本 */
-    user$: any = {};
     /** 定制标签 */
     tags: any = [];
     /** 礼物列表 */
@@ -96,20 +98,25 @@ export default class UserComponent extends BaseComponent {
         super();
     }
 
-    public async mounted(){
+    async mounted(){
+        // 页面初始化
+        await this.pageInit();
+        // 获取用户信息（附带了其他的详细信息）
+        this.getUserInfo();
+        // 根据类型查动态
+        this.selectEntitiesByType(this.type);
+    }
+
+    async pageInit() {
         this.id = this.$route.query.id||this.curUser.id;
+        console.log('this.id....')
+        console.log(this.id);
         // 自己看自己时，动态列表添加‘个性化’和‘资料修改’
         // 后端也会做判断是不是自己在操作
-        if (null === this.curUser) {
-            await this.isRecord();
-        }
         if (this.curUser && Number(this.id) === this.curUser.id){
             this.dynamicList.push('修改资料');
             this.dynamicList.push('个性化');
         }
-        this.getUserInfo();
-        this.selectEntitiesByType(this.type);
-        this.user$ = this.clone(this.curUser);
     }
 
     /**
@@ -125,7 +132,6 @@ export default class UserComponent extends BaseComponent {
                 this.giftRecords = data.giftRecords;
                 this.concernCount = data.concernCount;
                 this.dynamicCount = data.dynamicCount;
-
                 this.getUserLevelAndDan(this.user);
                 // 计算魅力值
                 let value = 0;
@@ -236,8 +242,29 @@ export default class UserComponent extends BaseComponent {
         })
     }
 
-    /** 选择头像 */
-    onchange(e: any) {
+    /**
+     * 保存用户资料
+     */
+    updateUser() {
+        if (this.user.sex === '') { // 没选择性别时，视为保密
+            this.user.sex = 3;
+        }
+        const date = this.user.birthday;
+        if (new Date(date).getTime() >= Date.now()) {
+            this.handler.toast({text:'日期有误，请重新选择~'});
+            return;
+        }
+        this.handler.load();
+        this.httpRequest(this.http.post('/user/f/update/one', this.user), {
+            success: () => {
+                this.handler.unload();
+                this.handler.toast({text:'修改成功~'});
+            }
+        });
+    }
+
+    /** 上传头像 */
+    uploadAvator(e: any) {
         this.handler.load();
         const file = e.currentTarget.files[0];
         // 未选择文件
@@ -246,13 +273,8 @@ export default class UserComponent extends BaseComponent {
         param.append('file', file);
         const config = {
             headers:{"Content-Type": "multipart/form-data"},
-            // 监听进度，这里不需要
-            // onUploadProgress: e => {
-            // var completeProgress = ((e.loaded / e.total * 100) | 0) + "%";
-            //     this.progress = completeProgress;
-            // }
         };
-        this.httpRequest(this.http.$post('/upload/user/avator',param, {config}), {
+        this.httpRequest(this.http.$post('/bucket/f/upload/avator',param, {config}), {
             success: (data: any) => {
                 this.handler.unload();
                 this.curUser.avator = data.url;
@@ -264,10 +286,65 @@ export default class UserComponent extends BaseComponent {
     };
 
     /**
-     * 保存用户资料
+     * 上传背景音乐
      */
-    updateUser() {
-        
+    uploadBGM(e: any) {
+        this.handler.load();
+        const file = e.currentTarget.files[0];
+        // 未选择文件
+        if (!file) return;
+        const param = new FormData();
+        param.append('file', file);
+        const config = {
+            headers:{"Content-Type": "multipart/form-data"},
+        };
+        this.httpRequest(this.http.$post('/bucket/f/upload/bgm',param, {config}), {
+            success: (data: any) => {
+                this.handler.unload();
+                this.user.bgm = data.url;
+            }
+        });
+    }
+
+    /**
+     * 上传背景图片
+     */
+    uploadBGP(e: any) {
+        this.handler.load();
+        const file = e.currentTarget.files[0];
+        // 未选择文件
+        if (!file) return;
+        const param = new FormData();
+        param.append('file', file);
+        const config = {
+            headers:{"Content-Type": "multipart/form-data"},
+        };
+        this.httpRequest(this.http.$post('/bucket/f/upload/bgp',param, {config}), {
+            success: (data: any) => {
+                this.handler.unload();
+                this.user.bgp = data.url;
+            }
+        });
+    }
+
+    /**
+     * 个性化设置
+     */
+    personalizeSet() {
+        if (!this.user.bgm && !this.user.bgp) {
+            this.handler.toast({text: '输入项不能为空~'});
+            return;
+        }
+        this.handler.load();
+        this.httpRequest(this.http.post('/user/f/update/personalizeInfo', {
+            bgm: this.user.bgm,
+            bgp: this.user.bgp
+        }), {
+            success: () => {
+                this.handler.unload();
+                this.handler.toast({text:'修改成功~'});
+            }
+        });
     }
 
 }

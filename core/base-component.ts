@@ -52,7 +52,6 @@ export default class BaseComponent extends Vue {
   handler!: ComponentsHandler;
   /** context */
   context!: Context;
-
   /** 类似JQuery的dom工具 */
   $$!: DomUtil;
   /** cookie存贮服务，服务端设置某个key为httpOnly时，无法载客户端获取 */
@@ -84,13 +83,7 @@ export default class BaseComponent extends Vue {
   
   /** 获取当前用户 */
   get curUser() {
-    if (!process || !process.server) {
-      let user = this.db.user;
-      if (!user) return null;
-      this.getUserLevel(user);
-      return user;
-    }
-    return null;
+    return this.$store.state.user;
   }
 
   /**
@@ -184,7 +177,7 @@ export default class BaseComponent extends Vue {
     this.handler.load();
     return this.httpRequest(this.http.get("/user/isrecord",config), {
       success: async (data: any) => {
-        this.db.$set('user', data.user);
+        this.$store.commit('setUser', data.user);
         await this.secure.secureInit();
         this.handler.unload();
       },

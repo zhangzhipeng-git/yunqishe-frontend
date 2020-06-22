@@ -6,7 +6,7 @@ import { Prop, Model, Watch } from 'vue-property-decorator';
 export default class SwitchComponent extends Vue {
     
     /** v-model */
-    @Prop({default: 0})
+    @Prop({default: null})
     @Model('click')
     v!: number|boolean|string;
     /** 开关控制 */
@@ -19,7 +19,7 @@ export default class SwitchComponent extends Vue {
     @Watch('v', {immediate: true})
     watchModel(nv: any) {
         if (nv === undefined || nv === null) {
-            this.$emit('click', false);
+            this.$emit('click', 0);
         }
         this.v$ = !!nv;
     }

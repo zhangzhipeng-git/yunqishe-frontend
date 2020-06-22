@@ -72,7 +72,10 @@ export default class LogForSysComponent extends BaseComponent {
         // 获取redirect的来源地址
         this.fromPath = <any>this.$route.query.fromPath;
         // 安全服务 => 获取公钥，上送密钥
-        this.secure.secureInit();
+        this.handler.load();
+        this.secure.secureInit().then(() => {
+            this.handler.unload();
+        });
     }
 
     /**
@@ -104,7 +107,7 @@ export default class LogForSysComponent extends BaseComponent {
     public async doLoginOrInstall() {
         if (this.type === 'login') {
             // 登录
-            this.httpRequest(this.http.post('/user/login', {
+            this.httpRequest(this.http.post('/user/b/login', {
                 account: this.account,
                 password: await EncryptUtil.MD5(this.password)
             }), {
@@ -141,7 +144,7 @@ export default class LogForSysComponent extends BaseComponent {
      * 登录成功放行
      */
     public pass(user: any):void {
-        this.db.$set('user', user);
+        this.$store.commit('setUser', user);
         let path = !!this.fromPath? this.fromPath : '/admin';
         this.$router.push({path});        
     }

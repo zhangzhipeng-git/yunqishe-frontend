@@ -75,7 +75,8 @@ export default class SelectComponent extends Vue {
         o[this.key$] = "";
         o[this.value$] = "请选择";
         this.list$.unshift(o);
-      } else if(this.model===undefined) { // 开启了强制选择，没有设置model则默认选择第一个
+      }
+      if(this.model==undefined) { // 没有设置model则默认选择第一个
         this.$emit('change', this.list$[0][this.key$]);
       }
       this.inputValue = this.inputValue$;

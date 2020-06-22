@@ -1,0 +1,28 @@
+.ui-site {
+    background-color: $white;
+    ul {
+        padding: 1rem 0;
+    }
+    li {
+        padding: .2rem 1rem ;
+        text-align: left;
+        @extend %clearfix;
+        label {
+            line-height: 2rem;
+        }
+        // input组件样式覆盖
+        /deep/ .wd-input-wrap{
+            float: right;
+            input,textarea {
+                width:40rem;
+            }
+            textarea {
+                height:5rem;
+            }
+        }
+    }
+    // 保存按钮
+    /deep/ .wd-button {
+        width:100%;
+    }
+}

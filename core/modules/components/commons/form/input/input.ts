@@ -77,14 +77,17 @@ export default class InputComponent extends Vue {
         carPlante: {reg: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/, tip: '车牌号码格式不正确'}
     };
 
+    // 获取v-model（不立即在页面显示错误信息）
     get value$() {
         const tip = this.getTip(this.value);
-        // 发射通过状态，待挂载后设置表单校验状态，（不立即在页面显示错误信息）
+        // 发射通过状态
         this.$emit('pass', !tip);
+        // 待挂载后设置表单校验状态
         this.$nextTick(() => {this.setFormResult(!tip);});
         return this.value;
     }
 
+    // 输入时触发
     set value$(v: string) {
         this.$emit('input', v);
         // 设置错误信息、发射通过状态，设置表单校验状态
@@ -103,20 +106,21 @@ export default class InputComponent extends Vue {
      * @param v v-model
      */
     getTip(v: string): string|null {
+        if (v === undefined) v = '';
         let tip: string|null = null;
         let reg: RegExp|null = null;
-        if (typeof this.pattern === 'string') { // 使用内部正则匹配
+        if (typeof this.pattern === 'string') {         // 使用内部正则匹配
             const regObj = (<any>InputComponent.innerReg[this.pattern]);
             reg = regObj.reg;
             tip = this.error || regObj.tip;
-        } else if (typeof this.pattern === 'object') { // 使用自定义正则匹配
+        } else if (typeof this.pattern === 'object') {  // 使用自定义正则匹配
             reg = this.pattern;
             tip = this.error;
         }
-        if (reg && !reg.test(v)) {
+        if (reg && !reg.test(v)) {  // 有tip，说明有错误
             return tip;
         }
-        return null;
+        return null;                // 没有tip，说明没有错误
     }
 
     /**
@@ -129,40 +133,70 @@ export default class InputComponent extends Vue {
     }
 
     /**
-     * 设置表单校验结果
+     * 设置表单校验结果，每次输入都会调用本函数
      * @param result 校验结果
      */
     setFormResult(result: boolean) {
         if (!this.formGroup) return;
         const key = this.name || this.id;
-        if (!this.formGroup.checkForm)this.formGroup.checkForm = {};
-        if (!this.formGroup.checkForm[key])this.formGroup.checkForm[key] = {};
-        this.formGroup.checkForm[key].pass = result;
+        let checkform: CheckForm = this.formGroup.checkForm;
+        if (!checkform) { // 若没有表单验证
+            this.formGroup.checkForm = {};
+            checkform = this.formGroup.checkForm;
+        };
+        if (!checkform.inputs) { // 若表单验证没有添加input集合
+            checkform.inputs = {};
+        };
+        const inputs = checkform.inputs;
+        if (!inputs[key]) { // 若input集合没有当前组件的校验结果
+            inputs[key] = {pass: false};
+        };
+        inputs[key].pass = result;
         let valid: boolean = true;
-        const inputs = Object.values(this.formGroup.checkForm);
-        for (let i = 0, len = inputs.length; i < len; i++) {
-            const pass = (<any>inputs[i]).pass;
-            if (!pass) {
-                this.formGroup.valid = false;
-                this.formGroup.invalid = true;
+        const inputsValues = Object.values(inputs);
+        for (let i = 0, len = inputsValues.length; i < len; i++) {
+            const pass = (<any>inputsValues[i]).pass;
+            if (!pass) { // 有一个未通过就停止验证
+                checkform.valid = false;
+                checkform.invalid = true;
                 return;
             }
             valid = valid&&pass;
         }
-        this.formGroup.valid = valid;
-        this.formGroup.invalid = !valid;
+        // 最后校验结果
+        checkform.valid = valid;
+        checkform.invalid = !valid;
     }
 
     /**
-     * 获取表单容器
+     * 获取本组件的父表单容器
+     * form标签或添加了'formgroup'的标签
      */
     get formGroup(): any|null {
+        if (!this.$el) return null;
         let node = (<any>this.$el).parentNode;
-        while(node.tagName !== 'FORM' && node.getAttribute('formgroup') == undefined && node.tagName !== 'BODY') {
+        while(node && node.tagName !== 'FORM' && node.getAttribute('formgroup') == undefined && node.tagName !== 'BODY') {
             node = node.parentNode;
         }
-        if (node.tagName === 'BODY') return null;
+        if (node && node.tagName === 'BODY') {
+            return null;
+        };
         return node;
     }
+}
 
+/**
+ * 表单验证数据结构
+ */
+declare interface CheckForm {
+    /** input 校验结果集合，键值对，键默认为inputcomponent的默认id，值为pass，类型boolean，表示单个的input校验状态 */
+    inputs: {[key: string]: Input};
+    /** 是否无效，true-无效，false-有效 */
+    invalid: boolean;
+    /** 是否有效，false-无效，true-有效 */
+    valid: boolean;
+}
+
+declare interface Input {
+    pass: boolean;
 }

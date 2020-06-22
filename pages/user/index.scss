@@ -4,6 +4,7 @@ $wd-main-right: $main-width - $wd-main-left - 1.5rem;
 // 左侧方块尺寸
 $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
 #id-user {
+    user-select: none;
     // 局部加载列表
     .ui-part-loading-list {
         width: $wd-main-right;
@@ -11,7 +12,6 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
     position: relative;
     width: 100%;
     height: 100%;
-    background: url("../../assets/images/background/carton-girl-bg.jpg") left top no-repeat;
     background-attachment: fixed;
     background-size: cover;
     // 用户封面遮罩
@@ -56,9 +56,21 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
             width: 8rem;
             height: 8rem;
         }
-        &:hover {
+        &:hover{
             border-color: skyblue;
             transform: rotate(360deg);
+        }
+        &.play {
+            border-color: skyblue;
+            animation: my-rotate 2s linear infinite;
+        }
+        @include keyframes(my-rotate) {
+            from {
+                transform: rotate(0deg);
+            }
+            to{
+                transform: rotate(360deg);
+            }
         }
     }
     // 音频
@@ -368,12 +380,53 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
     .user-visitors {
         @include flex-1();
     }
-    // 资料设置
-    .ui-user-info-set {
+    // 资料设置和个性化
+    .ui-user-info-set,
+    .ui-personalize-set {
         padding: 1rem 0;
         background-color: $white;
         opacity: .8;
         border-radius: .3rem;
+        // 上传图片
+        .ui-upload-img {
+            line-height: 5rem;
+            /deep/ .wd-upload-file{
+                height:5rem;
+                width:5rem;
+            }
+            // 图片和icon容器
+            .ui-img-box{
+                position: relative;
+                height:5rem;
+                width:5rem;
+                line-height: 5rem;
+                border-radius: .5rem;
+                text-align: center;
+                border-width:2PX;
+                border-style:solid;
+                box-sizing: content-box;
+                overflow: hidden;
+                img{
+                    display: inline-block;
+                    position: absolute;
+                    left:0;
+                    top:0;
+                    z-index:2;
+                    width:5rem;
+                    height:5rem;
+                }
+                i{
+                    position: relative;
+                    z-index:1;
+                    line-height: 5rem;
+                    font-size: $font-size-huge;
+                }
+            }
+        }
+        // 上传组件
+        .ui-upload-component{
+            float: right;
+        }
         li {
             padding: .2rem 4rem ;
             text-align: left;
@@ -391,52 +444,34 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
                     height:5rem;
                 }
             }
-            // 性别选择select组件样式覆盖,日历组件样式覆盖
-            /deep/ .wd-select-component,
-            /deep/ .wd-calendar-component{
-                float: right;
-                input {
-                    width: 20rem;
-                }
-            }
         }
-        // 上传头像
-        .ui-upload {
-            line-height: 5rem;
-            /deep/ .wd-upload-file{
-                height:5rem;
-                width:5rem;
-            }
+        // 保存按钮
+        /deep/ .wd-button {
+            width:100%;
         }
-        // 上传组件
-        .ui-upload-component{
+    }
+    // 资料设置
+    .ui-user-info-set {
+        // 性别选择select组件样式覆盖,日历组件样式覆盖
+        /deep/ .wd-select-component,
+        /deep/ .wd-calendar-component{
             float: right;
-        }
-        // 图片和icon容器
-        .ui-img-box{
-            position: relative;
-            height:5rem;
-            width:5rem;
-            line-height: 5rem;
-            border-radius: .5rem;
-            text-align: center;
-            border: 2PX solid $gray;
-            box-sizing: content-box;
-            img{
-                display: inline-block;
-                position: absolute;
-                left:0;
-                top:0;
-                z-index:2;
-                width:5rem;
-                height:5rem;
-                border-radius: .5rem;
+            input {
+                width: 20rem;
             }
-            i{
-                position: relative;
-                z-index:1;
-                line-height: 5rem;
-                font-size: $font-size-huge;
+        }
+    }
+    // 个性化
+    .ui-personalize-set {
+        .ui-upload-music {
+            /deep/ .wd-upload-file {
+                float:right;
+            }
+            /deep/ .wd-input {
+                display: inline-block;
+                input{
+                    width:15rem;
+                }
             }
         }
     }
@@ -480,9 +515,9 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
             }
             // 上传
             .ui-img-box{
-                border-color:$main;
+                border-color:$main !important;
                 i {
-                    color:$main;
+                    color:$main !important;
                 }
             }
         }

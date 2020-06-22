@@ -1,6 +1,6 @@
 <template>
   <!-- user cover -->
-  <div id="id-user">
+  <div id="id-user" :style="{'background-image': 'url('+user.bgp+')'}">
     <!-- 滤镜 -->
     <div class="user-mask"></div>
     <!-- 用户详情 -->
@@ -10,17 +10,20 @@
         <a
           @click="
             $refs.bg_audio.paused
-              ? $refs.bg_audio.play()
-              : $refs.bg_audio.pause()
+              ? ($refs.bg_audio.play(),paused = false)
+              : ($refs.bg_audio.pause(),paused = true)
           "
           href="javascript:void 0"
           class="user-avator"
+          :title="'播放/暂停背景音乐'"
+          :class="{play: !paused}"
         >
           <img :src="user.avator" alt="用户头像" />
         </a>
         <!-- 背景音乐 -->
-        <audio autoplay preload="auto" loop ref="bg_audio">
-          <source :src="user.bgUrl" />
+        <audio :preload="true" :src="user.bgm"  loop ref="bg_audio">
+          <source type="audio/mpeg" />
+          <source type="audio/ogg" />
         </audio>
         <!-- 昵称和等级 -->
         <p>
@@ -241,50 +244,33 @@
             <!-- 资料设置开始 -->
             <template v-else-if="type === 7">
               <ul class="ui-user-info-set" formgroup ref="formGroup">
-                <li class="ui-upload">
-                  头像
+                <li class="ui-upload-img">
+                  <label>头像</label>
                   <UploadComponent
                     class="ui-upload-component"
                     :multiply="false"
-                    @onchange="onchange($event)"
+                    @onchange="uploadAvator($event)"
                   >
                     <div class="ui-img-box">
                       <i class="icomoon icon-plus"></i>
-                      <img :src="this.curUser.avator" alt=""/>
+                      <img :src="user.avator" alt />
                     </div>
                   </UploadComponent>
                 </li>
                 <li>
-                  <InputComponent
-                    :label="'姓名'"
-                    :pattern="'required'"
-                    v-model="user$.name"
-                  />
+                  <InputComponent :label="'姓名'" :pattern="'required'" v-model="user.name" />
                 </li>
                 <li>
-                  <InputComponent
-                    :label="'昵称'"
-                    :pattern="'required'"
-                    v-model="user$.nickname"
-                  />
+                  <InputComponent :label="'昵称'" :pattern="'required'" v-model="user.nickname" />
                 </li>
                 <li>
-                  <InputComponent
-                    :label="'手机号'"
-                    v-model="user$.phone"
-                  />
+                  <InputComponent :label="'手机号'" v-model="user.phone" />
                 </li>
                 <li>
-                  <InputComponent
-                    :label="'QQ'"
-                    v-model="user$.qq"
-                  />
+                  <InputComponent :label="'QQ'" v-model="user.qq" />
                 </li>
                 <li>
-                  <InputComponent
-                    :label="'微信号'"
-                    v-model="user$.wechat"
-                  />
+                  <InputComponent :label="'微信号'" v-model="user.wechat" />
                 </li>
                 <li :style="{'padding-bottom':'.9rem'}">
                   <label for="userSex">性别</label>
@@ -292,36 +278,58 @@
                     :id="'userSex'"
                     :reverse="true"
                     :list="[{id: 0, description:'男'}, {id: 1, description: '女'}]"
-                    v-model="user$.sexual"
+                    v-model="user.sex"
                   />
                 </li>
                 <!-- CalendarComponent -->
                 <li :style="{'padding-bottom':'.9rem'}">
                   <label for="birthday">生日</label>
-                  <CalendarComponent
-                    :id="'birthday'"
-                    :reverse="true"
-                    v-model="user$.birthday"
-                  />
+                  <CalendarComponent :id="'birthday'" :reverse="true" v-model="user.birthday" />
                 </li>
                 <!-- 个人说明 -->
                 <li>
-                  <InputComponent
-                    :label="'个人说明'"
-                    :multiple="true"
-                    v-model="user$.say"
-                  />
+                  <InputComponent :label="'个人说明'" :multiple="true" v-model="user.say" />
                 </li>
                 <li :style="{'text-align':'right'}">
-                  <ButtonComponent :disabled="$refs.formGroup&&$refs.formGroup.invalid" @click="updateUser">保存</ButtonComponent>
+                  <ButtonComponent
+                    :disabled="refs.formGroup&&refs.formGroup.invalid"
+                    @click="updateUser"
+                  >保存</ButtonComponent>
                 </li>
               </ul>
             </template>
             <!-- 资料设置结束-->
             <!-- 个性化开始 -->
             <template v-else>
-              <ul>
-                <li></li>
+              <ul class="ui-personalize-set">
+                <li class="ui-upload-music">
+                  <label for>背景音乐</label>
+                  <UploadComponent
+                    :accept="'audio/mpeg,audio/ogg'"
+                    :hasBtn="true"
+                    :text="'本地上传'"
+                    class="ui-upload-component"
+                    @onchange="uploadBGM($event)"
+                  >
+                    <InputComponent :placeholder="'推荐输入外链~'" v-model="user.bgm" />
+                  </UploadComponent>
+                </li>
+                <li class="ui-upload-img">
+                  <label>背景图像</label>
+                  <UploadComponent
+                    class="ui-upload-component"
+                    :multiply="false"
+                    @onchange="uploadBGP($event)"
+                  >
+                    <div class="ui-img-box">
+                      <i class="icomoon icon-plus"></i>
+                      <img :src="user.bgp" alt />
+                    </div>
+                  </UploadComponent>
+                </li>
+                <li :style="{'text-align':'right'}">
+                  <ButtonComponent @click="personalizeSet">保存</ButtonComponent>
+                </li>
               </ul>
             </template>
             <!-- 个性化结束 -->

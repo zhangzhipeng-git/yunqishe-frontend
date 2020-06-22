@@ -1,6 +1,7 @@
 /**
- * 本项目未使用vuex，这个是范例
+ * vuex
  */
+import App from "~/core/context/app-context";
 export const state = () => ({
   user: null
 })
@@ -14,7 +15,13 @@ export const mutations = {
 
 export const actions = {
   // 在服务端执行，且在route.js前执行
-  nuxtServerInit({ commit}, { req }) {
-    
+  async nuxtServerInit({ commit}, { req }) {
+    await App.getAppContext().getHttp().get("/user/isrecord", {headers: req.headers}).then(data => {
+        if (data.status !== 200) { // 失败去登录页
+            return;
+        }
+        const user = data.data.user;
+        commit('setUser', user);
+    });
   }
 }

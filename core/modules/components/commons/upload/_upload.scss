@@ -1,16 +1,48 @@
 .wd-upload {
     display: inline-block;
+    position: relative;
     .wd-upload-file {
         position: absolute;
+        top:0;
+        left:0;
         input[type=file] {
+            display: block;
             position: absolute;
             z-index:100;
             left:0;
             top:0;
+            right:0;
+            bottom: 0;
             width:100%;
             height:100%;
             opacity: 0;
+            font-size: 0; padding: 0;cursor: pointer; // input file 鼠标变手指
+        }
+        button{
+            position: relative;
+            z-index:50;
+            width: 4rem;
+            height:2rem;
+            color:$white;
+            background-color: transparent;
             cursor: pointer;
+            border-radius: .3rem;
+        }
+    }
+}
+
+// 主题相关
+@each $theme in $themes {
+    // @debug $theme; 
+    $colors: map-get($theme-colors, #{$theme});
+    $main: map-get($colors, main);
+    .#{$theme} {
+        .wd-upload {
+            .wd-upload-file {
+                button {
+                    background-color: $main;
+                }
+            }
         }
     }
 }

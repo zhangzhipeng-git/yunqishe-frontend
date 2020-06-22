@@ -1,0 +1,20 @@
+.ui-switch {
+    background-color: $white;
+    ul {
+        padding:1rem;
+    }
+    ul li{
+        float: left;
+        width:33.3%;
+        padding: 1rem 0;
+        text-align: center;
+        border: 1PX solid $gray-light-s;
+    }
+    .ui-btn-container {
+        padding: 2rem 1rem 1rem 1rem;
+    }
+    .ui-btn {
+        width: 100%;
+        margin-top: 2rem;
+    }
+}
