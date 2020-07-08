@@ -3,6 +3,7 @@
 // import './lib/jsencrypt.min.js';
 import JSUtil from './js-util';
 import CONTS from '../../consts';
+import consts from '../../consts';
 declare class CryptoJS {
     static AES: any;
     static enc: any;
@@ -44,11 +45,11 @@ export default class EncryptUtil {
     private static DECRYPT_ERROR = '解密异常';
 
     private static loadCryptojs(f: Function) {
-        JSUtil.loadJS(CONTS.JS_MAPS[4], f);
+        JSUtil.loadJS(consts.JS_MAPS.cryptojs, f);
     }
 
     private static loadJsencrypt(f: Function) {
-        JSUtil.loadJS(CONTS.JS_MAPS[5], f);
+        JSUtil.loadJS(consts.JS_MAPS.jsencrypt, f);
     }
 
     /**

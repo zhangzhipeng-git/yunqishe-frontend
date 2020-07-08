@@ -54,9 +54,7 @@ export default function({ $axios}: any) {
       // 放行不需要加密的接口，否则会造成死循环
       if (PUBLIC_API.includes(url)) return config;
       // 等待上送密钥后取消拦截，放行之前涉及加解密的请求api
-      await App.getAppContext()
-        .getSecure()
-        .secureInit();
+      await App.getAppContext().getSecure().secureInit();
       $axios.interceptors.request.eject(req_ic);
       return config;
     }

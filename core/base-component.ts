@@ -1,5 +1,13 @@
-/**
- * 基础组件,只在客户端生效，服务端禁止使用这个
+/*
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\core\base-component.ts
+ * Created Date: Saturday, February 22nd 2020, 8:16:01 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 基础组件, 如果使用nuxt.js，则服务端只能通过获取单例来使用！！！
+ * Last Modified: Wednesday July 8th 2020 10:43:13 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
 
 import Vue from 'vue';
@@ -12,7 +20,7 @@ import AppHttp from "./modules/http/app-http";
 import AppSecure from "./modules/secure/app-secure";
 import Cookie from "./modules/db/Cookie";
 import LocalStorage from "./modules/db/LocalStorage";
-import ThirdJS from "./modules/util/js-util";
+import ThirdSource from "./modules/util/js-util";
 import ComponentsHandler from "./modules/components/components-handler";
 
 import consts from "./consts";
@@ -83,7 +91,10 @@ export default class BaseComponent extends Vue {
   
   /** 获取当前用户 */
   get curUser() {
-    return this.$store.state.user;
+    const user = this.$store.state.user;
+    const user$ = this.clone(user);
+    this.db.$set('user', user$);
+    return this.db.$get('user');
   }
 
   /**
@@ -183,6 +194,7 @@ export default class BaseComponent extends Vue {
       },
       error: () => {
         this.db.set("user", null);
+        this.$store.commit('setUser', null);
       }
     }).then((data: any) => { return data.user ? data.user : data });
   }
@@ -215,15 +227,7 @@ export default class BaseComponent extends Vue {
    * @param f 回调
    */
   protected loadEcharts(f: any) {
-    ThirdJS.loadJS(consts.JS_MAPS[0], f);
-  }
-
-  /**
-   * 懒加载Emoji，执行f
-   * @param f 回调
-   */
-  protected loadEmoji(f: any) {
-    ThirdJS.loadJS(consts.JS_MAPS[1], f);
+    ThirdSource.loadJS(consts.JS_MAPS.echarts, f);
   }
 
   /**
@@ -231,7 +235,7 @@ export default class BaseComponent extends Vue {
    * @param f 回调
    */
   private loadAMap(f: any) {
-    ThirdJS.loadJS(consts.JS_MAPS[2], f);
+    ThirdSource.loadJS(consts.JS_MAPS.amap, f);
   }
 
   /**
@@ -239,7 +243,7 @@ export default class BaseComponent extends Vue {
    * @param f 回调
    */
   private loadHljs(f: any) {
-    ThirdJS.loadJS(consts.JS_MAPS[3], f);
+    ThirdSource.loadJS(consts.JS_MAPS.hljs, f);
   }
 
   /**

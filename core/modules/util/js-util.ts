@@ -23,7 +23,14 @@ interface Script {
     crossorigin?: string;
 }
 
-export default class ThirdJS {
+interface Link {
+    /** 外部样式id */
+    id: string;
+    /** 外部样式href */
+    href: string;
+}
+
+export default class ThirdSource {
 
   /**
    * 加载脚本执行完毕后回调
@@ -33,10 +40,10 @@ export default class ThirdJS {
   public static loadJS(o: Script[]|Script, f: any) {
     o = o instanceof Array ? o : [o];
     o.forEach((js: Script) => {
-      const isExist = document.getElementById(js.id);
+      const isExist = document.getElementById('js-' + js.id);
       if (isExist) return f();
       const script = document.createElement('script');
-      script.id = js.id;
+      script.id = 'js-' + js.id;
       script.src = js.src;
       script.defer = true;
       if (js.integrity) {
@@ -48,5 +55,29 @@ export default class ThirdJS {
       script.onload = f;
       document.body.appendChild(script);
     });
+  }
+
+  /**
+   * 加载外部样式
+   * @param o 外部样式链接对象
+   */
+  public static loadCss(o: Link | Link[]) {
+    const doc = document;
+    o = o instanceof Array ? o : [o];
+    o.forEach((e: Link) => {
+      const el = doc.getElementById('css-' + e.id);
+      if (el) return;
+      const link = doc.createElement('link');
+      link.setAttribute('rel', 'stylesheet');
+      link.setAttribute('type', 'text/css');
+      link.setAttribute('href', e.href);
+      link.setAttribute('id', 'css-' + e.id);
+      const head = doc.getElementsByTagName('head');
+      if (head.length) {
+        head[0].appendChild(link);
+      } else {
+        doc.documentElement.appendChild(link);
+      }
+    })
   }
 }

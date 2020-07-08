@@ -1,14 +1,6 @@
 // @ts-nocheck
 
 const appConfig = require("@bigbigbird/mock/app.config");
-
-const $theme_main_colors = {
-    r: "#ef6ea8",
-    p: "#5a06f5",
-    b: "#00aeef",
-    g: "#0ebd0e"
-};
-
 module.exports = {
     mode: "universal",
     /*
@@ -112,12 +104,6 @@ module.exports = {
         scss: ["./core/assets/sass/_zx.scss"]
     },
 
-    // loading: {
-    //     color: $theme_main_colors.r,
-    //     failedColor: $theme_main_colors.r,
-    //     height: "1PX",
-    //     continuous: true
-    // },
     loading: false,
 
     /**
@@ -144,9 +130,10 @@ module.exports = {
         { src: "@plugins/client/axios", mode: 'client' },
         // 移动端自动缩放
         { src: "@plugins/client/viewport", mode: 'client' },
-
         // 移动端eruda调试
         { src: "@plugins/client/mb-test", mode: 'client' },
+        // 打印
+        { src: "@plugins/client/say", mode: 'client' },
     ],
     /**
      * 环境变量，客户端也可以拿

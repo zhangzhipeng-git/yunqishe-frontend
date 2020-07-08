@@ -3,6 +3,7 @@
     position: relative;
     // slect框
     input[type=text] {
+        width: 100%;
         margin-left: 0;
         height: 2rem;
         line-height: 2rem;
@@ -28,7 +29,7 @@
         width: 100%;
         border: 1PX solid $gray-light;
         border-radius: 0 0 .3rem .3rem;
-        box-shadow: 1PX 1PX 3PX 1PX $gray-light-s, -1PX 0 3PX 0 $gray-light-s;
+        // box-shadow: 1PX 1PX 3PX 1PX $gray-light-s, -1PX 0 3PX 0 $gray-light-s;
         overflow: auto;
         background-color: $white;
         transition: height .3s;

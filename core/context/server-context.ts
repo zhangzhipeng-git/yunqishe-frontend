@@ -1,6 +1,7 @@
+import { Context } from '@nuxt/types';
 import AppHttp  from '../modules/http/app-http';
 import AppSecure from '../modules/secure/app-secure';
-import { Context } from '@nuxt/types';
+import AppDB from '../modules/db/AppDB';
 
 export default class Server {
     /** http */
@@ -8,7 +9,7 @@ export default class Server {
     /** 安全 */
     private secure!: AppSecure;
     /** 全局存贮 */
-    private db: Map<string, Object> = new Map();
+    private db: AppDB = new AppDB();
     /** context */
     context!: Context;
     static serverContext: Server;
@@ -29,7 +30,7 @@ export default class Server {
     /**
      * 获取node全局存贮服务
      */
-    public getDB(): Map<string, Object> {
+    public getDB(): AppDB {
         return this.db;
     }
 

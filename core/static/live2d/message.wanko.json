@@ -1,0 +1,38 @@
+{
+    "mouseover": [
+        {
+            "selector": "#switchModel",
+            "text": ["切换模型~"]
+        },
+		{
+            "selector": "#showTalkBtn",
+            "text": ["要和我聊天吗，主人？"]
+        },
+		{
+            "selector": "#hideButton",
+            "text": ["隐藏旺财，希望隐藏后我们还能再见面！"]
+        },
+		{
+            "selector": "#musicButton",
+            "text": ["给页面加点音乐或者暂停播放吗？"]
+        },
+		{
+            "selector": ".itemarticle-tips a",
+            "text": ["要看看 {text} 么？"]
+        },
+        {
+            "selector": ".searchbox",
+            "text": ["在找什么东西呢，需要帮忙吗？"]
+        }
+    ],
+    "click": [
+        {
+            "selector": "#landlord #live2d",
+            "text": ["主人，你把我的骨头藏哪儿去了？", "汪汪！", "好舒服呀,再摸一次~"]
+        }
+    ],
+    "auto": [
+        "主人，你把我的骨头藏哪儿去了？",
+        "汪汪！"
+    ]
+}

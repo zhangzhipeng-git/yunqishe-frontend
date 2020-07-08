@@ -9,6 +9,8 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Ref, Emit } from 'vue-property-decorator';
+import ThirdSource from '../../../util/js-util';
+import consts from '~/core/consts';
 /** twemoji 可引入twemoji的cdn js */
 interface TWemoji {
     /** 转换器 */
@@ -82,8 +84,10 @@ export default class EmojiComponent extends Vue {
     }
     
     mounted() {
-        const twemoji = <TWemoji>((<any>window).twemoji);
-        twemoji&&twemoji.parse(this.emojiList);   
+        ThirdSource.loadJS(consts.JS_MAPS.emoji, () => {
+            const twemoji = <TWemoji>((<any>window).twemoji);
+            twemoji&&twemoji.parse(this.emojiList);   
+        });
     }
 
     /**

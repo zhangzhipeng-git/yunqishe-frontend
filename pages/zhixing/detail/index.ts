@@ -181,10 +181,10 @@ export default class DetailComponent extends BaseComponent {
         // 位移
         const x = nextScrollTop - curScrollTop;
         // 计划在300ms内完成,每60ms位移一次
-        const speed = x/(300/60);
+        const dixs = x/(300/60);
         this.timer = setInterval(() => {
-            const value = this.doc.scrollTop+speed;
-            if ((speed>0 && value > nextScrollTop) || (speed<0 && value < nextScrollTop)) {
+            const value = this.doc.scrollTop+dixs;
+            if ((dixs>0 && value > nextScrollTop) || (dixs<0 && value < nextScrollTop)) {
                 this.doc.scrollTop = nextScrollTop;
                 clearInterval(this.timer);
                 this.isClickOver = true;

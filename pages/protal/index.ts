@@ -8,30 +8,38 @@
  * Copyright (c) 2019 Your Company
  */
 
-import Vue from 'vue';
 import Component from 'vue-class-component';
 import CarouselComponent from '@/core/modules/components/commons/carousel/carousel.vue'
-import tail from '@/assets/images/carousel-test/dail.jpg';
-import eval2 from '@/assets/images/carousel-test/eval2.jpg';
-import tugou from '@/assets/images/carousel-test/tugou.jpg';
-import tantailang from '@/assets/images/carousel-test/tantailang.jpg';
+import BaseComponent from '../../core/base-component';
+import strCut from '../../core/modules/filters/strCut';
+import SelectComponent from '../../core/modules/components/commons/form/select/select';
 const options: any = {
     layout: 'app',
     components: {
-        CarouselComponent
+        CarouselComponent,
+        SelectComponent
     },
-    asyncData() {
-        
+    filters: {
+        strCut
     },
-
+    async asyncData(context: any) {
+        const app = BaseComponent.getSingleton();
+        let imgList = <any>null;
+        await app.httpRequest(app.http.get('/imageDispose/f/select/list?type=1'), {
+            success: (data: any) => {
+                imgList = data.imageDisposes;
+            }
+        }, context);
+        const o = {imgList};
+        app.setAsyncData(o);
+        return o;
+    },
 }
 @Component(options)
-export default class ProtalIndexComponent extends Vue {
+export default class ProtalIndexComponent extends BaseComponent {
 
     /** 图片url列表 */
-    public imgList: any[] = [];
-    /** 等级颜色 */
-    public rankColors: any[] = ['#ee1d24', '#ef6ea8', '#ffa500', 'gray'];
+    public imgList!: any;
     /** 当前鼠标悬浮所在的排名文章 */
     public rankIndex: number = - 1;
     /** 当前鼠标悬浮所在的推荐文章 */
@@ -39,18 +47,27 @@ export default class ProtalIndexComponent extends Vue {
     /** 当前鼠标悬浮所在的UP */
     public upIndex: number = - 1;
 
+    /** 是否推荐内容展开 */
+    isOpen1: boolean = false;
+    /** 是否up主展开 */
+    isOpen2: boolean = false;
+    /** 性别类型,1-全部，1-男，2-女，3-未知 */
+    sex: number = -1;
+    /** 性别列表 */
+    sexList: any[] = [
+        {id: -1, description: "全部"},
+        {id: 1, description: "男生"},
+        {id: 2, description: "女生"},
+        {id: 3, description: "未知"},
+    ];
+
     constructor() {
         super();
     }
 
 
-    public mounted(): void {
-        this.imgList = [
-            tail,
-            eval2,
-            tantailang,
-            tugou,
-        ]
+    activated(): void {
+        Object.assign(this, this.getAsyncData());
     }
 
     /**
@@ -97,7 +114,7 @@ export default class ProtalIndexComponent extends Vue {
     /**
      * 点击轮播图
      */
-    private log(index: number) {
-        console.log(index);
+    private voteImg(item: any) {
+        console.log(item);
     }
 }

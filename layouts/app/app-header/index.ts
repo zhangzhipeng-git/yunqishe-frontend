@@ -10,11 +10,13 @@ import Component from "vue-class-component";
 import BaseComponent from "~/core/base-component";
 import SearchComponent from "@/core/modules/components/commons/search/search.vue";
 import SwitchComponent from '../../../core/modules/components/commons/form/switch/switch';
+import Live2dComponent from '../../../core/modules/components/live2d/index';
 
 @Component({
   components: {
     SearchComponent,
-    SwitchComponent
+    SwitchComponent,
+    Live2dComponent
   }
 })
 export default class AppHeaderComponent extends BaseComponent {
