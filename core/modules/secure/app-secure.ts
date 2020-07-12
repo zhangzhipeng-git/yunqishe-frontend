@@ -74,6 +74,7 @@ export default class AppSecure {
         } catch(e) {
             e = <Error>e;
             alert('密钥协商失败~');
+            console.log(e);
         }
     }
 
@@ -103,9 +104,9 @@ export default class AppSecure {
                 this.http.$post(
                     AppSecure.send_sk_api,
                     sk
-                ).then(data => {
-                    if ((<any>data).status === 400) {
-                        throw new Error();
+                ).then((data: any) => {
+                    if (data.status === 400) { // 后端获取前端密钥失败~
+                        throw new Error(data.tip);
                     }
                     res();
                 });

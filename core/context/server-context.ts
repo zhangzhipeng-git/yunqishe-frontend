@@ -82,7 +82,10 @@ export default class Server {
 
     /** 返回undifined，服务端不会用到公用组件管理器！！！ */
     getHandler(): any {
-        return;
+        return {
+            load: () => null,
+            unload: () => null
+        };
     }
 
     /**

@@ -9,6 +9,7 @@ const PUBLIC_API = [
   "/user/setup",
   "/user/logout",
   "/user/isrecord",
+  "/user/f/select/list",
   "/user/f/select/detail/one",
   "/user/f/select/active/list",
   // 用户动态
@@ -51,7 +52,7 @@ export default function({ $axios}: any) {
   const req_ic = $axios.interceptors.request.use(
     async (config: AxiosRequestConfig) => {
       const url = (config.url||'').split('?')[0];
-      // 放行不需要加密的接口，否则会造成死循环
+      // 放行不需要加密的接口(注意请求公钥和上送密钥也要开放，否则会死循环)
       if (PUBLIC_API.includes(url)) return config;
       // 等待上送密钥后取消拦截，放行之前涉及加解密的请求api
       await App.getAppContext().getSecure().secureInit();

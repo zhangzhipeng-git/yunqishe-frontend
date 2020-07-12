@@ -22,12 +22,17 @@ export interface AppContext {
     setContext(context: Context): void;
 }
 export default class App {
-
     public static getAppContext(): AppContext {
         if(typeof window !== 'undefined' && (ENV.getReference() === window)) {
             return (<any>Client.getClientContext());
         }
         return (<any>Server.getServerContext());
     }
-
 }
+export const context = App.getAppContext();
+export const db = context.getDB();
+export const http = context.getHttp();
+export const handler = context.getHandler();
+(<any>http).defaultChannel = '/f';
+
+

@@ -53,9 +53,9 @@ export default class IndexComponent extends BaseComponent {
    * 获取圈子话题内容列表
    */
   getPagingList() {
-    const queryStr = '&type=' + this.searchFilter + '&pid=' + this.topic.id
+    const queryStr = '&type2=' + this.searchFilter + '&pid=' + this.topic.id
     + '&pageNum=' + this.pageNum + '&pageSize=' + this.pageSize;
-    this.httpRequest(this.http.get('/topicContent/f/select/list?type=0' + queryStr), {
+    this.httpRequest(this.http.get('/topicContent/f/select/list?type1=0' + queryStr), {
         success: (data: any) => {
             const contents = data.topicContents;
             if (!contents.length){

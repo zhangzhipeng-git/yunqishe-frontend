@@ -77,7 +77,7 @@ export default class qaComponent extends BaseComponent {
      * 查列表
      */
     getContentList() {
-        const qstr = '?type=1&pid='+this.topicId
+        const qstr = '?type1=1&pid='+this.topicId
         +'&pageNum='+this.pageNum+'&pageSize='+this.pageSize;
         this.httpRequest(this.http.get('/topicContent/f/select/list'+qstr), {
             success: (data: any) => {

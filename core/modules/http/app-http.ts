@@ -71,15 +71,6 @@ export default class AppHttp {
     }
 
     /**
-     * 公用解密
-     * @param data 密文
-     */
-    private aesDecryptData(data: any) {
-        console.log('解密后:');
-        return EncryptUtil.AESDecrypt(data, this.secure.getKey());
-    }
-
-    /**
      * get请求
      * @param url  get请求url
      * @param config Axios请求配置参数
@@ -88,10 +79,12 @@ export default class AppHttp {
         Log.debug('get请求', COLORS.RED);
         Log.debug(new Date().toString(), COLORS.RED)
         Log.debug('请求url:' + url, COLORS.GREEN);
+        Log.debug('config.params:' + JSON.stringify(config&&config.params));
         return new Promise((res: any) => {
             this.$axios.get(url, config).then(data => {
                 // 如果有config，则认为是axios装饰过的data，则实际响应为data.data
                 if (data.config) data = data.data;
+                Log.debug('请求url:' + url, COLORS.GREEN);
                 Log.debug('响应体data:', COLORS.GREEN);
                 if (data.status) { // 有status，则表明返回未加密
                     Log.debug('返回未加密');
@@ -150,6 +143,7 @@ export default class AppHttp {
                     this.$axios.post(url, data, config).then(data => {
                         // 如果有config，则认为是axios装饰过的data，则实际响应为data.data
                         if (data.config) data = data.data;
+                        Log.debug('请求url:' + url, COLORS.GREEN);
                         Log.debug('响应体ata:', COLORS.GREEN);
                         if (data.status) { // 有status，则表明返回未加密
                             Log.debug('返回未加密');
@@ -206,6 +200,7 @@ export default class AppHttp {
             this.$axios.post(url, data, config).then(data => {
                 // 如果有config，则认为是axios装饰过的data，则实际响应为data.data
                 if (data.config) data = data.data;
+                Log.debug('请求url:' + url, COLORS.GREEN);
                 Log.debug('响应体ata:', COLORS.GREEN);
                 if (data.status) { // 有status，则表明返回未加密
                     Log.debug('返回未加密');

@@ -66,8 +66,11 @@ export default class BaseComponent extends Vue {
   cookie!: Cookie;
   /** localStorage,本地持久化 */
   localStorage!: LocalStorage;
+
   /** 用于转存asyncData在客户端设置的组件数据 */
   static data: any;
+  /** 是否路由复用且执行过activated，当不需要在asyncData中重新请求数据时，则可根据该值决定是否要重新请求数据 */
+  static activated: boolean = false;
 
   /**
    * 服务端和客户端都会执行
@@ -202,7 +205,7 @@ export default class BaseComponent extends Vue {
   /**
    * 仅限客户端执行
    * 
-   * 用于asyncData无法在客户端设置组件数据的问题
+   * 用于asyncData无法在客户端路由复用时设置组件数据的问题
    * 
    * 设置数据
    * @param data 设置的数据
@@ -214,12 +217,21 @@ export default class BaseComponent extends Vue {
   }
 
   /**
-   * 仅限客户端执行
+   * 仅限客户端activated内执行，用于通用代码返回的响应数据刷新到复用的组件中！！！
    * 获取响异步应式数据数据
    */
-  getAsyncData(): any {
+  setAsyncDataToThisInActivated() {
     if (process&&process.server) return;
-    return (<any>BaseComponent).data;
+    const data = (<any>BaseComponent).data;
+    const keys = Object.keys(data);
+    keys.forEach((key: string) => {
+      const value = data[key];
+      if (!(<any>this)[key]) {
+        this.$set(this, key, value);
+      } else {
+        (<any>this)[key] = value;
+      }
+    });
   }
 
   /**
@@ -424,6 +436,13 @@ export default class BaseComponent extends Vue {
   /////////////////////////////////universal（两端通用）开始/////////////////////
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * 判断数组列表是否为空，返回true时为空
+   * @param list 数组列表
+   */
+  public isEmpty(list: any[]): boolean {
+    return !list || !list.length;
+  }
 
   /**
    * 深复制

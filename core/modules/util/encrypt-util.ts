@@ -2,7 +2,6 @@
 // import './lib/cryptojs.min.js';
 // import './lib/jsencrypt.min.js';
 import JSUtil from './js-util';
-import CONTS from '../../consts';
 import consts from '../../consts';
 declare class CryptoJS {
     static AES: any;

@@ -50,7 +50,7 @@ export default class ForumComponent extends BaseComponent {
    */
   getTabInvitations() {
     return this.httpRequest(
-      this.http.get("/topicContent/f/select/list?pageNum=1&pageSize=5&type=0&type=2"),
+      this.http.get("/topicContent/f/select/list?pageNum=1&pageSize=5&type1=0&type2=2"),
       {
         success: (data: any) => {
           this.tabInvitations = data.topicContents;

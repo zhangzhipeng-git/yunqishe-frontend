@@ -30,24 +30,21 @@ import NoPrivilegeComponent from '~/components/privilege/no-privilege/index';
     },
     async asyncData(context: Context) {
         const route = context.route;
+        /** 媒体内容父id - 即二级分类id */
         const id: any = route.query.id;
-
         let user = {};
         let mediaClass = {};
         let mediaContents: any = [];
         const util = BaseComponent.getSingleton();
         // 根据id查该二级分类媒体的简介和其子媒体内容（只包含简单信息）
-        function getMediaContentInfo() {
-            return util.httpRequest(util.http.get('/mediaClass/f/select/oneWithChildren?id='+id), {
-                success: async (data: any) => {
-                    user = data.user;
-                    mediaClass = data.mediaClass;
-                    mediaContents = data.mediaContents;
-                    await util.getUserLevel(user);
-                }
-            },context);
-        }
-        await getMediaContentInfo();
+        await util.httpRequest(util.http.get('/mediaClass/f/select/oneWithChildren?id='+id), {
+            success: async (data: any) => {
+                user = data.user;
+                mediaClass = data.mediaClass;
+                mediaContents = data.mediaContents;
+                await util.getUserLevel(user);
+            }
+        },context);
         const o =  {
             user,
             mediaClass,
@@ -82,9 +79,10 @@ export default class mediaPageComponent extends BaseComponent {
     }
 
     activated() {
-        Object.assign(this, this.getAsyncData());
-        // 查询第一个要播放的媒体信息,默认第一个
+        this.setAsyncDataToThisInActivated();
+        /** 查询第一个要播放的媒体信息,默认第一个 */
         let index = 0;
+        /** 媒体内容id */
         const mid = Number(this.$route.query.mid);
         const mediaContents = this.mediaContents;
         let firstPlay = mediaContents[0];

@@ -45,7 +45,7 @@ export default class ThirdSource {
       const script = document.createElement('script');
       script.id = 'js-' + js.id;
       script.src = js.src;
-      script.defer = true;
+      script.async = true;
       if (js.integrity) {
         script.integrity = js.integrity;
       }
