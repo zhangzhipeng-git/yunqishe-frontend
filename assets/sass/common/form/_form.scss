@@ -14,7 +14,7 @@
               font-weight: bolder;
           }
       }
-      input {
+      input, textarea {
           width: 100%;
           height: 2rem;
           line-height: 2rem;
@@ -32,6 +32,9 @@
           &.disabled {
               border: 1PX solid $gray-light;
           }
+      }
+      textarea{
+          height:4rem;
       }
   }
   
@@ -67,12 +70,16 @@
           }
           &+span,
           &+div,
-          &+input {
+          &+input,
+          &+textarea {
               display: inline-block;
               width: 15rem;
               height: 2rem;
               text-align: left;
               vertical-align: middle;
+          }
+          &+textarea {
+              height: 4rem;
           }
       }
   }

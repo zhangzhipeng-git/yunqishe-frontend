@@ -9,7 +9,7 @@ export default class PartLoadingComponent extends Vue {
     /** 局部加载类型1-针对列表加载，2-针对局部文字加载 */
     @Prop({
         type: Number,
-        default: 0
+        default: 1
     })
     type!: number;
 

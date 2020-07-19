@@ -29,10 +29,10 @@ export default class App {
         return (<any>Server.getServerContext());
     }
 }
-export const context = App.getAppContext();
-export const db = context.getDB();
-export const http = context.getHttp();
-export const handler = context.getHandler();
-(<any>http).defaultChannel = '/f';
+const appContext = App.getAppContext();
+export const db = appContext.getDB();
+export const http = appContext.getHttp();
+export const handler = appContext.getHandler();
+export const context = appContext.getContext();
 
 

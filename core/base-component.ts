@@ -92,12 +92,19 @@ export default class BaseComponent extends Vue {
   /////////////////////////////////client（仅客户端可用）开始/////////////////////
   //////////////////////////////////////////////////////////////////////////////
   
-  /** 获取当前用户 */
+  /**
+   * 获取当前用户
+   * 
+   * this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
+   */
   get curUser() {
     const user = this.$store.state.user;
-    const user$ = this.clone(user);
-    this.db.$set('user', user$);
-    return this.db.$get('user');
+    const user$ = this.db.$get('user');
+    // this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
+    if (!!user$) return user$;
+    const clone = this.clone(user);
+    this.db.$set('user', clone); 
+    return clone;
   }
 
   /**
@@ -217,12 +224,11 @@ export default class BaseComponent extends Vue {
   }
 
   /**
-   * 仅限客户端activated内执行，用于通用代码返回的响应数据刷新到复用的组件中！！！
-   * 获取响异步应式数据数据
+   * 仅限客户端activated内执行，用于通用代码返回的响应数据刷新到路由复用的组件中！！！
    */
-  setAsyncDataToThisInActivated() {
-    if (process&&process.server) return;
+  getAsyncDataToThisInActivated() {
     const data = (<any>BaseComponent).data;
+    if (!data) return;
     const keys = Object.keys(data);
     keys.forEach((key: string) => {
       const value = data[key];
@@ -232,6 +238,7 @@ export default class BaseComponent extends Vue {
         (<any>this)[key] = value;
       }
     });
+    (<any>BaseComponent).data = null;
   }
 
   /**
@@ -437,6 +444,18 @@ export default class BaseComponent extends Vue {
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * 获取占位图
+   * @param clz {string} - css类名
+   */
+  getDefaultImg(clz: string) {
+    const num1 = ~~(Math.random()*255);
+    const num2 = ~~(Math.random()*255);
+    const num3 = ~~(Math.random()*255);
+    const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ@#'[~~(Math.random()*28)];
+    return `<span ${!!clz?'class="'+clz+'"':''} style="display:block;width:100%;height:100%;font-weight:bold;text-align:center;background-color:rgb(${num1},${num2},${num3});color:rgb(${255-num1},${255-num2},${255-num3});">${letter}</span>`;
+  }
+
+  /**
    * 判断数组列表是否为空，返回true时为空
    * @param list 数组列表
    */
@@ -476,7 +495,7 @@ export default class BaseComponent extends Vue {
   public httpRequest<T>(promise: Promise<any>, options?: { success?: Function; error?: Function }, context?: Context): Promise<T> {
     if (process && process.server) { // server
       context = context || this.context;
-      return promise.then(async data => {
+      return promise.then(data => {
         if (!data) { // 后台未返回数据
           context?.error({ statusCode: 500 });
           return data;
@@ -484,14 +503,16 @@ export default class BaseComponent extends Vue {
         const status = data.status;
         const data$ = data.data ? data.data : data;
         if (status === 200 && options && options.success) { // 成功且有成功回调
-          await options.success(data$);
+          options.success(data$);
           return data$;
         }
         if (status === 400 && options && options.error) { // 失败且有失败回调
-          await options.error(data$);
+          options.error(data$);
           return data$;
         }
+        return data$;
       }).catch(error => {
+        console.error(error);
         const r = { statusCode: 500, message: error };
         context?.error(r);
         return r;
@@ -507,22 +528,19 @@ export default class BaseComponent extends Vue {
         return data;
       }
 
-      // 是否要走默认流程
-      let result = true;
+      // 是否要走默认流程,默认false - 不走
+      let result = false;
       const status = data.status;
       const data$ = data.data ? data.data : data;
-
       if (status === 200) { // 成功
         if (options && options.success) { // 成功回调
-          result = await options.success(data$);
-          result = result === true;
-        } else { // 成功时没有success回调不走默认流程
-          result = false;
+          const result$ = await options.success(data$);
+          result = result$ === true; // 是否要走成功默认流程
         }
       } else if (status === 400) { // 失败
         if (options && options.error) { // 失败回调
-          result = await options.error(data$);
-          result = result === true;
+          const result$ = await options.error(data$);
+          result = result$ === true; // 是否要走失败默认流程
         }
       } else { // 未知状态，系统错误
         this.handler.unload();
@@ -530,7 +548,6 @@ export default class BaseComponent extends Vue {
           content: '系统错误，请稍后重试',
           buttons: ['确认']
         });
-        result = false;
         return data$;
       }
       // 走默认流程
@@ -543,6 +560,7 @@ export default class BaseComponent extends Vue {
       }
       return data$;
     }).catch((error: Error) => {
+      console.error(error);
       this.handler.unload(); 
       // 频繁请求
       if (error.message === HTTP_ERRORS.HTTP_ERROR_04) {

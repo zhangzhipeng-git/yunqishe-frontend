@@ -79,7 +79,7 @@ export default class mediaPageComponent extends BaseComponent {
     }
 
     activated() {
-        this.setAsyncDataToThisInActivated();
+        this.getAsyncDataToThisInActivated();
         /** 查询第一个要播放的媒体信息,默认第一个 */
         let index = 0;
         /** 媒体内容id */

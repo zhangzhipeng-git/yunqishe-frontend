@@ -99,7 +99,7 @@ module.exports = {
         data: {
             id: 1, // 帖子id
             pid: -1, // 帖子父id 
-            bid: 2,  // 所属板块id
+            bid: 2,  // 所属话题id
             author: { // 作者信息
                 id: 22,
                 avator: '@image(40x50)',

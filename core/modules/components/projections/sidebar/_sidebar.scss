@@ -30,12 +30,14 @@ $sidebar-width: $wd-main-right;
             position: relative;
             float: left;
             margin: .2rem;
-            border-radius: .3rem;
+            border-radius: 100%;
+            overflow: hidden;
             cursor: pointer;
         }
         // img 一行3个 - 在 ~/assets/sass/common/_user.scss中 => .wd-user-img-square img
         img {
             width: ($sidebar-width - 3*.4rem) / 3 - .5rem;
+            height: ($sidebar-width - 3*.4rem) / 3 - .5rem;
         }
     }
     // 侧边栏内容标题 如"最近浏览"/"帖子推荐" - 标题前面有一道竖杠
@@ -67,18 +69,12 @@ $sidebar-width: $wd-main-right;
             height: 100%;
             padding: 1PX;
             @extend %clearfix;
-            // &:hover:before {
-            //     content: '';
-            //     position: absolute;
-            //     display: block;
-            //     left:50%;
-            //     bottom: 0;
-            //     transform: translateX(-50%);
-            //     height: 2PX;
-            //     animation: width-0tox .4s forwards ease;
-            // }
             &:hover {
-                border-radius: .5rem;
+                .img,
+                img {
+                    transform-origin: center;
+                    transform: scale(1.2);
+                }
             }
         }
         // 推荐左侧封面 , 推荐右侧内容
@@ -89,10 +85,17 @@ $sidebar-width: $wd-main-right;
         // 推荐左侧封面
         .wd-sidebar-recommend-cover {
             float: left;
+            overflow: hidden;
+            .img,
             img {
-                width: 5rem;
-                height: 5rem;
+                width: 4rem;
+                height: 4rem;
                 border-radius: .5rem;
+            }
+            .img {
+                display: block;
+                line-height: 4rem;
+                font-size: 2.5rem;
             }
         }
         // 推荐内容
@@ -104,7 +107,6 @@ $sidebar-width: $wd-main-right;
         }
         // 推荐内容标题
         .wd-sidebar-recommend-ctn-title {
-            line-height: 2rem;
             text-align: center;
             font-weight: bold;
             @extend %onerow-ellipsis;
@@ -133,13 +135,6 @@ $sidebar-width: $wd-main-right;
                 color: $main;
                 &:before {
                     background-color: $main;
-                }
-            }
-            // 推荐内容列表
-            .wd-sidebar-recommend-list {
-                a:hover {
-                    padding: 0;
-                    border: 1PX solid $main;
                 }
             }
             // 推荐内容标题

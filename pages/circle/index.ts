@@ -1,26 +1,70 @@
 /*
- * Filename: d:\frontend\vue\nuxt-ssr\pages\circle\circle.ts
- * Path: d:\frontend\vue\nuxt-ssr
- * Created Date: Saturday, December 7th 2019, 1:21:06 pm
- * Author: zzp-dog
- * 圈子首页
- * Copyright (c) 2019 Your Company
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\circle\index.scss
+ * Created Date: Sunday, December 15th 2019, 10:41:15 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 圈子首页
+ * Last Modified: Sunday July 19th 2020 3:10:06 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
 
 import Component from "vue-class-component";
 import strCut from "~/core/modules/filters/strCut";
 import BaseComponent from "~/core/base-component";
+import TopicContentService from '../../service/topic-content/index';
+import TopicClassService from '../../service/topic-class/index';
+import { Context } from "@nuxt/types";
 
 @Component({
   layout: "app",
   filters: {
     strCut
+  },
+  async asyncData(context: Context){
+    if (CircleComponent.activated) return;
+    let tabTopicContents: any[] = [],
+        blocks: any[] = [];
+    const app = BaseComponent.getSingleton();
+    app.handler.load();
+    await Promise.all([
+      app.httpRequest(TopicClassService.selectList({type: 0},'/f'), context),
+      app.httpRequest(TopicContentService.selectList({pageNum:1,pageSize:5,type1:0,type2:2,isFree: true},'/f'), context)
+    ]).then((datas: any) => {
+      const data0 = datas[0];
+      const data1 = datas[1];
+      const topicClasses = data0.topicClasses;
+      if (!!topicClasses) {
+        // 区分大众话题和系统原创话题
+        const blocks$ = [
+          { name: "大众话题", plates: [] },
+          { name: "系统话题", plates: [] }
+        ];
+        topicClasses.forEach((topic: any) => {
+          if (topic.uid === 1) {
+            blocks$[0].plates.push(<never>topic);
+          } else {
+            blocks$[1].plates.push(<never>topic);
+          }
+        });
+        blocks = blocks$;
+      }
+      const tabTopicContents$ = data1.topicContents;
+      if (!!tabTopicContents$) {
+        tabTopicContents = tabTopicContents$;
+      }
+    });
+    return {
+      blocks,
+      tabTopicContents
+    }
   }
 })
-export default class ForumComponent extends BaseComponent {
+export default class CircleComponent extends BaseComponent {
   /** 近期推荐 */
-  tabInvitations = [];
-  /** 分类版块 */
+  tabTopicContents = [];
+  /** 分类话题 */
   blocks: any[] = [];
   /** 悬浮标识 */
   hoverID: string = "";
@@ -28,7 +72,7 @@ export default class ForumComponent extends BaseComponent {
   listColors: any[] = [
     "#ee1d24",
     "#ef6ea8",
-    "rgb(109, 238, 29)", // 你是个鹤立鸡群的家伙
+    "rgb(109, 238, 29)",
     "#ffa500",
     "gray"
   ];
@@ -38,67 +82,12 @@ export default class ForumComponent extends BaseComponent {
   }
 
   activated() {
-    // 查近期的帖子
-    this.getTabInvitations().then(() => {
-      // 查版块并分类
-      this.getBlocks();
-    });
-  }
-
-  /**
-   * 获取tab中显示的帖子
-   */
-  getTabInvitations() {
-    return this.httpRequest(
-      this.http.get("/topicContent/f/select/list?pageNum=1&pageSize=5&type1=0&type2=2"),
-      {
-        success: (data: any) => {
-          this.tabInvitations = data.topicContents;
-        }
-      }
-    );
-  }
-
-  /**
-   * 获取版块
-   */
-  getBlocks() {
-    return this.httpRequest(this.http.get("/topicClass/f/select/list?type=0"), {
-      success: (data: any) => {
-        const topicClasses = data.topicClasses;
-        // 区分大众版块和系统原创版块
-        const blocks = [
-          { name: "大众版块", plates: [] },
-          { name: "系统原创", plates: [] }
-        ];
-        topicClasses.forEach((topic: any) => {
-          if (topic.uid === 1) {
-            blocks[0].plates.push(<never>topic);
-          } else {
-            blocks[1].plates.push(<never>topic);
-          }
-        });
-        this.blocks = blocks;
-      }
-    });
-  }
-
-  /**
-   * 去相关的版块
-   * @param item 版块
-   */
-  toContent(item: any) {
-    this.httpRequest(this.http.get('/topicClass/f/select/one?id='+item.id), {
-      success: (data: any) => {
-        this.$router.push('/circle/content');
-        this.localStorage.setItem('block', data.topicClass);
-      }
-    });
+    CircleComponent.activated = true;
   }
 
   /**
    * 鼠标悬浮时出现边框
-   * @param ID 版块标识 如"1-12"
+   * @param ID 话题标识 如"1-12"
    */
   showHoverStyle(ID: string): void {
     this.hoverID = ID;
@@ -109,21 +98,5 @@ export default class ForumComponent extends BaseComponent {
    */
   hideHoverStyle(): void {
     this.hoverID = "";
-  }
-
-  /**
-   * 去某个话题内容（帖子）
-   * 1.查所属话题（版块）信息
-   * 2.将查到的话题（版块）本地持久化
-   * @param v 话题内容（帖子）
-   */
-  toInvitation(v: any) {
-    const pid = v.pid;
-    this.httpRequest(this.http.get('/topicClass/f/select/one?id='+pid), {
-      success: (data: any) => {
-        this.localStorage.setItem('block', data.topicClass);
-        this.$router.push('/circle/detail?id='+v.id);
-      }
-    });
   }
 }

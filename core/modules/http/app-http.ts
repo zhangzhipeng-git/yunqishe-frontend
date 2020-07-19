@@ -84,7 +84,7 @@ export default class AppHttp {
             this.$axios.get(url, config).then(data => {
                 // 如果有config，则认为是axios装饰过的data，则实际响应为data.data
                 if (data.config) data = data.data;
-                Log.debug('请求url:' + url, COLORS.GREEN);
+                Log.debug('响应url:' + url, COLORS.GREEN);
                 Log.debug('响应体data:', COLORS.GREEN);
                 if (data.status) { // 有status，则表明返回未加密
                     Log.debug('返回未加密');
@@ -143,7 +143,7 @@ export default class AppHttp {
                     this.$axios.post(url, data, config).then(data => {
                         // 如果有config，则认为是axios装饰过的data，则实际响应为data.data
                         if (data.config) data = data.data;
-                        Log.debug('请求url:' + url, COLORS.GREEN);
+                        Log.debug('响应url:' + url, COLORS.GREEN);
                         Log.debug('响应体ata:', COLORS.GREEN);
                         if (data.status) { // 有status，则表明返回未加密
                             Log.debug('返回未加密');
@@ -200,7 +200,7 @@ export default class AppHttp {
             this.$axios.post(url, data, config).then(data => {
                 // 如果有config，则认为是axios装饰过的data，则实际响应为data.data
                 if (data.config) data = data.data;
-                Log.debug('请求url:' + url, COLORS.GREEN);
+                Log.debug('响应url:' + url, COLORS.GREEN);
                 Log.debug('响应体ata:', COLORS.GREEN);
                 if (data.status) { // 有status，则表明返回未加密
                     Log.debug('返回未加密');

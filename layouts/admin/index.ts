@@ -136,7 +136,7 @@ export default class AdminComponent extends BaseComponent {
             leftIcon: ["icon-box"],
             rightIcon: ["icon-caret-left", "icon-caret-down"],
             child: [
-                // 帖子板块和问云分类
+                // 帖子话题和问云分类
                 {
                     level: 2,
                     name: '话题分类',

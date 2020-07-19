@@ -15,7 +15,21 @@
     <div class="ui-portal-header">
       <!-- 轮播图 -->
       <div class="ui-protal-carousel">
-        <CarouselComponent :imgList="imgList" @vote="voteImg($event)" />
+        <CarouselComponent>
+          <ul class="swiper-wrapper">
+            <li
+              class="swiper-slide"
+              v-for="(item, index) in imgList"
+              :key="index"
+              @click="vote(item)"
+            >
+              <a :href="item.href">
+                <img :src="item.url" alt />
+              </a>
+              <div class="wiper-img-desc" v-html="item.description"></div>
+            </li>
+          </ul>
+        </CarouselComponent>
       </div>
     </div>
     <!-- 广告1 -->
@@ -30,8 +44,9 @@
     <div class="ui-top-items">
       <ul>
         <li v-for="(item, i) in topList" :key="i">
-          <a href="javascript:void 0" class="ui-top-wrap">
-            <img :src="item.cover" alt="封面" />
+          <router-link :to="item | contentDetailUrl" class="ui-top-wrap">
+            <img v-if="item.cover" :src="item.cover" alt="封面" />
+            <div class="img" v-else v-once v-html="getDefaultImg()"></div>
             <span class="ui-top-info">
               <span class="ui-top-title">{{item.title}}</span>
               <span class="ui-top-introduce">{{item.introduce}}</span>
@@ -43,8 +58,8 @@
               </span>
             </span>
             <!-- 序号 -->
-            <span class="ui-top-sequence">{{i}}</span>
-          </a>
+            <span class="ui-top-sequence">{{i+1}}</span>
+          </router-link>
         </li>
       </ul>
       <!-- 查出来满了一页才显示更多按钮，下面的列表处理方式相同 -->
@@ -65,19 +80,26 @@
         <li v-for="(item, i) in recentList" :key="i" class="ui-recommends-item">
           <!-- 封面 -->
           <div class="ui-item-cover">
-            <a href="javasript:void 0">
-              <img :src="item.cover" alt="封面" />
-            </a>
+            <router-link :to="item | contentDetailUrl">
+              <img v-if="item.cover" :src="item.cover" alt="封面" />
+              <div class="img" v-else v-once v-html="getDefaultImg()"></div>
+            </router-link>
           </div>
           <!-- 作品信息 -->
           <div class="ui-item-info">
             <!-- 作品标题-->
             <p class="ui-item-title">
-              <a href="Javascript:void 0">{{item.title | strCut(20)}}</a>
+              <router-link
+                :to="item | contentDetailUrl"
+                :tile="item.title"
+              >{{item.title | strCut(20)}}</router-link>
             </p>
             <!-- 作品摘要-->
             <p class="ui-item-abstract">
-              <a href="Javascript:void 0" :title="item.introduce">{{item.introduce | strCut(20)}}</a>
+              <router-link
+                :to="item | contentDetailUrl"
+                :title="item.introduce"
+              >{{item.introduce | strCut(20)}}</router-link>
             </p>
             <!-- 发表时间和浏览次数 -->
             <p class="ui-work-info">
@@ -106,19 +128,26 @@
         <li v-for="(item, n) in hotList" :key="n" class="ui-recommends-item">
           <!-- 封面 -->
           <div class="ui-item-cover">
-            <a href="javasript:void 0">
-              <img :src="item.cover" alt="封面" />
-            </a>
+            <router-link :to="item | contentDetailUrl">
+              <img v-if="item.cover" :src="item.cover" alt="封面" />
+              <div class="img" v-else v-once v-html="getDefaultImg()"></div>
+            </router-link>
           </div>
           <!-- 作品信息 -->
           <div class="ui-item-info">
             <!-- 作品标题-->
             <p class="ui-item-title">
-              <a href="Javascript:void 0">{{item.title | strCut(20)}}</a>
+              <router-link
+                :to="item | contentDetailUrl"
+                :tile="item.title"
+              >{{item.title | strCut(20)}}</router-link>
             </p>
             <!-- 作品摘要-->
             <p class="ui-item-abstract">
-              <a href="Javascript:void 0" :title="item.introduce">{{item.introduce | strCut(20)}}</a>
+              <router-link
+                :to="item | contentDetailUrl"
+                :title="item.introduce"
+              >{{item.introduce | strCut(20)}}</router-link>
             </p>
             <!-- 发表时间和浏览次数 -->
             <p class="ui-work-info">
@@ -147,19 +176,26 @@
         <li v-for="(item, n) in randomList" :key="n" class="ui-recommends-item">
           <!-- 封面 -->
           <div class="ui-item-cover">
-            <a href="javasript:void 0">
-              <img :src="item.cover" alt="封面" />
-            </a>
+            <router-link :to="item | contentDetailUrl">
+              <img v-if="item.cover" :src="item.cover" alt="封面" />
+              <div class="img" v-else v-once v-html="getDefaultImg()"></div>
+            </router-link>
           </div>
           <!-- 作品信息 -->
           <div class="ui-item-info">
             <!-- 作品标题-->
             <p class="ui-item-title">
-              <a href="Javascript:void 0">{{item.title | strCut(20)}}</a>
+              <router-link
+                :to="item | contentDetailUrl"
+                :tile="item.title"
+              >{{item.title | strCut(20)}}</router-link>
             </p>
             <!-- 作品摘要-->
             <p class="ui-item-abstract">
-              <a href="Javascript:void 0" :title="item.introduce">{{item.introduce | strCut(20)}}</a>
+              <router-link
+                :to="item | contentDetailUrl"
+                :title="item.introduce"
+              >{{item.introduce | strCut(20)}}</router-link>
             </p>
             <!-- 发表时间和浏览次数 -->
             <p class="ui-work-info">
@@ -187,7 +223,13 @@
       <h2>本站用户</h2>
       <!-- 按条件过滤 -->
       <div class="ui-btn-filter">
-        <SelectComponent class="ui-select-sex" v-model="sex" :list="sexList" :force="true" @change="changeSex"></SelectComponent>
+        <SelectComponent
+          class="ui-select-sex"
+          v-model="sex"
+          :list="sexList"
+          :force="true"
+          @change="changeSex"
+        ></SelectComponent>
         <a
           v-for="(item,i) in typeList"
           :key="i"
@@ -201,7 +243,7 @@
     <div class="ui-up-items">
       <ul ref="myUp">
         <li class="ui-up-item" v-for="(item, n) in userList" :key="n">
-          <a href>
+          <router-link :to="'/user?id='+item.id">
             <!-- 性别图标-->
             <i
               class="icomoon"
@@ -212,7 +254,7 @@
               <!-- up呢称 -->
               <span>{{item.nickname}}</span>
             </p>
-          </a>
+          </router-link>
         </li>
       </ul>
       <p class="ui-switch-pannel" v-if="isMoreUser">

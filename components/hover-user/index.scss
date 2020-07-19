@@ -1,0 +1,22 @@
+$host-width: 15rem;
+$img-width: 2.5rem;
+.ui-hover-user{
+    position: absolute;
+    width:15rem;
+    background-color: $white;
+    .user-bgp{
+        position: relative;
+        height: 5rem;
+        img {
+            display: block;
+            position: absolute;
+            width: $img-width;
+            height: $img-width;
+            bottom: -1*$img-width / 2;
+            left: $host-width / 2 - $img-width / 2; 
+        }
+    }
+    .user-detail{
+        text-align: center;
+    }
+}

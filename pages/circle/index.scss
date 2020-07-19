@@ -1,12 +1,14 @@
 /*
- * Filename: d:\frontend\vue\nuxt-ssr\pages\circle\circle.scss
- * Path: d:\frontend\vue\nuxt-ssr
- * Created Date: Saturday, December 7th 2019, 1:21:11 pm
- * Author: zzp-dog
- * 圈子首页样式
- * Copyright (c) 2019 Your Company
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\circle\index.scss
+ * Created Date: Sunday, December 15th 2019, 10:41:15 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 圈子首页
+ * Last Modified: Sunday July 19th 2020 3:10:06 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
-
 @charset 'utf-8';
 #id-ui-circle {
     // 主体内容宽度
@@ -78,24 +80,24 @@
             }
         }
     }
-    // 板块容器
+    // 话题容器
     .ui-circle-content {
         margin-top: 1rem;
         padding: 1rem;
         background-color: $white;
-        // 板块总类型标题
+        // 话题总类型标题
         h2 {
             font-weight: bold;
             padding: 0 0 1rem 1rem;
             border-bottom: 1PX solid $gray-light-s;
         }
     }
-    // 板块
+    // 话题
     .ui-items {
         padding: 1rem 0 0 0;
         @extend %clearfix;
     }
-    // 每个板块
+    // 每个话题
     .ui-item {
         position: relative;
         width: ($content-width - 2*1rem) / 3;
@@ -105,42 +107,60 @@
         margin-right: 1rem;
         margin-bottom: 1rem;
         cursor: pointer;
+        background-position: center;
+        background-size: cover;
+        border-radius: .5rem;
+        overflow: hidden;
     }
-    // 版块包裹容器
+    // 话题滤镜
+    .ui-item-filter{
+        position: absolute;
+        z-index:1;
+        top:0;
+        left:0;
+        width: 100%;
+        height:100%;
+        opacity: .3;
+        transition: .3s all;
+    }
+    // 话题包裹容器
     .ui-item-wrap {
         display: block;
-        width: 100%;
         height: 100%;
+        border-radius: .5rem;
+        overflow: hidden;
         border: 1PX solid $gray-light-s;
-        border-radius: .3rem;
+        &:hover .ui-item-filter {
+            background-color: $white;
+        }
+        &:hover .ui-item-title {
+            background-color: $white;
+        }
     }
-    // 板块头部
+    .ui-item-head,
+    .ui-item-footer{
+        position: relative;
+        z-index:2;
+        display: block;
+    }
+    
+    // 话题头部
     .ui-item-head {
         height: 7rem;
         padding: 1rem;
+        text-align: center;
         border-bottom: 1PX solid $gray-light-s;
-    }
-    // 板块头部左侧封面
-    .ui-item-cover {
-        float: left;
-        margin-left: 1rem;
-        img {
-            height: 5rem;
-            width: 5rem;
-            border-radius: 50%;
-        }
-    }
-    // 板块头部右侧简介
-    .ui-item-content {
-        float: right;
-        width: 9rem;
-        height: 5rem;
-        padding-top: 1rem;
     }
     // 简介标题
     .ui-item-title {
+        height: 3rem;
+        line-height: 3rem;
+        color:$white;
         font-size: $font-size-large;
         font-weight: bold;
+        border-radius: 3rem;
+        opacity: .8;
+        transition: .3s all;
     }
     // 简介
     .ui-item-introduce {
@@ -148,7 +168,7 @@
         margin-top: .2rem;
         @extend %onerow-ellipsis;
     }
-    // 板块底部
+    // 话题底部
     .ui-item-footer {
         height: 2rem;
         line-height: 2rem;
@@ -164,6 +184,8 @@
 @each $theme in $themes {
     $colors: map-get($theme-colors, #{$theme}); // 颜色map
     $main: map-get($colors, main); // 主色
+    $main-light: map-get($colors, main-light); // 主色
+    $main-deep: map-get($colors, main-deep); // 主色
     $tip: map-get($colors, tip); // 提示色
     $text: map-get($colors, text); // 字体颜色
     $title: map-get($colors, title); // 标题颜色
@@ -184,13 +206,35 @@
             .ui-recommend-title {
                 color: $main;
             }
-            // 板块总类型标题
+            // 话题总类型标题
             .ui-circle-content h2 {
                 color: $main;
             }
-            // 板块容器悬浮显示边框
-            .show-border {
-                border: 1PX solid $main;
+            // 话题滤镜
+            .ui-item-filter {
+                background-color: $main-light;
+            }
+            // 话题标题
+            .ui-item-title {
+                background-color: $main;
+            }
+            // 话题
+            .ui-item-wrap{
+                color:$main;
+                a{
+                    color:$main;
+                }
+                &:hover {
+                    color:$main;
+                    border-color: $main;
+                    .ui-item-title {
+                        border:1PX solid $main;
+                        color: $main;
+                    }
+                    a{
+                        color:$main-deep;
+                    }
+                }
             }
         }
     }

@@ -7,7 +7,7 @@
  * @FilePath: \nuxt-ssr\components\commons\form\button\button.vue
  -->
 <template>
-  <div class="wd-button" :class="disabled_ ? 'disabled' : ''">
+  <span class="wd-button" :class="disabled_ ? 'disabled' : ''">
     <button
       @click="emitClick"
       :disabled="disabled_"
@@ -18,6 +18,6 @@
       </template>
       <slot v-else />
     </button>
-  </div>
+  </span>
 </template>
 <script lang="ts" src="./button.ts"></script>

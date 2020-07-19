@@ -1,7 +1,7 @@
 @charset 'utf-8';
 
-/*********************板块/帖子头部板块信息 -- start ****************/
-// 板块头部信息
+/*********************话题/帖子头部话题信息 -- start ****************/
+// 话题头部信息
 .wd-content-head {
     height: 7rem;
     padding: 0 1rem;
@@ -9,18 +9,18 @@
     background-color: $white;
 }
 
-// 版块信息和右侧信息
+// 话题信息和右侧信息
 .wd-content-head-left,
 .wd-content-head-right {
     float: left;
 }
 
-// 版块信息
+// 话题信息
 .wd-content-head-left {
     text-align: center;
     padding: .5rem 0;
 
-    // 板块封面
+    // 话题封面
     img {
         height: 6rem;
         width: 6rem;
@@ -39,7 +39,7 @@
     cursor: pointer;
 }
 
-// 板块标题
+// 话题标题
 .wd-content-name {
     font-size: 2rem;
     color: $common;
@@ -83,4 +83,4 @@
     }
         
 }
-/*********************板块/帖子头部板块信息 -- end ****************/
+/*********************话题/帖子头部话题信息 -- end ****************/

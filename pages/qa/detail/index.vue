@@ -203,7 +203,9 @@
                 <div>
                   <p>
                     <!-- 2级回复 - 第几层 -->
-                    <span class="wd-stair2-level2-index">#{{index + 2 +"-" +((((item.pageInfo && item.pageInfo.pageNum) || 1) - 1) *GTLv1CommentPageSize +(index_ + 1))}}楼</span>
+                    <span
+                      class="wd-stair2-level2-index"
+                    >#{{index + 2 +"-" +((((item.pageInfo && item.pageInfo.pageNum) || 1) - 1) *GTLv1CommentPageSize +(index_ + 1))}}楼</span>
                     <!-- 2级回复者昵称 -->
                     <span class="wd-stair2-level2-nickname">{{ item_.user.nickname }}</span>
                     <!-- 2级回复者等级 -->
@@ -213,7 +215,8 @@
                       class="wd-stair-right-wrap-head-neck-level-2"
                       v-if="item.uid !== item_.who.id && item_.who.id"
                     >
-                      <i class="alt">@</i>{{ item_.who.nickname }}
+                      <i class="alt">@</i>
+                      {{ item_.who.nickname }}
                     </span>
                   </p>
                   <p>

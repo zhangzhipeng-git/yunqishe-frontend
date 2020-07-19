@@ -35,7 +35,7 @@ export default class DetailComponent extends BaseComponent {
   id: number = -1;
   /** 话题内容详情 */
   wy: any = {};
-  /** 所属版块 */
+  /** 所属话题 */
   topic: any = {};
   /** 回复 */
   reply: string = "";
@@ -375,7 +375,7 @@ export default class DetailComponent extends BaseComponent {
   }
 
   /**
-   * 收藏话题内容/关注版块，无则插入，有则更新
+   * 收藏话题内容/关注话题，无则插入，有则更新
    * @param v 话题内容
    */
   @Throttle(3000, (o: DetailComponent) => {

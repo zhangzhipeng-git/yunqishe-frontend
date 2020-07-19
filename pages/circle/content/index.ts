@@ -1,28 +1,78 @@
 /*
- * Filename: d:\frontend\vue\nuxt-ssr\pages\circle\content\content.ts
- * Path: d:\frontend\vue\nuxt-ssr
- * Created Date: Saturday, December 7th 2019, 8:23:30 pm
- * Author: zzp-dog
- * 某版本的内容页
- * Copyright (c) 2019 Your Company
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\circle\content\index.ts
+ * Created Date: Sunday, December 15th 2019, 10:41:15 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 某个话题下的话题内容列表页
+ * Last Modified: Sunday July 19th 2020 7:05:51 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
 
 import Component from "vue-class-component";
 import BaseComponent from "~/core/base-component";
 import { Throttle } from '../../../core/modules/annotations/index';
+import { Context } from "@nuxt/types";
+
+import NoResultComponent from '../../../core/modules/components/commons/no-result/no-result';
+import PartLoadingComponent from '../../../core/modules/components/commons/part-loading/part-loading';
+
+import ConcernService from '../../../service/concern/index';
+import TopicClassService from '../../../service/topic-class/index';
+import TopicContentService from '../../../service/topic-content/index';
+
 const options: any = {
-  layout: "app"
+  layout: "app",
+  components: {
+    NoResultComponent,
+    PartLoadingComponent
+  },
+  async asyncData(context: Context) {
+    let topic: any = {},
+      pageNum: number = 1,
+      topicContents: any[] = [],
+      isMoreTopicContent: boolean = false;
+    const app = BaseComponent.getSingleton();
+    const id = parseInt(<string>context.route.query.id, 10);
+    app.handler.load();
+    await Promise.all([
+      // 查话题
+      app.httpRequest(TopicClassService.selectOne({ id }, '/f'), context),
+      // 查话题内容
+      app.httpRequest(TopicContentService.selectList({ pid: id, type1: 0, pageNum, pageSize: 10 }, '/f'), context)
+    ]).then((datas: any) => {
+      const data0 = datas[0];
+      const data1 = datas[1];
+      const topicClass = data0.topicClass;
+      const topicContents$ = data1.topicContents;
+      if (!!topicClass) {
+        topic = topicClass;
+      }
+      if (!!topicContents$) {
+        topicContents = topicContents$;
+        isMoreTopicContent = topicContents.length === 10;
+      }
+    });
+    const o = {
+      topic,
+      topicContents,
+      isMoreTopicContent
+    };
+    app.setAsyncData(o);
+    return o;
+  }
 };
 @Component(options)
 export default class IndexComponent extends BaseComponent {
-  /** 所属版块 */
+  /** 所属话题 */
   topic: any = {};
   /** 筛选列表 */
   filters: any[] = [
-      '全部',
-      '最新',
-      '精华',
-      '人气'
+    '全部',
+    '最新',
+    '精华',
+    '人气'
   ];
   /** 1-全部，2-最新，3-精华，4-人气 5-随机*/
   searchFilter: number = 1;
@@ -31,40 +81,44 @@ export default class IndexComponent extends BaseComponent {
   /** 每页大小 */
   pageSize: number = 10;
   /** 话题内容 */
-  contents: any[] = [];
+  topicContents: any[] = [];
   /** 没有更多 */
-  noMore: boolean = false;
+  isMoreTopicContent: boolean = false;
+  /** 列表筛选是否加载中，默认false-不在加载中 */
+  isLoading: boolean = false;
+  /** 是否列表为空 */
+  get isBlank() {
+    return !this.topicContents || this.topicContents.length === 0;
+  }
 
   constructor() {
     super();
   }
 
+  /**
+   * 路由激活钩子
+   */
   activated(): void {
-    this.noMore = false;
-    this.pageNum = 1;
-    // 置空
-    this.contents = [];
-    this.topic = this.localStorage.getItem('block');
-    // 按过滤率类型查话题内容列表
-    this.getPagingList()
+    this.getAsyncDataToThisInActivated();
   }
 
   /**
    * 获取圈子话题内容列表
+   * @param isAppend 是否查看更多
    */
-  getPagingList() {
-    const queryStr = '&type2=' + this.searchFilter + '&pid=' + this.topic.id
-    + '&pageNum=' + this.pageNum + '&pageSize=' + this.pageSize;
-    this.httpRequest(this.http.get('/topicContent/f/select/list?type1=0' + queryStr), {
-        success: (data: any) => {
-            const contents = data.topicContents;
-            if (!contents.length){
-                this.noMore = true;
-            } else {
-                this.noMore = false;
-            }
-            this.contents = this.contents.concat(contents);
+  getPagingList(isAppend: boolean = false) {
+    this.httpRequest(TopicContentService.selectList({ type2: this.searchFilter, pid: this.topic.id, pageNum: this.pageNum, pageSize: this.pageSize }, '/f'), {
+      success: (data: any) => {
+        const topicContents = data.topicContents;
+        this.isMoreTopicContent = topicContents.length === this.pageSize;
+        if (!isAppend) {
+          this.topicContents = topicContents;
+          this.isLoading = false;
+          return;
         }
+        this.topicContents = this.topicContents.concat(topicContents);
+        this.handler.unload();
+      }
     });
   }
 
@@ -73,31 +127,20 @@ export default class IndexComponent extends BaseComponent {
    * @param type 1-全站，2-最新，3-精华，4-人气，5-随机
    */
   filter(type: number) {
-      this.pageNum = 1;
-      this.pageSize = 10;
-      this.searchFilter = type;
-      this.getPagingList();
+    this.pageNum = 1;
+    this.searchFilter = type;
+    this.isLoading = true;
+    this.getPagingList();
   }
 
   /**
    * 查看更多
    */
   seeMore() {
-    if(this.noMore) return;
+    if (!this.isMoreTopicContent) return;
     this.pageNum++;
-    this.getPagingList();
-  }
-
-  /**
-   * 去帖子详情
-   */
-  toDetail(id: any) {
-    this.$router.push({
-        path: '/circle/detail',
-        query: {
-            id
-        }
-    });
+    this.handler.load();
+    this.getPagingList(true);
   }
 
   /**
@@ -105,24 +148,23 @@ export default class IndexComponent extends BaseComponent {
    */
   get getConcern() {
     if (!this.topic.concernInfo) {
-      this.$set(this.topic, 'concernInfo', {concern: 0});
-    } 
+      this.$set(this.topic, 'concernInfo', { concern: 0 });
+    }
     return this.topic.concernInfo.concern;
   }
 
   /**
-   * 关注版块
+   * 关注/取消关注话题
    */
   @Throttle(3000, (o: IndexComponent) => {
-    o.handler.toast({text: '请不要频繁操作~'});
+    o.handler.toast({ text: '请不要频繁操作~' });
   })
   concernTopic() {
-    if(!this.curUser){
-      this.handler.toast({text: '请先登录~'});
+    if (!this.curUser) {
+      this.handler.toast({ text: '请先登录~' });
       return;
     }
-    const concern = 
-    this.getConcern === 0 ? 1 : 0;
+    const concern = this.getConcern === 0 ? 1 : 0;
     const obj = {
       type: 2,
       concern,
@@ -131,9 +173,9 @@ export default class IndexComponent extends BaseComponent {
     }
     const isConcern = concern === 1;
     const v = this.topic;
-    this.httpRequest(this.http.post('/concern/f/insertOrUpdate/one', obj), {
+    this.httpRequest(ConcernService.insertOrUpdate(obj, '/f'), {
       success: () => {
-        this.handler.toast({text: (isConcern?'':'取消')+'关注成功~'});
+        this.handler.toast({ text: (isConcern ? '' : '取消') + '关注成功~' });
         if (!isConcern) { // 取消关注
           v.concernCount--;
           v.concernInfo.concern = 0;
@@ -141,9 +183,7 @@ export default class IndexComponent extends BaseComponent {
           v.concernCount++;
           v.concernInfo.concern = 1;
         }
-        this.localStorage.setItem('block', v);
       }
     });
   }
-
 }

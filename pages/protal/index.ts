@@ -19,15 +19,21 @@ import NoResultComponent from '../../core/modules/components/commons/no-result/n
 import ImageDisposeService from '~/service/image-dispose';
 import TopicContentService from '~/service/topic-content';
 import UserService from '~/service/user';
+/** 内容详情页url */
+const contentDetailUrl = (item: any) => {
+    return (item.type === 0 ? '/circle' : '/qa')+'/detail?id='+item.id+'&pid='+item.pid;
+}
+/** 组件配置选项 */
 const options: any = {
     layout: 'app',
     components: {
         CarouselComponent,  //轮播图组件
         SelectComponent,    //下拉/上拉选择组件
-        NoResultComponent   //无数据组件
+        NoResultComponent,  //无数据组件
     },
     filters: {
-        strCut              // 字符超长截取
+        strCut,             // 字符超长截取
+        contentDetailUrl    // 内容详情页url
     },
     /** 服务端请求和客户端请求通用代码 */
     async asyncData(context: any) {
@@ -51,53 +57,56 @@ const options: any = {
             userHasData = false,
             isMoreUser = false;
         app.handler.load();
-        // 轮播图
-        await app.httpRequest(ImageDisposeService.selectList({type:1}, '/f'), {
-            success: (data: any) => {
-                imgList = data.imageDisposes;
+        await Promise.all([
+            // 轮播图
+            app.httpRequest(ImageDisposeService.selectList({type:1}, '/f'), context),
+            // 分页查询置顶内容 type2=6&pageNum=1&pageSize=5
+            app.httpRequest(TopicContentService.selectList({type2:1, isFree: true, pageNum: 1, pageSize: 5}, '/f'), context),
+            // 分页查询最近内容 type2=2&pageNum=1&pageSize=24
+            app.httpRequest(TopicContentService.selectList({type2:2, isFree: true, pageNum: 1, pageSize: 24}, '/f'), context),
+            // 分页查询热点内容
+            app.httpRequest(TopicContentService.selectList({type2:4, isFree: true, pageNum: 1, pageSize: 24}, '/f'), context),
+            // 分页查询随机内容
+            app.httpRequest(TopicContentService.selectList({type2:5, isFree: true, pageNum: 1, pageSize: 24}, '/f'), context),
+            // 分页查询用户列表（sex不送值-默认为全部，type不送值-默认也是全部）
+            app.httpRequest(UserService.selectList({pageNum:1, pageSize: 32}, '/f'), context)
+        ]).then((datas: any[]) => {
+            const data0 = datas[0];
+            const data1 = datas[1];
+            const data2 = datas[2];
+            const data3 = datas[3];
+            const data4 = datas[4];
+            const data5 = datas[5];
+            if (data0 && data0.imageDisposes) {
+                imgList = data0.imageDisposes;
                 imgHasData = !app.isEmpty(imgList);
             }
-        }, context);
-        // 分页查询置顶内容 type2=6&pageNum=1&pageSize=5
-        await app.httpRequest(TopicContentService.selectList({type2:1, pageNum: 1, pageSize: 5}, '/f'), {
-            success: (data: any) => {
-                topList = data.topicContents;
+            if (data1 && data1.topicContents) {
+                topList = data1.topicContents;
                 topHasData = !app.isEmpty(topList);
                 isMoreTop = topList && topList.length === 5;
             }
-        }, context);
-        // 分页查询最近内容 type2=2&pageNum=1&pageSize=24
-        await app.httpRequest(TopicContentService.selectList({type2:2, pageNum: 1, pageSize: 24}, '/f'), {
-            success: (data: any) => {
-                recentList = data.topicContents;
+            if (data2 && data2.topicContents) {
+                recentList = data2.topicContents;
                 recentHasData = !app.isEmpty(recentList);
                 isMoreRecent = recentList && recentList.length === 24
             }
-        }, context);
-        // 分页查询热点内容
-        await app.httpRequest(TopicContentService.selectList({type2:4, pageNum: 1, pageSize: 24}, '/f'), {
-            success: (data: any) => {
-                hotList = data.topicContents;
+            if (data3 && data3.topicContents) {
+                hotList = data3.topicContents;
                 hotHasData = !app.isEmpty(hotList);
                 isMoreHot = hotList && hotList.length === 24;
             }
-        }, context);
-        // 分页查询随机内容
-        await app.httpRequest(TopicContentService.selectList({type2:5, pageNum: 1, pageSize: 24}, '/f'), {
-            success: (data: any) => {
-                randomList = data.topicContents;
+            if (data4 && data4.topicContents) {
+                randomList = data4.topicContents;
                 randomHasData = !app.isEmpty(randomList);
                 isMoreRandom = randomList && randomList.length === 24
             }
-        }, context);
-        // 分页查询用户列表（sex不送值-默认为全部，type不送值-默认也是全部）
-        await app.httpRequest(UserService.selectList({pageNum:1, pageSize: 32}, '/f'), {
-            success: (data: any) => {
-                userList = data.users;
+            if (data5 && data5.users) {
+                userList = data5.users;
                 userHasData = !app.isEmpty(userList);
                 isMoreUser = userList && userList.length === 32;
             }
-        }, context);
+        })
         app.handler.unload();
         return {
             imgList,
@@ -351,5 +360,13 @@ export default class ProtalIndexComponent extends BaseComponent {
         this.userHasData = true;
         this.isMoreUser = false;
         this.selectUserList();
+    }
+
+    /**
+     * 点击某个图片
+     * @param item 轮播对象
+     */
+    vote(item: any) {
+        console.log(item);
     }
 }

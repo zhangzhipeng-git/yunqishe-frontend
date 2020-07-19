@@ -107,7 +107,7 @@
           <!-- 图片配置-描述 -->
           <div class="wd-form-unit-h">
             <label for>描述</label>
-            <input v-model="imageDispose.description" type="text" />
+            <textarea v-model="imageDispose.description" type="text" />
           </div>
         </form>
         <div class="wd-btn-group">

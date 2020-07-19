@@ -1,10 +1,13 @@
 /*
- * Filename: d:\frontend\vue\nuxt-ssr\pages\circle\content\content.scss
- * Path: d:\frontend\vue\nuxt-ssr
- * Created Date: Saturday, December 7th 2019, 8:23:36 pm
- * Author: zzp-dog
- * 某版本的内容页
- * Copyright (c) 2019 Your Company
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\circle\content\index.ts
+ * Created Date: Sunday, December 15th 2019, 10:41:15 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 某个话题下的话题内容列表页
+ * Last Modified: Sunday July 19th 2020 7:05:51 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
 
 @charset 'utf-8';
@@ -16,91 +19,108 @@
         margin: 0 2rem;
         color: $gray;
     }
-    // 帖子过滤 
+    .wd-content-head {
+        margin-bottom: 0;
+    }
+    // 帖子过滤
     .ui-topic-filter {
-        margin: .5rem 0 0;
-        padding: .5rem 1rem;
-        border-bottom: 1PX solid $gray-light-s;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        border-top: 1px solid $gray-light-s;
         background-color: $white;
         @extend %clearfix;
+        // 筛选列表
         li {
             float: left;
             width: 3.2rem;
             height: 2rem;
-            margin-left: 1rem;
+            margin-left: 0.25rem;
             line-height: 2rem;
             &:first-child {
                 width: auto;
             }
             a {
                 display: inline-block;
-                padding: 0 .5rem;
-                border-radius: .3rem;
+                padding: 0 0.5rem;
             }
             a:hover,
             a:focus,
             .active {
                 color: $white !important;
             }
+            // 过滤器icon
+            .icon-filter {
+                margin-right: 0.5rem;
+                font-size: 1rem;
+            }
         }
     }
-    // 帖子列表
-    .ui-invitation-list {
-        ul {
-            @extend %clearfix;
-        }
+    // 话题内容列表
+    .ui-topicContent-list {
+        background-color: $white;
         li {
-            float: left;
-            margin-top: .5rem;
-            padding: 1rem 4rem;
-            text-align: center;
-            cursor: pointer;
-            background-color: $white;
-            box-shadow: 0 2PX 4PX 0 $gray-light;
+            border-bottom: 1px solid $gray-light-s;
         }
+    }
+    // 话题内容容器
+    .ui-topicContent-wrap {
+        display: block;
+        padding: 1rem 2rem;
+        transition: 0.3s all;
+        @extend %clearfix;
+    }
+    .ui-topicContent-wrap:hover {
+        box-shadow: 0 3px 8px 0 $gray-light;
     }
     // 帖子作者及帖子简介
-    .ui-invitation-author,
-    .ui-invitation-info {
+    .ui-topicContent-author,
+    .ui-topicContent-info {
         float: left;
     }
     // 帖子封面
-    .ui-invitation-cover {
+    .ui-topicContent-cover {
         float: left;
         width: 4rem;
         height: 5rem;
         line-height: 5rem;
         // 帖子封面
         img {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 100%;
+            width: 100%;
+            height: 100%;
         }
     }
     // 帖子简介
-    .ui-invitation-info {
+    .ui-topicContent-info {
         margin-left: 2rem;
-        width: 46rem;
+        width: 40rem;
         height: 5rem;
         text-align: left;
         // 帖子标题
-        .ui-invitation-title {
-            padding: .5rem 0;
+        .ui-topicContent-title {
+            padding-bottom: 0.5rem;
             font-weight: bold;
         }
         // 帖子简介
-        .ui-invitation-introduce {
+        .ui-topicContent-introduce {
             width: 100%;
             @extend %onerow-ellipsis;
         }
         // 帖子发表时间等
-        .ui-invitation-more {
-            margin-top: .3rem;
-            font-size: .75rem;
+        .ui-topicContent-more {
+            margin-top: 0.3rem;
+            font-size: 0.75rem;
             span {
                 margin-right: 1rem;
             }
         }
+    }
+    // 序号
+    .ui-list-label {
+        vertical-align: middle;
+        font-size: 2rem;
+        line-height: 5rem;
+        font-weight: bold;
+        font-style: italic;
     }
 }
 
@@ -108,6 +128,7 @@
 @each $theme in $themes {
     $colors: map-get($theme-colors, #{$theme}); // 颜色map
     $main: map-get($colors, main); // 主色
+    $main-light: map-get($colors, main-light); // 浅主色
     $tip: map-get($colors, tip); // 提示色
     $text: map-get($colors, text); // 字体颜色
     $title: map-get($colors, title); // 标题颜色
@@ -124,12 +145,15 @@
     $warn: map-get($colors, warn); // 警示色
     .#{$theme} {
         #id-ui-topic-content {
-            // 帖子过滤 
+            // 帖子过滤
             .ui-topic-filter {
+                .icon-filter {
+                    color: $main;
+                }
                 li {
                     a {
                         color: $main;
-                        border: 1PX solid $main;
+                        border: 1px solid $main;
                     }
                     a:hover,
                     a:focus,
@@ -143,12 +167,21 @@
                 background-color: $vip;
             }
             // 帖子简介
-            .ui-invitation-introduce {
+            .ui-topicContent-introduce {
                 color: $text;
             }
             // 帖子发表时间等
-            .ui-invitation-more {
+            .ui-topicContent-more {
                 color: $tip;
+            }
+            // 序号
+            .ui-list-label {
+                color: $main;
+            }
+            .ui-topicContent-list li a {
+                &:hover {
+                    background-color: lighten($main-light, 10);
+                }
             }
         }
     }

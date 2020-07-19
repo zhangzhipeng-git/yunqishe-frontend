@@ -147,7 +147,7 @@ export default class UserComponent extends BaseComponent {
     }
 
     /**
-     * 点击动态栏，如“全部，帖子”
+     * 点击动态栏，如“全部，圈子”
      * @param i 动态栏的列表项下标
      */
     public getDynamicData(i: number): void {

@@ -6,13 +6,15 @@
     @mouseover="showBtn=true"
     @mouseout="showBtn=false"
   >
-    <ul class="swiper-wrapper">
-      <li class="swiper-slide" v-for="(item, index) in imgList" :key="index">
-        <a :href="item.href">
-          <img @click="$emit('vote', item)" :src="item.url" alt />
-        </a>
-      </li>
-    </ul>
+    <slot>
+      <ul class="swiper-wrapper">
+          <li class="swiper-slide" v-for="(item, index) in imgList" :key="index">
+            <a :href="item.href">
+              <img @click="$emit('vote', item)" :src="item.url" alt />
+            </a>
+          </li>
+      </ul>
+    </slot>
     <!-- 如果需要分页器 -->
     <div class="swiper-pagination"></div>
 

@@ -1,6 +1,15 @@
-/* * Filename: d:\frontend\vue\nuxt-ssr\pages\circle\detail\_id.vue * Path:
-d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
-* Author: zzp-dog * 帖子详情 * Copyright (c) 2019 Your Company */
+/*
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\pages\circle\detail\index.vue
+ * Created Date: Sunday, December 15th 2019, 10:41:15 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 圈子内容详情页
+ * Last Modified: Wednesday July 15th 2020 10:50:47 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
+ */
+
 <template>
   <div id="id-ui-circle-detail">
     <!-- 帖子头部导航条 -->
@@ -10,18 +19,18 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
       <a @click="$router.push('/circle/content')">{{ topic&&topic.name }}</a>
       <i class="icomoon icon-chevron-right"></i>
       <!-- 刷新 -->
-      <a @click="$router.go(0)">{{ invitation.title }}</a>
+      <a @click="$router.go(0)">{{ topicContent.title }}</a>
     </div>
     <!-- 帖子作者信息 -->
     <div class="wd-content-head">
       <div class="wd-content-head-left">
-        <img :src="topic.cover" alt="板块封面" />
+        <img :src="topic.cover" alt="话题封面" />
       </div>
       <div class="wd-content-head-right">
         <p class="wd-content-head-right-up">
           <span class="wd-content-name">{{ topic&&topic.name }}</span>
           <span class="wd-content-concern" @click="collect(topic)">
-            <template v-if="getConcern(topic) === 1">
+            <template v-if="(topic | getConcern) === 1">
               <i class="icon-check"></i> 已关注
             </template>
             <template v-else>
@@ -60,41 +69,40 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
           </div>
           <!-- 正文 -->
           <div class="wd-stair-right-level-0">
-            <p v-html="cleanVHtml(invitation.text)"></p>
+            <div v-html="topicContent.text"></div>
             <!-- 发表的相关信息 -->
             <p class="wd-stair-right-deliver-level-0">
               <span class="wd-stair-right-tag-level-0">#1楼</span>
               <i class="icomoon icon-map-pin"></i>
-              <span>{{ invitation.address }}</span>
+              <span>{{ topicContent.address }}</span>
               <i class="icomoon icon-clock"></i>
-              <span>{{ invitation.createTime }}</span>
+              <span>{{ topicContent.createTime }}</span>
               <i
                 class="icomoon"
-                :class="
-                'icon-' + (invitation.device === 1 ? 'monitor' : 'tablet')
-              "
+                :class="'icon-' + (topicContent.device === 1 ? 'monitor' : 'tablet')"
               ></i>
-              <span>{{ invitation.device === 1 ? "PC端" : "移动端" }}</span>
+              <span>{{ topicContent.device === 1 ? "PC端" : "移动端" }}</span>
               <i class="icomoon icon-eye"></i>
-              <span>{{ invitation.viewCount||'' }}</span>
+              <span>{{ topicContent.viewCount||'' }}</span>
               <!-- 收藏 -->
-              <a @click="collect(invitation)">
-                <i class="icomoon" :class="'icon-' + (getConcern(invitation) ? 'star' : 'star-o')"></i>
-                <span>{{ invitation.concernCount||'' }}</span>
-              </a>
-              <!-- 点赞 -->
-              <a @click="thumbup(invitation, 1)">
+              <a @click="collect(topicContent)">
                 <i
                   class="icomoon"
-                  :class="
-                  'icon-thumbs-' + (getThumb(invitation) === 1 ? 'up' : 'up-o')
-                "
+                  :class="'icon-' + ((topicContent | getConcern)? 'star' : 'star-o')"
                 ></i>
-                <span>{{ invitation.thumbupCount||'' }}</span>
+                <span>{{ topicContent.concernCount||'' }}</span>
+              </a>
+              <!-- 点赞/取消点赞 -->
+              <a @click="thumbup(topicContent, 1)">
+                <i
+                  class="icomoon"
+                  :class="'icon-thumbs-' + ((topicContent | getThumb) === 1 ? 'up' : 'up-o')"
+                ></i>
+                <span>{{ topicContent.thumbupCount||'' }}</span>
               </a>
               <!-- 1级回复按钮 -->
               <a href="#topReply$" class="wd-stair-right-reply-btn-level-0">
-                <label for="topReply" @click="setTopReply(invitation)">回复</label>
+                <label for="topReply" @click="setTopReply(topicContent)">回复</label>
               </a>
             </p>
           </div>
@@ -102,14 +110,14 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
         <!-- 1级回复 -->
         <div class="ui-reply">
           <div class="ui-reply-img">
-            <img :src="curUser&&curUser.avator" :alt="!curUser ? '未登录' : '用户头像'" />
+            <img :src="curUser&&curUser.avator" :alt="!curUser.id ? '未登录' : '用户头像'" />
           </div>
           <div class="ui-reply-wrap">
             <client-only>
               <ReplyComponent
                 v-model="replyObj0.text"
                 @submit="submit(replyObj0, 0)"
-                @focus="setTopReply(invitation)"
+                @focus="setTopReply(topicContent)"
                 @disabled="toLogin"
                 :id="'topReply'"
                 :showEmoji="true"
@@ -121,7 +129,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
           </div>
         </div>
         <!-- 帖子1级回复 -->
-        <div class="wd-stair-level-1" v-for="(item, index) in topReplys" :key="index">
+        <div class="wd-stair-level-1" v-for="(item, index) in Lv1Comments" :key="index">
           <!-- 1级回复楼层左侧 -->
           <div class="wd-stair-left-level-1">
             <p>
@@ -153,9 +161,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                 <a @click="thumbup(item, 2)">
                   <i
                     class="icomoon"
-                    :class="
-                    'icon-thumbs-' + (getThumb(item) === 1 ? 'up' : 'up-o')
-                  "
+                    :class="'icon-thumbs-' + ((item | getThumb) === 1 ? 'up' : 'up-o')"
                   ></i>
                   <span>{{ item.thumbupCount||'' }}</span>
                 </a>
@@ -163,9 +169,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                   <!-- 前台不显示反对数，但后台显示 -->
                   <i
                     class="icomoon"
-                    :class="
-                    'icon-thumbs-' + (getThumb(item) === 2 ? 'down' : 'down-o')
-                  "
+                    :class="'icon-thumbs-' + ((item | getThumb) === 2 ? 'down' : 'down-o')"
                   ></i>
                 </a>
                 <i class="icomoon icon-message-square"></i>
@@ -193,9 +197,9 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                   <!-- 2级回复者昵称和等级 -->
                   <h4 class="wd-stair-right-wrap-head-level-2">
                     <!-- 2级回复第几层，没点击查看更多，item是没有响应式属性pageInfo的 -->
-                    <span class="wd-stair-right-wrap-head-tag-level-2">
-                      #{{index +2 +"-" +((((item.pageInfo && item.pageInfo.pageNum) || 1) - 1) * GTLv1CommentPageSize +(index_ + 1))}}楼
-                    </span>
+                    <span
+                      class="wd-stair-right-wrap-head-tag-level-2"
+                    >#{{index +2 +"-" +((((item.pageInfo && item.pageInfo.pageNum) || 1) - 1) * GTLv1CommentPageSize +(index_ + 1))}}楼</span>
                     <!-- 2级回复者昵称 -->
                     <span class="wd-stair-right-wrap-head-neck-level-2">{{item_.user.nickname}}</span>
                     <!-- 2级回复者等级 -->
@@ -205,7 +209,8 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                       class="wd-stair-right-wrap-head-neck-level-2"
                       v-if="item.uid !== item_.who.id && item_.who.id"
                     >
-                      <i class="alt">@</i>{{ item_.who.nickname }}
+                      <i class="alt">@</i>
+                      {{ item_.who.nickname }}
                     </span>
                   </h4>
                   <!-- 2级回复内容 -->
@@ -216,9 +221,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                     <span>{{ item_.createTime }}</span>
                     <i
                       class="icomoon"
-                      :class="
-                      'icon-' + (item_.device === 1 ? 'monitor' : 'tablet')
-                    "
+                      :class="'icon-' + (item_.device === 1 ? 'monitor' : 'tablet')"
                     ></i>
                     <span>{{ item_.device === 1 ? "PC端" : "移动端" }}</span>
                     <!-- 踩顶互斥 -->
@@ -226,9 +229,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                       <!-- 顶 -->
                       <i
                         class="icomoon"
-                        :class="
-                        'icon-thumbs-' + (getThumb(item_) === 1 ? 'up' : 'up-o')
-                      "
+                        :class="'icon-thumbs-' + ((item_ | getThumb) === 1 ? 'up' : 'up-o')"
                       ></i>
                       <span>{{ item_.thumbupCount||'' }}</span>
                     </a>
@@ -236,20 +237,14 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
                       <!-- 踩 -->
                       <i
                         class="icomoon"
-                        :class="
-                        'icon-thumbs-' +
-                          (getThumb(item_) === 2 ? 'down' : 'down-o')
-                      "
+                        :class="'icon-thumbs-' + ((item_ | getThumb) === 2 ? 'down' : 'down-o')"
                       ></i>
                     </a>
-                    <!-- item_.id=item.id，这里让2级回复的id都设为1级回复的id，使2级以上回复成为1级回复的直接子回复 -->
+                    <!-- 这里让2级要回复的pid都设为1级回复的id，使2级以上回复成为1级回复的直接子回复 -->
                     <a href="#childReply$" class="wd-stair-right-wrap-deliver-btn-level-2">
                       <label
                         for="childReply"
-                        @click="
-                        (item_.id = item.id),
-                          openAndSetChildReply($refs['reply' + index], item_, 2, item)
-                      "
+                        @click="openAndSetChildReply($refs['reply' + index], item_, 2, item)"
                       >回复</label>
                     </a>
                   </p>
@@ -276,7 +271,7 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
           </div>
         </div>
         <!-- 1级回复 每次看10条 -->
-        <p class="wd-view-more" @click="seeMore">{{!noMore?'查看更多':'暂无更多~'}}</p>
+        <p v-if="isMoreLv1Comment" class="wd-view-more" @click="seeMore">查看更多</p>
       </div>
 
       <!-- 对1级或2级及以上的回复组件 -->
@@ -297,27 +292,27 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
       </client-only>
       <!-- 右侧 -->
       <!-- 侧边栏组件 投影内容的样式会同时加上父子组件的样式标识-->
-      <SidebarComponent :threshold="'-4rem'" class="wd-main-right">
-        <!-- 最近浏览 -->
+      <SidebarComponent class="wd-main-right">
+        <!-- 活跃用户 -->
         <div class="wd-sidebar-ctn" id="circle-active-user">
           <h3 class="wd-sidebar-ctn-title">最近活跃</h3>
           <div class="wd-sidebar-ctn-user-list">
             <ul class>
-              <li
-                v-for="(v, i) in activeUsers"
-                :key="i"
-                class="wd-user-img-square"
-                @click="goUserCenter(v)"
-              >
-                <img :src="v.avator" alt="用户头像" />
-                <p class="wd-user-img-partner" v-if="v.partner">
-                  <i class="icomoon icon-star"></i>
-                </p>
-                <p
-                  class="wd-user-img-square-honor"
-                  v-if="v.roleNames&&v.roleNames.indexOf('vip')>-1"
-                >{{v.roleNames|vip}}</p>
-                <p class="wd-user-img-square-nickname" :title="v.nickname">{{v.nickname|strCut(6)}}</p>
+              <li v-for="(v, i) in activeUsers" :key="i" class="wd-user-img-square">
+                <router-link :to="'/user?id='+v.id">
+                  <img :src="v.avator" alt="用户头像" />
+                  <p class="wd-user-img-partner" v-if="v.partner">
+                    <i class="icomoon icon-star"></i>
+                  </p>
+                  <p
+                    class="wd-user-img-square-honor"
+                    v-if="v.roleNames&&v.roleNames.indexOf('vip')>-1"
+                  >{{v.roleNames|vip}}</p>
+                  <p
+                    class="wd-user-img-square-nickname"
+                    :title="v.nickname"
+                  >{{v.nickname|strCut(6)}}</p>
+                </router-link>
               </li>
             </ul>
           </div>
@@ -327,11 +322,12 @@ d:\frontend\vue\nuxt-ssr * Created Date: Saturday, December 7th 2019, 8:24:08 pm
           <h3 class="wd-sidebar-ctn-title">帖子推荐</h3>
           <div class="wd-sidebar-recommend-list">
             <ul>
-              <li v-for="(v, i) in recommendInvitations" :key="i" @click="goInvitation(v)">
-                <a href="javascript:void 0">
+              <li v-for="(v, i) in recommendTopicContents" :key="i">
+                <a @click="toCurrentPage" :href="'/circle/detail?id='+v.id+'&pid='+v.pid">
                   <p class="wd-sidebar-recommend-cover">
                     <!-- 内容封面 -->
-                    <img :src="v.cover" alt="内容封面" />
+                    <img v-if="v.cover" :src="v.cover" alt="内容封面" />
+                    <span class="img" v-once v-else v-html="getDefaultImg()"></span>
                   </p>
                   <div class="wd-sidebar-recommend-ctn">
                     <!-- 内容标题 -->

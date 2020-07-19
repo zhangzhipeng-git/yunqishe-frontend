@@ -9,18 +9,16 @@ import App from "@/core/context/app-context.ts";
 import Component from "vue-class-component";
 import { Context } from "@nuxt/types";
 import {calculator} from '../core/modules/util/cal-util';
-export default function(context: Context) {
-
+import BaseComponent from '../core/base-component';
+import init from "~/core/init";
+export default async function(context: Context) {
   const app = App.getAppContext();
   app.setContext(context);
-
+  await init();
   // Register the router hooks with their names
   Component.registerHooks([
     "beforeRouteEnter",
     "beforeRouteLeave",
     "beforeRouteUpdate" // for vue-router 2.2+
   ]);
-
-  // 精确加减乘除挂载到Number原型对象上
-  calculator();
 }
