@@ -36,6 +36,8 @@ export function Throttle(n: number, callback?: Function) {
 
 /**
  * 添加响应式表单，需放在@Component装饰器的后面，作用在类上
+ * 
+ * 并且表单需要存在，即渲染时不能使用v-if进行条件渲染，可使用v-show代替
  * @param target 需要添加响应式表单的组件类
  */
 export const ReactiveForm: Function = (target: any) => {

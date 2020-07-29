@@ -21,8 +21,8 @@
         background-color: $white;
         @extend %clearfix;
     }
-    // 头部左侧封面
-    .ui-circle-cover {
+    // 头部左侧轮播
+    .ui-circle-carousel {
         height: 14rem;
         width: $avg-width;
         float: left;
@@ -33,38 +33,51 @@
         }
     }
     // 头部右侧推荐
-    .ui-circle-recommend {
+    .ui-circle-tab {
         height: 14rem;
         width: $avg-width;
         float: left;
         margin-left: $global-margin;
     }
-    // “近期推荐”
-    .ui-recommend-title {
-        padding: 0;
-        font-size: 2rem;
-        font-weight: bold;
-        // color: $blue-sky;
-        border-bottom: 1PX solid $gray-light-s;
+    // tab
+    .ui-tab{
+        height: 2.5rem;
+        margin-bottom:.5rem;
+        li {
+            float: left;
+            font-size: 1.2rem;
+            line-height: 2.5rem;
+        }
+        a {
+            display: block;
+            margin: 0 .5rem;
+            padding: 0 .5rem;
+            color:$common;
+        }
     }
     // 推荐内容
-    .ui-recommend-content {
+    .ui-topicContents {
         li {
             height: 2rem;
             margin: .2rem 0;
             font-size: $font-size-middle;
             line-height: 2rem;
-            border-radius: .3rem;
             border-bottom: 1PX solid $gray-light-s;
             a {
                 display: block;
                 height: 100%;
                 width: 100%;
-                @extend %onerow-ellipsis;
+                border-radius: .3rem;
+                overflow: hidden;
+                &:hover {
+                    color: $white;
+                    // 简介
+                    .ui-topicContent-introduce {
+                        color: $white;
+                    }
+                }
             }
-            a:hover {
-                background-color: $gray-light-s;
-            }
+            // 序号
             label {
                 display: inline-block;
                 width: 2rem;
@@ -74,14 +87,15 @@
                 border-radius: .3rem 0 0 .3rem;
                 cursor: pointer;
             }
-            .ui-recommend-introduce {
+            // 简介
+            .ui-topicContent-introduce {
                 font-size: $font-size-normal;
                 color: $black-light;
             }
         }
     }
     // 话题容器
-    .ui-circle-content {
+    .ui-topicClass {
         margin-top: 1rem;
         padding: 1rem;
         background-color: $white;
@@ -185,6 +199,7 @@
     $colors: map-get($theme-colors, #{$theme}); // 颜色map
     $main: map-get($colors, main); // 主色
     $main-light: map-get($colors, main-light); // 主色
+    $main-light-s: map-get($colors, main-light-s); // 主色
     $main-deep: map-get($colors, main-deep); // 主色
     $tip: map-get($colors, tip); // 提示色
     $text: map-get($colors, text); // 字体颜色
@@ -202,12 +217,21 @@
     $warn: map-get($colors, warn); // 警示色
     .#{$theme} {
         #id-ui-circle {
-            // “近期推荐”
-            .ui-recommend-title {
-                color: $main;
+            // tab title
+            .ui-tab{
+                a:hover, .active {
+                    color: $main;
+                    border-bottom: 1PX solid $main;
+                }
             }
-            // 话题总类型标题
-            .ui-circle-content h2 {
+            // tab list - item
+            .ui-topicContents {
+                a:hover {
+                    background-color: $main-light-s;
+                }
+            }
+            // 话题版块类型
+            .ui-topicClass h2 {
                 color: $main;
             }
             // 话题滤镜
@@ -218,7 +242,7 @@
             .ui-item-title {
                 background-color: $main;
             }
-            // 话题
+            // 话题版块
             .ui-item-wrap{
                 color:$main;
                 a{

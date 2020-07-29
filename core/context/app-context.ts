@@ -3,7 +3,7 @@ import Server from './server-context';
 import Client from './client-context';
 import Cookie from '../modules/db/Cookie';
 import LocalStorage from '../modules/db/LocalStorage';
-import SessionStorage from '../modules/db/SessionStorege';
+import SessionStorage from '../modules/db/SessionStorage';
 import AppDB from '../modules/db/AppDB';
 import AppHttp from '../modules/http/app-http';
 import AppSecure  from '../modules/secure/app-secure';

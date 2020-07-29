@@ -42,7 +42,7 @@
               :disabled="model$.includes(v[key$])"
               type="checkbox"
             />
-            <i class="icommon icon-check"></i>
+            <i class="icomoon icon-check"></i>
           </label>
         </a>
       </li>

@@ -4,7 +4,7 @@
  * @LastEditTime: 2020-01-22 00:17:21
  * @LastEditors: your name
  * @Description: In User Settings Edit
- * @FilePath: \nuxt-ssr\core\db\SessionStorege.ts
+ * @FilePath: \nuxt-ssr\core\db\SessionStorage.ts
  */
 
 /**

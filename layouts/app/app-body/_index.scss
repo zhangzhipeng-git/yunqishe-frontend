@@ -2,7 +2,7 @@
 #id-app-body {
     position: relative;
     width: 56rem;
-    min-height: calc(100vh - 3rem);
+    min-height: 100%;
     margin: 0 auto;
     padding: 3rem + $global-gap+.2rem 0 $app-footer-height+1rem;
 }

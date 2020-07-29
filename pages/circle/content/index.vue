@@ -77,24 +77,19 @@
               <p class="ui-topicContent-introduce" :title="v.introduce">{{v.introduce}}</p>
               <p class="ui-topicContent-more">
                 <span>
-                  <i class="icomoon icon-clock"></i>
-                  &nbsp;{{v.createTime}}
+                  <i class="icomoon icon-clock"></i>&nbsp;{{v.createTime}}
                 </span>
                 <span>
-                  <i class="icomoon icon-star"></i>
-                  &nbsp;{{v.concernCount}}
+                  <i class="icomoon icon-star"></i>&nbsp;{{v.concernCount}}
                 </span>
                 <span>
-                  <i class="icomoon icon-thumbs-up"></i>
-                  &nbsp;{{v.thumbupCount}}
+                  <i class="icomoon icon-thumbs-up"></i>&nbsp;{{v.thumbupCount}}
                 </span>
                 <span>
-                  <i class="icomoon icon-eye"></i>
-                  &nbsp;{{v.viewCount}}
+                  <i class="icomoon icon-eye"></i>&nbsp;{{v.viewCount}}
                 </span>
                 <span>
-                  <i class="icomoon icon-message-circle"></i>
-                  &nbsp;{{v.commentCount}}
+                  <i class="icomoon icon-message-circle"></i>&nbsp;{{v.commentCount}}
                 </span>
               </p>
             </span>

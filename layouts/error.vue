@@ -29,17 +29,18 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
+import { NuxtError } from "@nuxt/types";
 @Component({layout: 'default'})
 export default class ErrorComponent extends Vue {
   @Prop({ type: Object, default: null })
-  error!: object;
+  error!: NuxtError;
 
   get status() {
-    return (this.error && (<any>this.error).statusCode) || 500;
+    return (this.error && (<any>this.error).statusCode) || 'XXX';
   }
 
   get message() {
-      return '对不起，' + (this.status === 404?'您要找的页面被我弄丢了' : '小站弟弟生病了');
+      return '对不起，' + (this.status === 404?'您要找的页面被我弄丢了' : (this.error.message||'小站弟弟生病了'));
   }
 
   constructor() {

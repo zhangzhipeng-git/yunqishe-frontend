@@ -87,7 +87,7 @@ export default class UIAnnexComponent extends Vue {
         if (!files.length) return;
         // 编辑器实例
         const handler: any = this.$attrs.handler;
-        // 获取编辑器图片配置参数
+        // 获取编辑器banner配置参数
         const imgOption = handler.options$.image;
         // 判断图片是否超过数量
         if (

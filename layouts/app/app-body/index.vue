@@ -1,6 +1,8 @@
 <template>
   <div id="id-app-body">
-      <nuxt keep-alive :keep-alive-props="{ exclude: [] }"/>
+    <keep-alive>
+        <router-view :keep-alive-props="{ exclude: [] }"/>
+    </keep-alive>
   </div>
 </template>
 <script lang="ts" src="./index.ts"></script>

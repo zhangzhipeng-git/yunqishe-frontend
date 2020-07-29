@@ -43,8 +43,9 @@ import NoPrivilegeComponent from '~/components/privilege/no-privilege/index';
                 mediaClass = data.mediaClass;
                 mediaContents = data.mediaContents;
                 await util.getUserLevel(user);
-            }
-        },context);
+            },
+            context
+        });
         const o =  {
             user,
             mediaClass,

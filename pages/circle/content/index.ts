@@ -29,36 +29,25 @@ const options: any = {
     PartLoadingComponent
   },
   async asyncData(context: Context) {
-    let topic: any = {},
-      pageNum: number = 1,
-      topicContents: any[] = [],
-      isMoreTopicContent: boolean = false;
+    let topic: any = {},pageNum: number = 1,topicContents: any[] = [],isMoreTopicContent: boolean = false;
     const app = BaseComponent.getSingleton();
     const id = parseInt(<string>context.route.query.id, 10);
     app.handler.load();
     await Promise.all([
-      // 查话题
-      app.httpRequest(TopicClassService.selectOne({ id }, '/f'), context),
-      // 查话题内容
-      app.httpRequest(TopicContentService.selectList({ pid: id, type1: 0, pageNum, pageSize: 10 }, '/f'), context)
+      app.httpRequest(TopicClassService.selectOne({ id }, '/f'), {context}),
+      app.httpRequest(TopicContentService.selectList({ pid: id, type1: 0, pageNum, pageSize: 10 }, '/f'), {context})
     ]).then((datas: any) => {
       const data0 = datas[0];
       const data1 = datas[1];
       const topicClass = data0.topicClass;
       const topicContents$ = data1.topicContents;
-      if (!!topicClass) {
-        topic = topicClass;
-      }
+      if (!!topicClass) {topic = topicClass;}
       if (!!topicContents$) {
         topicContents = topicContents$;
         isMoreTopicContent = topicContents.length === 10;
       }
     });
-    const o = {
-      topic,
-      topicContents,
-      isMoreTopicContent
-    };
+    const o = {topic,topicContents,isMoreTopicContent};
     app.setAsyncData(o);
     return o;
   }

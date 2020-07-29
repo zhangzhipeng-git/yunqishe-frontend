@@ -8,8 +8,6 @@
 import App from "@/core/context/app-context.ts";
 import Component from "vue-class-component";
 import { Context } from "@nuxt/types";
-import {calculator} from '../core/modules/util/cal-util';
-import BaseComponent from '../core/base-component';
 import init from "~/core/init";
 export default async function(context: Context) {
   const app = App.getAppContext();

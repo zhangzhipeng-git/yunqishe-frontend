@@ -55,4 +55,19 @@ export default class TopicContentService {
     }, channel: string = '') {
         return http.get('/topicContent' + channel + '/select/one', {params});
     }
+
+    /**
+     * tab列表-查询话题简介(置顶+最新+精华+人气+随机)，合并接口请求
+     * @param  {number} type 0-圈子，1-qa（问云）
+     * @param  {number} pageNum 当前页
+     * @param  {number} pageSize 页大小
+     * @param  {string=''} channel
+     */
+    static selectTabList(params: {
+        type: number,
+        pageNum: number,
+        pageSize: number
+    }, channel: string = '') {
+        return http.get('/topicContent' + channel + '/select/tab/list', {params});
+    }
 }

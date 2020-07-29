@@ -25,10 +25,10 @@
             <div class="wd-content-head-cover-mask"></div>
             <div class="wd-content-concern" @click="collect(topic)">
               <template v-if="getConcern(topic) === 1">
-                <i class="icommon icon-check"></i> 已关注
+                <i class="icomoon icon-check"></i> 已关注
               </template>
               <template v-else>
-                <i class="icommon icon-plus"></i> 关注
+                <i class="icomoon icon-plus"></i> 关注
               </template>
             </div>
           </template>
@@ -73,41 +73,53 @@
                 <!-- 用户称号(黑铁-最强王者) -->
                 <span v-if="user.designation" class="wd-user-designation">{{ user.designation }}</span>
                 <!-- 神秘标识 -->
-                <span v-if="user.extraname" class="wd-user-extranmae">{{ wy.user.extraname }}</span>
+                <span
+                  v-if="user.extraname"
+                  class="wd-user-extranmae"
+                >{{ topicContent.user.extraname }}</span>
                 <!-- 用户等级 -->
                 <span class="wd-user-level">Lv.{{ user.level }}</span>
               </p>
               <p>
                 <i class="icomoon icon-clock"></i>
-                <span>{{ wy.createTime }}</span>
-                <i class="icomoon" :class="'icon-' + (wy.device === 1 ? 'monitor' : 'tablet')"></i>
-                <span>{{ wy.device === 1 ? "PC端" : "移动端" }}</span>
+                <span>{{ topicContent.createTime }}</span>
+                <i
+                  class="icomoon"
+                  :class="'icon-' + (topicContent.device === 1 ? 'monitor' : 'tablet')"
+                ></i>
+                <span>{{ topicContent.device === 1 ? "PC端" : "移动端" }}</span>
               </p>
             </div>
           </div>
           <!-- 正文 -->
           <div class="wd-stair2-level0-body">
-            <p v-html="cleanVHtml(wy.text)"></p>
+            <p v-html="cleanVHtml(topicContent.text)"></p>
             <!-- 发表的相关信息 -->
             <p class="wd-stair2-level0-deliver">
               <span class="wd-stair2-right-tag-level-0">#1楼</span>
               <i class="icomoon icon-map-pin"></i>
-              <span>{{ wy.address }}</span>
+              <span>{{ topicContent.address }}</span>
               <i class="icomoon icon-eye"></i>
-              <span>{{ wy.viewCount||'' }}</span>
+              <span>{{ topicContent.viewCount||'' }}</span>
               <!-- 收藏 -->
-              <a @click="collect(wy)">
-                <i class="icomoon" :class="'icon-' + (getConcern(wy) ? 'star' : 'star-o')"></i>
-                <span>{{ wy.concernCount||'' }}</span>
+              <a @click="collect(topicContent)">
+                <i
+                  class="icomoon"
+                  :class="'icon-' + (getConcern(topicContent) ? 'star' : 'star-o')"
+                ></i>
+                <span>{{ topicContent.concernCount||'' }}</span>
               </a>
               <!-- 点赞 -->
-              <a @click="thumbup(wy, 1)">
-                <i class="icomoon" :class="'icon-thumbs-' + (getThumb(wy) === 1 ? 'up' : 'up-o')"></i>
-                <span>{{ wy.thumbupCount||'' }}</span>
+              <a @click="thumbup(topicContent, 1)">
+                <i
+                  class="icomoon"
+                  :class="'icon-thumbs-' + (getThumb(topicContent) === 1 ? 'up' : 'up-o')"
+                ></i>
+                <span>{{ topicContent.thumbupCount||'' }}</span>
               </a>
               <!-- 1级回复按钮 -->
               <a href="#topReply$" class="wd-stair2-level0-deliver-btn">
-                <label for="topReply" @click="setTopReply(wy)">回复</label>
+                <label for="topReply" @click="setTopReply(topicContent)">回复</label>
               </a>
             </p>
           </div>
@@ -119,7 +131,7 @@
               <ReplyComponent
                 v-model="replyObj0.text"
                 @submit="submit(replyObj0, 0)"
-                @focus="setTopReply(wy)"
+                @focus="setTopReply(topicContent)"
                 @disabled="toLogin"
                 :id="'topReply'"
                 :showEmoji="true"
@@ -131,7 +143,7 @@
           </div>
         </div>
         <!-- 问题1级回复 -->
-        <div class="wd-stair2-level1" v-for="(item, index) in topReplys" :key="index">
+        <div class="wd-stair2-level1" v-for="(item, index) in Lv1Comments" :key="index">
           <!-- 1级回复楼层头部 -->
           <div class="wd-stair2-level1-head">
             <div>
@@ -167,9 +179,7 @@
                 <a @click="thumbup(item, 2)">
                   <i
                     class="icomoon"
-                    :class="
-                    'icon-thumbs-' + (getThumb(item) === 1 ? 'up' : 'up-o')
-                  "
+                    :class="'icon-thumbs-' + (getThumb(item) === 1 ? 'up' : 'up-o')"
                   ></i>
                   <span>{{ item.thumbup||'' }}</span>
                 </a>
@@ -177,9 +187,7 @@
                   <!-- 前台不显示反对数，但后台显示 -->
                   <i
                     class="icomoon"
-                    :class="
-                    'icon-thumbs-' + (getThumb(item) === 2 ? 'down' : 'down-o')
-                  "
+                    :class="'icon-thumbs-' + (getThumb(item) === 2 ? 'down' : 'down-o')"
                   ></i>
                 </a>
                 <i class="icomoon icon-message-square"></i>
@@ -224,9 +232,7 @@
                     <span>{{ item_.createTime }}</span>
                     <i
                       class="icomoon"
-                      :class="
-                      'icon-' + (item_.device === 1 ? 'monitor' : 'tablet')
-                    "
+                      :class="'icon-' + (item_.device === 1 ? 'monitor' : 'tablet')"
                     ></i>
                     <span>{{ item_.device === 1 ? "PC端" : "移动端" }}</span>
                   </p>
@@ -245,9 +251,7 @@
                       <!-- 顶 -->
                       <i
                         class="icomoon"
-                        :class="
-                        'icon-thumbs-' + (getThumb(item_) === 1 ? 'up' : 'up-o')
-                      "
+                        :class="'icon-thumbs-' + (getThumb(item_) === 1 ? 'up' : 'up-o')"
                       ></i>
                       <span>{{ item_.thumbupCount||'' }}</span>
                     </a>
@@ -255,13 +259,9 @@
                       <!-- 踩 -->
                       <i
                         class="icomoon"
-                        :class="
-                        'icon-thumbs-' +
-                          (getThumb(item_) === 2 ? 'down' : 'down-o')
-                      "
+                        :class="'icon-thumbs-' +(getThumb(item_) === 2 ? 'down' : 'down-o')"
                       ></i>
                     </a>
-                    <!-- item_.id=item.id，这里让2级回复的id都设为1级回复的id，使2级以上回复成为1级回复的直接子回复 -->
                     <a href="#childReply$" class="wd-stair2-level2-deliver-btn">
                       <label
                         for="childReply"
@@ -276,7 +276,7 @@
             <!-- 2级回复 点击查看更多后可能显示分页 -->
             <p
               v-if="item.commentCount > GTLv1CommentCount && !item.changeToPaging"
-              class="wd-stair2-view-more-leve-2"
+              class="wd-stair2-view-more-level-2"
             >
               共
               <span class="comment-count">{{ item.commentCount }}</span>条回复,
@@ -292,7 +292,7 @@
           </div>
         </div>
         <!-- 1级回复 每次看10条 -->
-        <p class="wd-view-more" @click="seeMore">{{ !noMore ? "查看更多" : "暂无更多~" }}</p>
+        <p v-if="isMoreLv1Comment" class="wd-view-more" @click="seeMore">查看更多</p>
       </div>
 
       <!-- 对1级或2级及以上的回复组件 -->
@@ -314,54 +314,55 @@
 
       <!-- 内容部分 -->
     </div>
-    <!-- 侧边栏组件 投影内容的样式会同时加上父子组件的样式标识-->
-    <SidebarComponent :threshold="'-4rem'">
-      <!-- 最近浏览 -->
-      <div class="wd-sidebar-ctn" id="qa-active-user">
-        <h3 class="wd-sidebar-ctn-title">最近活跃</h3>
-        <div class="wd-sidebar-ctn-user-list">
-          <ul class>
-            <li
-              v-for="(v, i) in activeUsers"
-              :key="i"
-              class="wd-user-img-square"
-              @click="goUserCenter(v)"
-            >
-              <img :src="v.avator" alt="用户头像" />
-              <p class="wd-user-img-partner" v-if="v.partner">
-                <i class="icomoon icon-star"></i>
-              </p>
-              <p
-                class="wd-user-img-square-honor"
-                v-if="v.roleNames&&v.roleNames.indexOf('vip')>-1"
-              >{{v.roleNames|vip}}</p>
-              <p class="wd-user-img-square-nickname" :title="v.nickname">{{v.nickname|strCut(6)}}</p>
-            </li>
-          </ul>
+    <!-- 侧边栏组件 -->
+    <SidebarComponent :bottom="isMoreLv1Comment?'4rem':'0.5rem'">
+      <!-- 活跃用户 -->
+        <div class="wd-sidebar-ctn" id="circle-active-user">
+          <h3 class="wd-sidebar-ctn-title">最近活跃</h3>
+          <div class="wd-sidebar-ctn-user-list">
+            <ul class>
+              <li v-for="(v, i) in activeUsers" :key="i" class="wd-user-img-square">
+                <router-link :to="'/user?id='+v.id">
+                  <img :src="v.avator" alt="用户头像" />
+                  <p class="wd-user-img-partner" v-if="v.partner">
+                    <i class="icomoon icon-star"></i>
+                  </p>
+                  <p
+                    class="wd-user-img-square-honor"
+                    v-if="v.roleNames&&v.roleNames.indexOf('vip')>-1"
+                  >{{v.roleNames|vip}}</p>
+                  <p
+                    class="wd-user-img-square-nickname"
+                    :title="v.nickname"
+                  >{{v.nickname|strCut(6)}}</p>
+                </router-link>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <!-- 帖子推荐 -->
-      <div class="wd-sidebar-ctn">
-        <h3 class="wd-sidebar-ctn-title">帖子推荐</h3>
-        <div class="wd-sidebar-recommend-list">
-          <ul>
-            <li v-for="(v, i) in recommendTopicContents" :key="i" @click="goTopicContent(v)">
-              <a href="javascript:void 0">
-                <p class="wd-sidebar-recommend-cover">
-                  <!-- 内容封面 -->
-                  <img :src="v.cover" alt="内容封面" />
-                </p>
-                <div class="wd-sidebar-recommend-ctn">
-                  <!-- 内容标题 -->
-                  <p class="wd-sidebar-recommend-ctn-title">{{v.title}}</p>
-                  <!-- 内容简介 -->
-                  <p class="wd-sidebar-recommend-ctn-introduce">{{v.introduce}}</p>
-                </div>
-              </a>
-            </li>
-          </ul>
+        <!-- 问云推荐 -->
+        <div class="wd-sidebar-ctn">
+          <h3 class="wd-sidebar-ctn-title">问云推荐</h3>
+          <div class="wd-sidebar-recommend-list">
+            <ul>
+              <li v-for="(v, i) in recommendTopicContents" :key="i">
+                <a @click="toCurrentPage($event)" :href="'/qa/detail?id='+v.id+'&pid='+v.pid">
+                  <p class="wd-sidebar-recommend-cover">
+                    <!-- 内容封面 -->
+                    <img v-if="v.cover" :src="v.cover" alt="内容封面" />
+                    <span class="img" v-once v-else v-html="getDefaultImg()"></span>
+                  </p>
+                  <div class="wd-sidebar-recommend-ctn">
+                    <!-- 内容标题 -->
+                    <p class="wd-sidebar-recommend-ctn-title">{{v.title}}</p>
+                    <!-- 内容简介 -->
+                    <p class="wd-sidebar-recommend-ctn-introduce">{{v.introduce}}</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
     </SidebarComponent>
   </div>
 </template>

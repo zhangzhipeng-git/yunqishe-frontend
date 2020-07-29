@@ -15,10 +15,11 @@ export default class TopicClassService {
 
     /**
      * 查询话题列表
-     * @param params 
-     * @param channel 
+     * @param type 0-圈子，1-问云
+     * @param max 最多个数（不能超过7） 
+     * @param channel
      */
-    static selectList(params: {type: number}, channel: string = '') {
+    static selectList(params: {type: number, max?: number}, channel: string = '') {
         return http.get<{}[]>('/topicClass'+channel+'/select/list', {params});
     }
 }

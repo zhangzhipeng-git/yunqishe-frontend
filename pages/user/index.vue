@@ -1,6 +1,6 @@
 <template>
   <!-- user cover -->
-  <div id="id-user" :style="{'background-image': 'url('+user.bgp+')'}">
+  <div id="id-user" :style="{'background-image': !!user.bgp?('url('+user.bgp+')'):'none'}">
     <!-- 滤镜 -->
     <div class="user-mask"></div>
     <!-- 用户详情 -->
@@ -9,10 +9,11 @@
       <div class="user-info" ref="user_info">
         <a
           @click="
-            $refs.bg_audio.paused
+            $refs.bg_audio&&(
+              $refs.bg_audio.paused
               ? ($refs.bg_audio.play(),paused = false)
               : ($refs.bg_audio.pause(),paused = true)
-          "
+          )"
           href="javascript:void 0"
           class="user-avator"
           :title="'播放/暂停背景音乐'"
@@ -21,7 +22,7 @@
           <img :src="user.avator" alt="用户头像" />
         </a>
         <!-- 背景音乐 -->
-        <audio :preload="true" :src="user.bgm"  loop ref="bg_audio">
+        <audio v-if="user.bgm" :preload="true" :src="user.bgm" loop ref="bg_audio">
           <source type="audio/mpeg" />
           <source type="audio/ogg" />
         </audio>
@@ -62,9 +63,9 @@
           <span class="user-label wd-user-designation">{{ user.dan }}</span>
         </p>
         <!-- 留言 -->
-        <p class="user-say">这个人很懒什么也没说~</p>
+        <p class="user-say">{{user.say?user.say:'这个人很懒什么也没说~'}}</p>
       </div>
-      <!-- 用户冬态开始 -->
+      <!-- 用户动态开始 -->
       <div class="user-actions">
         <!-- 导航栏开始 -->
         <div class="user-action-nav" ref="user_bar">
@@ -133,16 +134,6 @@
                 </li>
               </ul>
             </div>
-            <!-- 用户捕获的奇妙动物 -->
-            <div class="user-captures">
-              <h3 class="wd-sidebar-ctn-title">精灵仓库</h3>
-              <div class="item-mask"></div>
-              <ul>
-                <li v-for="i8 in 10" :key="'i8'+i8">
-                  <a class="user-capture">{{ i8 }}</a>
-                </li>
-              </ul>
-            </div>
             <!-- 最近访客 -->
             <div class="user-visitors">
               <h3 class="wd-sidebar-ctn-title">最近访客</h3>
@@ -160,7 +151,7 @@
             <!-- 内容列表开始 -->
             <template v-if="type < 7">
               <PartLoadingComponent class="ui-part-loading-list" v-if="isLoading" :type="1" />
-              <NoResultComponent class="ui-no-data" v-else-if="hasQuery&&!isLoading&&!list.length" />
+              <NoResultComponent class="ui-no-data" v-else-if="!list.length" />
               <ul>
                 <li v-for="(v4, i4) in list" :key="'i4'+i4">
                   <div class="ui-dynamic-content">
@@ -180,7 +171,7 @@
                         <p>
                           来自{{v4.device===1?'PC端':'移动端'}}
                           <i
-                            class="icommon"
+                            class="icomoon"
                             :class="'icon-'+(v4.device===1?'monitor' : 'tablet')"
                           ></i>
                         </p>
@@ -191,18 +182,17 @@
                     <!-- 动态简介开始 -->
                     <div
                       class="ui-dynamic-content-body"
-                      @click="toDynamicDetail(v4)"
                       v-if="v4.privilegeType === 0"
                     >
                       <!-- 标题开始 -->
-                      <h3>{{v4.title}}</h3>
+                      <router-link :to="module(v4.type)+'/detail?id='+v4.id+'&pid='+v4.pid">{{v4.title}}</router-link>
                       <!-- 标题结束 -->
                       <!-- 封面（有则显示）和简介开始 -->
                       <div class="ui-body-info-main">
                         <div class="ui-dynamic-cover" v-if="v4.cover">
                           <img :src="v4.cover" alt="内容封面" />
                         </div>
-                        <p class="ui-dynamic-introduce">{{v4.introduce}}</p>
+                        <router-link :to="module(v4.type)+'/detail?id='+v4.id+'&pid='+v4.pid" class="ui-dynamic-introduce">{{v4.introduce}}</router-link>
                       </div>
                       <!-- 封面（有则显示）和简介结束 -->
                     </div>
@@ -214,124 +204,126 @@
                     <!-- 需要开通会员或付费后查看结束 -->
                     <!-- 底部信息，收藏，点赞，观看，转发，评论开始 -->
                     <p class="ui-dynamic-content-foot">
-                      <i class="icommon icon-star-o"></i>
+                      <i class="icomoon icon-star-o"></i>
                       {{v4.concernCount}}
-                      <i class="icommon icon-thumbs-up-o"></i>
+                      <i class="icomoon icon-thumbs-up-o"></i>
                       {{v4.thumbupCount}}
-                      <i class="icommon icon-eye"></i>
+                      <i class="icomoon icon-eye"></i>
                       {{v4.viewCount}}
-                      <i class="icommon icon-external-link"></i>
+                      <i class="icomoon icon-external-link"></i>
                       {{v4.forwardCount}}
                       <i
-                        class="icommon icon-message-square"
+                        class="icomoon icon-message-square"
                       ></i>
                       {{v4.commentCount}}
                       <span
                         class="ui-dynamic-detail"
-                        @click="toDynamicDetail(v4)"
                       >
-                        <button>全文</button>
+                        <router-link :to="module(v4.type)+'/detail?id='+v4.id+'&pid='+v4.pid">全文</router-link>
                       </span>
                     </p>
                     <!-- 底部信息，收藏，点赞，观看，转发，评论结束 -->
                   </div>
                 </li>
+                <!-- 查看更多 -->
+                <li>
+                  <PartLoadingComponent
+                    class="ui-part-loading-list"
+                    v-if="isSeeMore&&isLoading"
+                    :type="1"
+                  />
+                  <p v-if="isMoreList" class="wd-view-more" @click="seeMore">查看更多</p>
+                </li>
               </ul>
-              <!-- 查看更多 -->
-              <p v-if="list.length" class="wd-view-more" @click="seeMore">{{!noMore?'查看更多':'暂无更多~'}}</p>
             </template>
             <!-- 内容列表结束 -->
             <!-- 资料设置开始 -->
-            <template v-else-if="type === 7">
-              <ul class="ui-user-info-set" formgroup ref="formGroup">
-                <li class="ui-upload-img">
-                  <label>头像</label>
-                  <UploadComponent
-                    class="ui-upload-component"
-                    :multiply="false"
-                    @onchange="uploadAvator($event)"
-                  >
-                    <div class="ui-img-box">
-                      <i class="icomoon icon-plus"></i>
-                      <img :src="user.avator" alt />
-                    </div>
-                  </UploadComponent>
-                </li>
-                <li>
-                  <InputComponent :label="'姓名'" :pattern="'required'" v-model="user.name" />
-                </li>
-                <li>
-                  <InputComponent :label="'昵称'" :pattern="'required'" v-model="user.nickname" />
-                </li>
-                <li>
-                  <InputComponent :label="'手机号'" v-model="user.phone" />
-                </li>
-                <li>
-                  <InputComponent :label="'QQ'" v-model="user.qq" />
-                </li>
-                <li>
-                  <InputComponent :label="'微信号'" v-model="user.wechat" />
-                </li>
-                <li :style="{'padding-bottom':'.9rem'}">
-                  <label for="userSex">性别</label>
-                  <SelectComponent
-                    :id="'userSex'"
-                    :reverse="true"
-                    :list="[{id: 0, description:'男'}, {id: 1, description: '女'}]"
-                    v-model="user.sex"
-                  />
-                </li>
-                <!-- CalendarComponent -->
-                <li :style="{'padding-bottom':'.9rem'}">
-                  <label for="birthday">生日</label>
-                  <CalendarComponent :id="'birthday'" :reverse="true" v-model="user.birthday" />
-                </li>
-                <!-- 个人说明 -->
-                <li>
-                  <InputComponent :label="'个人说明'" :multiple="true" v-model="user.say" />
-                </li>
-                <li :style="{'text-align':'right'}">
-                  <ButtonComponent
-                    :disabled="refs.formGroup&&refs.formGroup.invalid"
-                    @click="updateUser"
-                  >保存</ButtonComponent>
-                </li>
-              </ul>
-            </template>
+            <ul v-show="type === 7" class="ui-user-info-set" formgroup ref="formGroup">
+              <li class="ui-upload-img">
+                <label>头像</label>
+                <UploadComponent
+                  class="ui-upload-component"
+                  :multiply="false"
+                  @onchange="uploadAvator($event)"
+                >
+                  <div class="ui-img-box">
+                    <i class="icomoon icon-plus"></i>
+                    <img :src="user.avator" alt />
+                  </div>
+                </UploadComponent>
+              </li>
+              <li>
+                <InputComponent :label="'姓名'" :pattern="'required'" v-model="user.name" />
+              </li>
+              <li>
+                <InputComponent :label="'昵称'" :pattern="'required'" v-model="user.nickname" />
+              </li>
+              <li>
+                <InputComponent :label="'手机号'" v-model="user.phone" />
+              </li>
+              <li>
+                <InputComponent :label="'QQ'" v-model="user.qq" />
+              </li>
+              <li>
+                <InputComponent :label="'微信号'" v-model="user.wechat" />
+              </li>
+              <li :style="{'padding-bottom':'.9rem'}">
+                <label for="userSex">性别</label>
+                <SelectComponent
+                  :id="'userSex'"
+                  :reverse="true"
+                  :list="[{id: 0, description:'男'}, {id: 1, description: '女'}]"
+                  v-model="user.sex"
+                />
+              </li>
+              <!-- CalendarComponent -->
+              <li :style="{'padding-bottom':'.9rem'}">
+                <label for="birthday">生日</label>
+                <CalendarComponent :id="'birthday'" :reverse="true" v-model="user.birthday" />
+              </li>
+              <!-- 个人说明 -->
+              <li>
+                <InputComponent :label="'个人说明'" :multiple="true" v-model="user.say" />
+              </li>
+              <li :style="{'text-align':'right'}">
+                <ButtonComponent
+                  :disabled="refs.formGroup&&refs.formGroup.invalid"
+                  @click="updateUser"
+                >保存</ButtonComponent>
+              </li>
+            </ul>
             <!-- 资料设置结束-->
             <!-- 个性化开始 -->
-            <template v-else>
-              <ul class="ui-personalize-set">
-                <li class="ui-upload-music">
-                  <label for>背景音乐</label>
-                  <UploadComponent
-                    :accept="'audio/mpeg,audio/ogg'"
-                    :hasBtn="true"
-                    :text="'本地上传'"
-                    class="ui-upload-component"
-                    @onchange="uploadBGM($event)"
-                  >
-                    <InputComponent :placeholder="'推荐输入外链~'" v-model="user.bgm" />
-                  </UploadComponent>
-                </li>
-                <li class="ui-upload-img">
-                  <label>背景图像</label>
-                  <UploadComponent
-                    class="ui-upload-component"
-                    :multiply="false"
-                    @onchange="uploadBGP($event)"
-                  >
-                    <div class="ui-img-box">
-                      <i class="icomoon icon-plus"></i>
-                      <img :src="user.bgp" alt />
-                    </div>
-                  </UploadComponent>
-                </li>
-                <li :style="{'text-align':'right'}">
-                  <ButtonComponent @click="personalizeSet">保存</ButtonComponent>
-                </li>
-              </ul>
-            </template>
+            <ul v-show="type > 7" class="ui-personalize-set">
+              <li class="ui-upload-music">
+                <label for>背景音乐</label>
+                <UploadComponent
+                  :accept="'audio/mpeg,audio/ogg'"
+                  :hasBtn="true"
+                  :text="'本地上传'"
+                  class="ui-upload-component"
+                  @onchange="uploadBGM($event)"
+                >
+                  <InputComponent :placeholder="'推荐输入外链~'" v-model="user.bgm" />
+                </UploadComponent>
+              </li>
+              <li class="ui-upload-img">
+                <label>背景图像</label>
+                <UploadComponent
+                  class="ui-upload-component"
+                  :multiply="false"
+                  @onchange="uploadBGP($event)"
+                >
+                  <div class="ui-img-box">
+                    <i class="icomoon icon-plus"></i>
+                    <img :src="user.bgp" alt />
+                  </div>
+                </UploadComponent>
+              </li>
+              <li :style="{'text-align':'right'}">
+                <ButtonComponent @click="personalizeSet">保存</ButtonComponent>
+              </li>
+            </ul>
             <!-- 个性化结束 -->
           </div>
           <!-- 右侧内容结束 -->

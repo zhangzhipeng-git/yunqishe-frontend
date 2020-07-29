@@ -35,13 +35,13 @@
         <!-- 加载视频 -->
         <div v-if="!canplay$" class="loading">
           <div class="loading-icon">
-            <i class="icommon icon-loading-wheel"></i>
+            <i class="icomoon icon-loading-wheel"></i>
           </div>
         </div>
         <!-- 未开始播放或当前暂停或已播放完 -->
         <div v-show="paused || isInAnimation" class="mask" @click="play">
           <div class="icon-wrap" :class="isInAnimation ? 'animation' : ''">
-            <i class="icommon" :class="' icon-' + (paused? 'play' : 'pause')"></i>
+            <i class="icomoon" :class="' icon-' + (paused? 'play' : 'pause')"></i>
           </div>
         </div>
         <div v-if="!options$.controls&&!isMB" class="tools">
@@ -95,7 +95,7 @@
               <!-- 上一个 -->
               <div v-if="hasPre" class="box" @click="$emit('prev', $event)">
                 <a href="javascript:void 0">
-                  <i class="icommon icon-arrow-left-circle"></i>
+                  <i class="icomoon icon-arrow-left-circle"></i>
                   <span></span>
                 </a>
               </div>
@@ -103,7 +103,7 @@
               <div class="box play-pause" @click="switch$">
                 <a href="javascript:void 0">
                   <i
-                    class="icommon"
+                    class="icomoon"
                     :class="
                   ' icon-' + (paused? 'play' : 'pause') + '-circle'
                 "
@@ -114,7 +114,7 @@
               <!-- 下一个 -->
               <div v-if="hasNex" class="box" @click="$emit('next', $event)">
                 <a href="javascript:void 0">
-                  <i class="icommon icon-arrow-right-circle"></i>
+                  <i class="icomoon icon-arrow-right-circle"></i>
                   <span></span>
                 </a>
               </div>
@@ -126,7 +126,7 @@
               <!-- 循环播放 -->
               <div class="box" @click="replay">
                 <a href="javascript:void 0" class="replay">
-                  <i class="icommon icon-rotate-cw"></i>
+                  <i class="icomoon icon-rotate-cw"></i>
                   <span></span>
                 </a>
               </div>
@@ -139,7 +139,7 @@
               >
                 <a href="javascript:void 0">
                   <i
-                    class="icommon"
+                    class="icomoon"
                     :class="'icon-volume-'+(this.volume===0?'x':this.volume<.5?'1':'2')"
                   ></i>
                   <span></span>
@@ -162,7 +162,7 @@
               <!-- 全屏 -->
               <div v-if="isSupportFullScreen" class="box" @click="fullScreen">
                 <a href="javascript:void 0">
-                  <i class="icommon" :class="'icon-'+(full?'minimize':'maximize')"></i>
+                  <i class="icomoon" :class="'icon-'+(full?'minimize':'maximize')"></i>
                   <span></span>
                 </a>
               </div>

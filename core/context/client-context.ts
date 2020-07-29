@@ -3,7 +3,7 @@ import Cookie from '../modules/db/Cookie';
 import AppHttp from '../modules/http/app-http';
 import AppSecure from '../modules/secure/app-secure';
 import LocalStorage from '../modules/db/LocalStorage';
-import SessionStorage from '../modules/db/SessionStorege';
+import SessionStorage from '../modules/db/SessionStorage';
 import ComponentsHandler from '../modules/components/components-handler';
 import { Context } from '@nuxt/types';
 
@@ -188,8 +188,7 @@ export default  class Client {
     }
 
     /**
-     * 得到单例app上下文，注意：前端的服务端无法保持单例，每次请求会生成新的clientContext
-     * 服务端的单例要放到global上，客户端clientContext上下文相当于服务端的session
+     * 得到单例app上下文，注意：每次刷新页面会生成新的clientContext
      */
     public static getClientContext() {
         if ((<any>Client).clientContext) {

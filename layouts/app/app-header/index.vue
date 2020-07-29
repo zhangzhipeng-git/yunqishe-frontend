@@ -29,7 +29,7 @@
         </ul>
       </div>
       <!-- 搜索输入 -->
-      <SearchComponent class="wd-ui-serach-component" v-model="searchText" @click="toSearch" />
+      <SearchComponent class="wd-ui-search-component" v-model="searchText" @click="toSearch" />
       <!-- 用户信息 -->
       <div class="wd-user-info">
         <div>
@@ -53,7 +53,7 @@
       <ul>
         <li v-for="(v, i) in [1]" :key="i">
           <a href="javascript: void 0" @click="togglePageSet(i)" :class="{active: showPageSet}">
-            <i class="icommon icon-t-shirt"></i>
+            <i class="icomoon icon-t-shirt"></i>
           </a>
         </li>
       </ul>
@@ -61,7 +61,7 @@
     <!-- 主题样式设置 -->
     <div class="ui-page-set" :class="showPageSet?'show':'hide'">
       <div class="ui-mask"></div>
-      <div class="ui-close" @click="togglePageSet"><i class="icommon icon-chevrons-down"></i></div>
+      <div class="ui-close" @click="togglePageSet"><i class="icomoon icon-chevrons-down"></i></div>
       <!-- 改变页眉和页脚 -->
       <div class="ui-bg">
        <span>头部/底部背景</span><SwitchComponent class="ui-switch" v-model="bg" @click="changeBg($event)" />

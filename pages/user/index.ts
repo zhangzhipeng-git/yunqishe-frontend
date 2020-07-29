@@ -12,40 +12,92 @@ import UploadComponent from '../../core/modules/components/commons/upload/upload
 import SelectComponent from '@/core/modules/components/commons/form/select/select';
 import CalendarComponent from '../../core/modules/components/commons/form/date/date';
 import { ReactiveForm } from '~/core/modules/annotations';
-@Component({layout: 'app2',components: {
-    NoResultComponent,
-    SidebarComponent,
-    ButtonComponent,
-    PartLoadingComponent,
-    NoPrivilegeComponent,
-    PayComponent,
-    UploadComponent,
-    InputComponent,
-    SelectComponent,
-    CalendarComponent
-}})
+import { Context } from '@nuxt/types';
+import UserService from '../../service/user/index';
+import BucketService from '~/service/bucket';
+
+const asyncData = async (context: Context) => {
+    const app = BaseComponent.getSingleton();
+    app.handler.load();
+    let user = {};
+    let tags: any = [];
+    let fansCount = 0;
+    let giftRecords: any = [];
+    let concernCount = 0;
+    let dynamicCount = 0;
+    let charmValue = 0;
+    let type = 1;
+    let pageNum = 1;
+    let pageSize = 10;
+    let list: any = [];
+    let isMoreList = false;
+    const id = <any>(context.route.query.id);
+    await Promise.all([
+        app.httpRequest(UserService.selectDetailOne({ id }, '/f'), {context}),
+        app.httpRequest(UserService.selectDynamicList({ id, type, pageNum, pageSize }, '/f'), {context})
+    ]).then((datas: any) => {
+        const data0 = datas[0];
+        const data1 = datas[1];
+        // 用户详细信息
+        user = data0.user;
+        fansCount = data0.fansCount;        // 粉丝数
+        giftRecords = data0.giftRecords;    // 礼物列表
+        concernCount = data0.concernCount;  // 关注数
+        dynamicCount = data0.dynamicCount;  // 动态数
+        app.getUserLevelAndDan(user);
+        // 计算魅力值
+        let value = 0;
+        giftRecords.forEach((e: any) => {
+            value += e.gift.charmValue * e.groupCount;
+        })
+        charmValue = value;
+        // 动态列表
+        const contents = data1.contents;
+        list = contents;
+        isMoreList = list.length === pageSize;
+    });
+    const o = { user, tags, fansCount, giftRecords, concernCount, dynamicCount, charmValue, list, isMoreList };
+    app.setAsyncData(o);
+    app.handler.unload();
+    return o;
+}
+@Component({
+    layout: 'app2',
+    components: {
+        NoResultComponent,
+        SidebarComponent,
+        ButtonComponent,
+        PartLoadingComponent,
+        NoPrivilegeComponent,
+        PayComponent,
+        UploadComponent,
+        InputComponent,
+        SelectComponent,
+        CalendarComponent
+    },
+    asyncData
+})
 @ReactiveForm
 export default class UserComponent extends BaseComponent {
-    activeIndex: number = 0;
     /** user页面 */
     @Ref('user_detail')
-    userDetail!:any;
+    userDetail!: any;
     /** 页面上部分用户信息 */
     @Ref('user_info')
-    userInfo!:any;
+    userInfo!: any;
     /** 用户动态条 */
     @Ref('user_bar')
-    userBar!:any;
-    /** 用户动态主体左侧 */
+    userBar!: any;
+    /** 用户动态主体右侧 */
     @Ref('main_right')
-    mainRight!:any;
+    mainRight!: any;
     /** 音乐是否暂停 */
     paused: boolean = true;
 
     /** 路由传过来的用户id */
-    id: number|any = -1;
-    /** 动态类型列表 */
-    dynamicList = [
+    id: number | any = -1;
+    /** 动态类型列表原型 */
+    dynamicList$ = [
         '全部',
         '圈子',
         '问答',
@@ -53,7 +105,10 @@ export default class UserComponent extends BaseComponent {
         '音乐',
         '视频'
     ];
-
+    /** 动态类型列表克隆 */
+    dynamicList: any = [];
+    /** 动态激活下标 */
+    activeIndex: number = 0;
     /** 用户 */
     user: any = {};
     /** 定制标签 */
@@ -73,22 +128,18 @@ export default class UserComponent extends BaseComponent {
     list: any[] = [];
     /** 动态类型,默认1-全部 */
     type: number = 1;
-    /** 分页-哪一页 */
+    /** 分页-哪一页, 默认第一页 */
     pageNum: number = 1;
-    /** 分页-分页大小 */
+    /** 分页-分页大小，默认10条 */
     pageSize: number = 10;
-
-    /** 是否在加载, 默认在加载 */
-    isLoading: boolean = true;
-    /** 是否查询过动态列表 */
-    hasQuery: boolean = false;
-
+    /** 是否在加载中 */
+    isLoading: boolean = false;
+    /** 是否查看更多 */
+    isSeeMore: boolean = false;
     /** 是否有更多,默认有 */
-    noMore:boolean = false;
-
+    isMoreList: boolean = false;
     /** 要修改的用户的model */
     userModel: any = {}
-
     /** 上传头像的最大字节 */
     max: number = 1024;
     /** 上传文件的名称 */
@@ -98,52 +149,31 @@ export default class UserComponent extends BaseComponent {
         super();
     }
 
-    async mounted(){
-        // 页面初始化
-        await this.pageInit();
-        // 获取用户信息（附带了其他的详细信息）
-        this.getUserInfo();
-        // 根据类型查动态
-        this.selectEntitiesByType(this.type);
-    }
-
-    async pageInit() {
-        this.id = this.$route.query.id||this.curUser.id;
-        // 自己看自己时，动态列表添加‘个性化’和‘资料修改’
-        // 后端也会做判断是不是自己在操作
-        if (this.curUser && Number(this.id) === this.curUser.id){
-            this.dynamicList.push('修改资料');
-            this.dynamicList.push('个性化');
+    module(t: number) {
+        switch(t) {
+            case 0 : return '/circle';
+            case 1 : return '/qa';
+            case 4 : return '/img';
+            case 5 : return '/music';
+            case 6 : return '/video';
+            default: return '';
         }
     }
 
-    /**
-     * 根据用户id查用户信息
-     * @param id 用户id
-     */
-    getUserInfo() {
-        this.httpRequest(this.http.get('/user/f/select/detail/one?id='+this.id), {
-            success: (data: any) => {
-                this.user = data.user;
-                this.tags = data.tags;
-                this.fansCount = data.fansCount;
-                this.giftRecords = data.giftRecords;
-                this.concernCount = data.concernCount;
-                this.dynamicCount = data.dynamicCount;
-                this.getUserLevelAndDan(this.user);
-                // 计算魅力值
-                let value = 0;
-                this.giftRecords.forEach((e: any) => {
-                    value += e.gift.charmValue*e.groupCount;
-                })
-                this.charmValue = value;
-                this.setHeight();
-            },
-            error: () => {
-                this.setHeight();
-                return true;
-            }
-        });
+    activated() {
+        this.getAsyncDataToThisInActivated();
+        this.$nextTick(() => this.pageInit());
+    }
+
+    pageInit() {
+        this.id = this.$route.query.id || this.curUser.id;
+        // 自己看自己时，动态列表添加‘个性化’和‘资料修改’
+        // 后端也会做判断是不是自己在操作
+        this.dynamicList = this.dynamicList$.slice(0);
+        if (this.curUser && Number(this.id) === this.curUser.id) {
+            this.dynamicList.push('修改资料');
+            this.dynamicList.push('个性化');
+        }
     }
 
     /**
@@ -151,39 +181,44 @@ export default class UserComponent extends BaseComponent {
      * @param i 动态栏的列表项下标
      */
     public getDynamicData(i: number): void {
-        const type = i+1;
+        const type = i + 1;
         this.activeIndex = i;
-        if (type < 7){
+        this.type = type;
+        if (type < 7) {
             // this.type = type;
             this.pageNum = 1;
-            this.noMore = false;
-            this.selectEntitiesByType(type);
-            return;
+            this.isSeeMore = false;
+            this.isMoreList = false;
+            this.selectEntitiesByType();
         }
-        // 个性化和修改资料
-        this.type = type;
     }
 
     /**
      * 根据类型查动态
      */
-    selectEntitiesByType(type: number) {
-        this.isLoading=true;
-        this.httpRequest(this.http.get('/user/f/select/dynamic/list?type='
-        + type+'&id='+this.id+'&pageNum='+this.pageNum+'&pageSize='+this.pageSize), {
+    selectEntitiesByType() {
+        const obj = {
+            id: this.id,
+            type: this.type,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
+        };
+        this.isLoading = true;
+        this.httpRequest(UserService.selectDynamicList(obj, '/f'), {
             success: (data: any) => {
-                if (this.type !== type) { // 不同类型置空
-                    this.list = [];
-                    this.type = type;
-                }
-                // 相同类型连接
-                this.list = this.list.concat(data.contents);
                 this.isLoading = false;
-                this.hasQuery = true;
-                this.setHeight();
-                if(!data.contents.length) {
-                    this.noMore = true;
+                const list = data.contents;
+                if (!this.isSeeMore) {
+                    this.list = list;
+                } else {
+                    this.isSeeMore = false;
+                    this.list = this.list.concat(list);
+                    this.isMoreList = list.length === this.pageSize;
                 }
+            },
+            error: () => {
+                this.isLoading = false;
+                this.isSeeMore = false;
             }
         });
     }
@@ -192,52 +227,9 @@ export default class UserComponent extends BaseComponent {
      * 点击查看更多
      */
     seeMore() {
-        if (this.noMore) return;
         this.pageNum++;
-        this.selectEntitiesByType(this.type);
-    }
-
-    /**
-     * 查看动态详情
-     */
-    toDynamicDetail(v: any) {
-        const id = v.id;
-        const pid = v.pid;
-        const type = v.type;
-        // 查父分类后去详情页
-        if (type === 0 || type === 1) { // 查话题分类后去话题详情页
-            const key = type === 0 ? 'circle' : 'qa';
-            this.httpRequest(this.http.get('/topicClass/f/select/one?&id='+pid), {
-                success: (data: any) => {
-                    this.localStorage.setItem('topic-'+key, data.topicClass);
-                    this.$router.push('/'+key+'/detail?id='+id);
-                }
-            });
-        } else if (type >= 4 && type <= 6) { // 查媒体分类后去媒体详情页
-            const key = type === 4 ? 'img' : type === 5? 'music' : 'video';
-            this.httpRequest(this.http.get('/mediaClass/f/select/one?id='+pid), {
-                success: (data: any) => {
-                    this.localStorage.setItem('media-'+key, data.mediaClass);
-                    this.$router.push('/media/detail?id='+pid+'&mid='+id); // 这里媒体用pid传过去
-                }
-            });
-        }
-    }
-
-
-    /**
-     * 异步查询后，主体高度变化
-     */
-    public setHeight() {
-        this.mainRight.style.height = 'auto'; // 异步查询后，自动设置一下高度
-        this.$nextTick(() => {
-            // 页面下边儿动态列表补满一屏
-            const userDetailHeight = this.userDetail.scrollHeight;
-            const userInfoHeight = this.userInfo.offsetHeight;
-            const userBarHeight = this.userBar.offsetHeight;
-            const rsize = parseFloat(this.$$.getcomputedStyle(document.body, 'fontSize'));
-            this.mainRight.style.height = (userDetailHeight - userInfoHeight - userBarHeight - (5+3+.5)*rsize) + 'px';
-        })
+        this.isSeeMore = true;
+        this.selectEntitiesByType();
     }
 
     /**
@@ -249,14 +241,14 @@ export default class UserComponent extends BaseComponent {
         }
         const date = this.user.birthday;
         if (new Date(date).getTime() >= Date.now()) {
-            this.handler.toast({text:'日期有误，请重新选择~'});
+            this.handler.toast({ text: '日期有误，请重新选择~' });
             return;
         }
         this.handler.load();
-        this.httpRequest(this.http.post('/user/f/update/one', this.user), {
+        this.httpRequest(UserService.updateOne(this.user, '/f'), {
             success: () => {
                 this.handler.unload();
-                this.handler.toast({text:'修改成功~'});
+                this.handler.toast({ text: '修改成功~' });
             }
         });
     }
@@ -264,21 +256,22 @@ export default class UserComponent extends BaseComponent {
     /** 上传头像 */
     uploadAvator(e: any) {
         this.handler.load();
-        const file = e.currentTarget.files[0];
+        const current = e.currentTarget;
+        const file = current.files[0];
         // 未选择文件
         if (!file) return;
         const param = new FormData();
         param.append('file', file);
-        const config = {
-            headers:{"Content-Type": "multipart/form-data"},
-        };
-        this.httpRequest(this.http.$post('/bucket/f/upload/avator',param, {config}), {
+        this.httpRequest(BucketService.updateOne(param, 'avator', '/f'), {
             success: (data: any) => {
                 this.handler.unload();
                 this.curUser.avator = data.url;
                 if (this.user.id === this.curUser.id) { // 当前浏览的用户是自己
                     this.user.avator = data.url;
                 }
+            },
+            error: () => {
+                return true;
             }
         });
     };
@@ -288,18 +281,19 @@ export default class UserComponent extends BaseComponent {
      */
     uploadBGM(e: any) {
         this.handler.load();
-        const file = e.currentTarget.files[0];
+        const current = e.currentTarget;
+        const file = current.files[0];
         // 未选择文件
         if (!file) return;
         const param = new FormData();
         param.append('file', file);
-        const config = {
-            headers:{"Content-Type": "multipart/form-data"},
-        };
-        this.httpRequest(this.http.$post('/bucket/f/upload/bgm',param, {config}), {
+        this.httpRequest(BucketService.updateOne(param, 'bgm', '/f'), {
             success: (data: any) => {
                 this.handler.unload();
                 this.user.bgm = data.url;
+            },
+            error: () => {
+                return true;
             }
         });
     }
@@ -309,18 +303,19 @@ export default class UserComponent extends BaseComponent {
      */
     uploadBGP(e: any) {
         this.handler.load();
-        const file = e.currentTarget.files[0];
+        const current = e.currentTarget;
+        const file = current.files[0];
         // 未选择文件
         if (!file) return;
         const param = new FormData();
         param.append('file', file);
-        const config = {
-            headers:{"Content-Type": "multipart/form-data"},
-        };
-        this.httpRequest(this.http.$post('/bucket/f/upload/bgp',param, {config}), {
+        this.httpRequest(BucketService.updateOne(param, 'bgp', '/f'), {
             success: (data: any) => {
                 this.handler.unload();
                 this.user.bgp = data.url;
+            },
+            error: () => {
+                return true;
             }
         });
     }
@@ -330,17 +325,18 @@ export default class UserComponent extends BaseComponent {
      */
     personalizeSet() {
         if (!this.user.bgm && !this.user.bgp) {
-            this.handler.toast({text: '输入项不能为空~'});
+            this.handler.toast({ text: '输入项不能为空~' });
             return;
         }
         this.handler.load();
-        this.httpRequest(this.http.post('/user/f/update/personalizeInfo', {
+        const obj = {
             bgm: this.user.bgm,
             bgp: this.user.bgp
-        }), {
+        }
+        this.httpRequest(UserService.updatePersonalizeInfo(obj, '/f'), {
             success: () => {
                 this.handler.unload();
-                this.handler.toast({text:'修改成功~'});
+                this.handler.toast({ text: '修改成功~' });
             }
         });
     }

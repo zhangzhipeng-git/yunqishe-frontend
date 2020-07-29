@@ -25,7 +25,7 @@ import ComponentsHandler from "./modules/components/components-handler";
 
 import consts from "./consts";
 import { Context } from "@nuxt/types";
-import { AppContext } from './context/app-context';
+import { AppContext, context } from './context/app-context';
 import { HTTP_ERRORS } from "./modules/http/app-http";
 
 // 服务端引入xss，客户端同步式引入cdn的xss
@@ -91,21 +91,6 @@ export default class BaseComponent extends Vue {
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////client（仅客户端可用）开始/////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  
-  /**
-   * 获取当前用户
-   * 
-   * this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
-   */
-  get curUser() {
-    const user = this.$store.state.user;
-    const user$ = this.db.$get('user');
-    // this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
-    if (!!user$) return user$;
-    const clone = this.clone(user);
-    this.db.$set('user', clone); 
-    return clone;
-  }
 
   /**
    * 判断当前用户是否svip
@@ -141,7 +126,7 @@ export default class BaseComponent extends Vue {
    * @param {boolean} force - 是否强制计算用户等级
    */
   public async getUserLevel(user: any, force: boolean = false) {
-    if (!user||!user.nickname) return;
+    if (!user || !user.nickname) return;
     if (user.level && !force) return;
     const experience = user.experience || 0;
     let levels = this.db.get("userLevels");
@@ -183,7 +168,7 @@ export default class BaseComponent extends Vue {
     else if (level <= 80) d = '星耀';
     else if (level <= 90) d = '王者';
     else if (level <= 100) d = '神行';
-    this.$set(user,'dan', d);
+    this.$set(user, 'dan', d);
   }
 
   /**
@@ -192,11 +177,11 @@ export default class BaseComponent extends Vue {
   public isRecord(): Promise<any> {
     // 请求是否已登录或记住我
     let config: any = {};
-    if (this.curUser&&this.curUser.id) {
+    if (this.curUser && this.curUser.id) {
       return new Promise(res => res(this.curUser));
     };
     this.handler.load();
-    return this.httpRequest(this.http.get("/user/isrecord",config), {
+    return this.httpRequest(this.http.get("/user/isrecord", config), {
       success: async (data: any) => {
         this.$store.commit('setUser', data.user);
         await this.secure.secureInit();
@@ -218,7 +203,7 @@ export default class BaseComponent extends Vue {
    * @param data 设置的数据
    */
   setAsyncData(data: any) {
-    if (process&&process.server) return;
+    if (process && process.server) return;
     (<any>BaseComponent).data = null;
     (<any>BaseComponent).data = data;
   }
@@ -367,28 +352,28 @@ export default class BaseComponent extends Vue {
     });
   }
 
-    /**
-   * 获取vip时长配置参数
-   * @param {number} type vip类型：1-vip,2-svip，默认vip
-   */
+  /**
+ * 获取vip时长配置参数
+ * @param {number} type vip类型：1-vip,2-svip，默认vip
+ */
   protected getVipArgs(type: number = 1): Promise<any> {
     let vipArgs = this.db.get('vipArgs');
-    if (vipArgs) return new Promise(res => res(vipArgs)); 
-    return this.httpRequest(this.http.get('/vipArg/u/select/list?type='+type)).then((data: any) => {
-      vipArgs = data.vipArgs||[];
+    if (vipArgs) return new Promise(res => res(vipArgs));
+    return this.httpRequest(this.http.get('/vipArg/u/select/list?type=' + type)).then((data: any) => {
+      vipArgs = data.vipArgs || [];
       this.db.set('vipArgs', vipArgs);
       return vipArgs;
     });
   }
 
-   /**
-   * 获取兑换云币的配置参数
-   */
+  /**
+  * 获取兑换云币的配置参数
+  */
   protected getExchangeArgs(): Promise<any> {
     let exchangeArgs = this.db.get('exchangeArgs');
-    if (exchangeArgs) return new Promise(res => res(exchangeArgs)); 
+    if (exchangeArgs) return new Promise(res => res(exchangeArgs));
     return this.httpRequest(this.http.get('/exchangeArg/u/select/list')).then((data: any) => {
-      exchangeArgs = data.exchangeArgs||[];
+      exchangeArgs = data.exchangeArgs || [];
       this.db.set('exchangeArgs', exchangeArgs);
       return exchangeArgs;
     });
@@ -444,15 +429,49 @@ export default class BaseComponent extends Vue {
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * 获取当前用户
+   * 
+   * this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
+   */
+  get curUser() {
+    const user = this.$store.state.user;
+    const user$ = this.db.$get('user');
+    // this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
+    if (!!user$) return user$;
+    const clone = this.clone(user);
+    this.db.$set('user', clone);
+    return clone;
+  }
+
+  /**
    * 获取占位图
    * @param clz {string} - css类名
    */
   getDefaultImg(clz: string) {
-    const num1 = ~~(Math.random()*255);
-    const num2 = ~~(Math.random()*255);
-    const num3 = ~~(Math.random()*255);
-    const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ@#'[~~(Math.random()*28)];
-    return `<span ${!!clz?'class="'+clz+'"':''} style="display:block;width:100%;height:100%;font-weight:bold;text-align:center;background-color:rgb(${num1},${num2},${num3});color:rgb(${255-num1},${255-num2},${255-num3});">${letter}</span>`;
+    const num1 = ~~(Math.random() * 255);
+    const num2 = ~~(Math.random() * 255);
+    const num3 = ~~(Math.random() * 255);
+    const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ@#'[~~(Math.random() * 28)];
+    return `<span ${!!clz ? 'class="' + clz + '"' : ''} style="display:block;width:100%;height:100%;font-weight:bold;text-align:center;background-color:rgb(${num1},${num2},${num3});color:rgb(${255 - num1},${255 - num2},${255 - num3});">${letter}</span>`;
+  }
+
+  /**
+   * 两端通用手动错误处理
+   * @param tip 错误提示
+   * @param f? 回调
+   */
+  handleError(data: { code: number, tip: string }, f?: Function) {
+    if (process && process.server) {
+      this.context.error({
+        statusCode: data.code,
+        message: data.tip
+      });
+      return;
+    }
+    return this.handler.alert({
+      content: data.tip,
+      buttons: ['确认']
+    }).then(() => f && f());
   }
 
   /**
@@ -477,7 +496,7 @@ export default class BaseComponent extends Vue {
    * @param options 设置,可配置白名单
    */
   cleanVHtml(v: string, options?: any) {
-    if (!v || (process && process.server)) return '';
+    if (!v) return '';
     let myxss2 = (<any>this).myxss2;
     if (!myxss2) {
       if (!(<any>global || window).filterXSS) return v;
@@ -492,10 +511,10 @@ export default class BaseComponent extends Vue {
    * 兼容客户端和node端的http请求wrapper
    * @param context? Nuxt api Context
    */
-  public httpRequest<T>(promise: Promise<any>, options?: { success?: Function; error?: Function }, context?: Context): Promise<T> {
+  public httpRequest<T>(promise: Promise<any>, options?: { success?: Function; error?: Function; context?: Context }): Promise<T> {
     if (process && process.server) { // server
-      context = context || this.context;
-      return promise.then(data => {
+      const context = options?.context || this.context;
+      return promise.then(async data => {
         if (!data) { // 后台未返回数据
           context?.error({ statusCode: 500 });
           return data;
@@ -503,12 +522,18 @@ export default class BaseComponent extends Vue {
         const status = data.status;
         const data$ = data.data ? data.data : data;
         if (status === 200 && options && options.success) { // 成功且有成功回调
-          options.success(data$);
+          await options.success(data$);
           return data$;
         }
-        if (status === 400 && options && options.error) { // 失败且有失败回调
-          options.error(data$);
-          return data$;
+        // 失败
+        if (status === 400) {
+          let flag = true;
+          if (options && options.error) {
+            flag = await options.error(data$);
+          }
+          if (flag) {
+            context?.error({ statusCode: 400, message: data$.tip });
+          }
         }
         return data$;
       }).catch(error => {
@@ -538,6 +563,7 @@ export default class BaseComponent extends Vue {
           result = result$ === true; // 是否要走成功默认流程
         }
       } else if (status === 400) { // 失败
+        result = true; // 报错走默认流程流程
         if (options && options.error) { // 失败回调
           const result$ = await options.error(data$);
           result = result$ === true; // 是否要走失败默认流程
@@ -554,14 +580,14 @@ export default class BaseComponent extends Vue {
       this.handler.unload();
       if (result) {
         this.handler.alert({
-          content: data$.message||data.tip, // 优先取内层提示
+          content: data$.message || data.tip, // 优先取内层提示
           buttons: ['确认']
         })
       }
       return data$;
     }).catch((error: Error) => {
       console.error(error);
-      this.handler.unload(); 
+      this.handler.unload();
       // 频繁请求
       if (error.message === HTTP_ERRORS.HTTP_ERROR_04) {
         this.handler.toast({ text: error.message, duration: 1000 });

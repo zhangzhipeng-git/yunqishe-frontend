@@ -12,7 +12,7 @@
     <div class="wd-title">角色管理</div>
     <div class="wd-curd-bar">
       <ButtonComponent @click="insert$" class="wd-insert">
-        <i class="icommon icon-plus"></i>添加
+        <i class="icomoon icon-plus"></i>添加
       </ButtonComponent>
       <ButtonComponent @click="select$" class="wd-select">
         <i class="icomoon icon-edit"></i>编辑

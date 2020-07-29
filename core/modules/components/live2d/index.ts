@@ -258,9 +258,11 @@ export default class Live2dComponent extends Vue {
      * 当窗口改变大小时，重新设置容器的可移动范围
      */
     setResizeEvent() {
-        if (!window.onresize) {
-            (<any>window).onresize = this.setBorder;
-        }
+        this.$nextTick(() => {
+            if (!window.onresize) {
+                (<any>window).onresize = this.setBorder;
+            }
+        });
     }
 
     /**

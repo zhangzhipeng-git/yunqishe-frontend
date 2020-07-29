@@ -14,30 +14,47 @@
   <div id="id-ui-circle">
     <!-- 圈子页内容头部开始 -->
     <div class="ui-circle-header">
-      <!-- 头部左侧banner开始 -->
-      <div class="ui-circle-cover">
-        <img src="@/assets/images/carousel-test/tantailang.jpg" alt />
+      <!-- 头部左侧轮播开始 -->
+      <div class="ui-circle-carousel">
+        <CarouselComponent :options="{effect: 'cube'}">
+          <ul class="swiper-wrapper">
+            <li
+              class="swiper-slide"
+              v-for="(item, index) in imgList"
+              :key="index"
+              @click="vote(item)"
+            >
+              <a :href="item.href">
+                <img :src="item.url" alt />
+              </a>
+              <div v-if="item.description" class="swiper-img-desc" v-html="item.description"></div>
+            </li>
+          </ul>
+        </CarouselComponent>
       </div>
-      <!-- 头部左侧banner结束 -->
+      <!-- 头部左侧轮播结束 -->
 
       <!-- 右侧推荐面板开始 -->
-      <div class="ui-circle-recommend">
-        <!-- 推荐标题开始 -->
-        <h2 class="ui-recommend-title">近期推荐</h2>
-        <!-- 推荐标题结束 -->
-
-        <!-- 推荐内容开始 -->
-        <ul class="ui-recommend-content">
-          <li v-for="(v, i) in tabTopicContents" :key="i" @click="toInvitation(v)">
-            <router-link :to="'/circle/detail?id='+v.id+'&pid='+v.pid">
-              <label :style="{ 'background-color': listColors[i] }">{{
-                i+1
-              }}</label>
-              <span>{{ v.title }}</span>
-              <span class="ui-recommend-introduce">{{ v.introduce }}</span>
-            </router-link>
+      <div class="ui-circle-tab">
+        <!-- 话题分类开始 -->
+        <ul class="ui-tab">
+          <li v-for="(e, i) in tabList" :key="i" @click="activeKey = e.key">
+            <a :class="{active: activeKey === e.key}" href="javascript: void 0">{{e.text}}</a>
           </li>
         </ul>
+        <!-- 话题分类结束 -->
+        <!-- 话题内容简介开始 -->
+        <template v-for="(list, k) in data">
+          <ul class="ui-topicContents" :key="k" v-if="k===activeKey">
+            <li v-for="(v, i) in list" :key="i">
+              <router-link :to="'/circle/detail?id='+v.id+'&pid='+v.pid">
+                <label :style="{ 'background-color': listColors[i] }">{{i+1}}</label>
+                <span>{{ v.title }}</span>
+                <span class="ui-topicContent-introduce">{{ v.introduce }}</span>
+              </router-link>
+            </li>
+          </ul>
+        </template>
         <!-- 推荐内容结束 -->
       </div>
       <!-- 右侧推荐面板结束 -->
@@ -47,7 +64,7 @@
     <!-- 圈子话题开始 -->
     <!-- 大众和系统话题 -->
     <div v-for="(v, i) in blocks" :key="i">
-      <div v-if="v&&v.plates.length" class="ui-circle-content">
+      <div v-if="v&&v.plates.length" class="ui-topicClass">
         <h2>{{ v.name }}</h2>
         <ul class="ui-items">
           <li
@@ -58,9 +75,7 @@
               'wd-no-margin-right': (j + 1) % 3 === 0,
               'wd-no-margin-bottom': j >= (~~(v.plates.length / 3)) * 3
             }"
-            :style="{
-              'background-image': 'url('+item.cover+')' 
-            }"
+            :style="{'background-image': !!item.cover?('url('+item.cover+')'):'none' }"
           >
             <router-link
               class="ui-item-wrap"
@@ -71,18 +86,14 @@
               <span class="ui-item-filter"></span>
               <!-- 话题入口头部开始 -->
               <span class="ui-item-head">
-                  <p class="ui-item-title">{{ item.name | strCut(12) }}</p>
-                  <p class="ui-item-introduce">
-                    {{ item.description }}
-                  </p>
+                <p class="ui-item-title">{{ item.name | strCut(12) }}</p>
+                <p class="ui-item-introduce">{{ item.description }}</p>
               </span>
               <!-- 话题入口头部结束 -->
               <!-- 话题信息条开始 -->
               <span class="ui-item-footer">
                 <p>
-                  内容&nbsp;{{ item.countCount }}&nbsp;关注&nbsp;{{
-                    item.concernCount
-                  }}&nbsp;
+                  内容&nbsp;{{ item.countCount }}&nbsp;关注&nbsp;{{item.concernCount}}&nbsp;
                   <router-link :to="'/circle/content?id='+item.id">点击进入</router-link>
                 </p>
               </span>

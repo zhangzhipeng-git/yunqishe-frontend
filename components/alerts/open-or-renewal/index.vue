@@ -20,7 +20,7 @@
           @click="vipPayType = i"
           :class="{active: vipPayType===i}"
         >
-          <i class="icommon" :class="'icon-'+v.icon"></i>
+          <i class="icomoon" :class="'icon-'+v.icon"></i>
           {{v.text}}
         </a>
       </div>

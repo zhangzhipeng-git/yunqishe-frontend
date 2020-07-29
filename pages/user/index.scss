@@ -237,7 +237,8 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
         }
         .ui-dynamic-detail {
             float: right;
-            button {
+            a {
+                display: inline-block;
                 height: 2rem;
                 line-height: 2rem;
                 border-radius: .3rem;
@@ -314,7 +315,6 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
     // 用户礼物
     // 用户最近访客
     .user-gifts,
-    .user-captures,
     .user-visitors {
         position: relative;
         margin-bottom: .5rem;
@@ -510,7 +510,7 @@ $size: ($wd-main-left - 1rem - 3 * 0.5rem)/3-.1rem;
                 }
             }
             // 查看全文
-            .ui-dynamic-detail button {
+            .ui-dynamic-detail a {
                 color: $main;
             }
             // 上传

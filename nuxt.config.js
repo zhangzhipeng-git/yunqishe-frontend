@@ -157,9 +157,7 @@ module.exports = {
             autoprefixer: {}
         },
         parallel: true, // 开启多线程打包
-        /*
-         * You can extend webpack config here
-         */
+        extractCSS: { allChunks: true }, // 抽离css，seo优化
         extend(config, ctx) {
             const module = config.module;
             if (ctx.isClient && ctx.isDev) {

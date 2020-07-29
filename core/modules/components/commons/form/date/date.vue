@@ -1,7 +1,7 @@
 <template>
   <div class="wd-calendar-component">
     <div class="wd-date-input">
-      <input @blur="blur" type="text" v-model="date$" /><i @click="toggle" class="icommon icon-calendar"></i>
+      <input @blur="blur" type="text" v-model="date$" /><i @click="toggle" class="icomoon icon-calendar"></i>
     </div>
     <div class="wd-date-pannel" v-show="show" :class="{'reverse': reverse}">
       <div class="wd-date-pannel-head">

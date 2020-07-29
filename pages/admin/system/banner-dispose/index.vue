@@ -13,7 +13,7 @@
 <template>
   <div id="id-image-dispose">
     <!-- 标题 -->
-    <div class="wd-title">图片配置</div>
+    <div class="wd-title">banner配置</div>
     <!-- curd -->
     <div class="wd-curd-bar">
       <ButtonComponent @click="insert$" class="wd-insert">
@@ -40,8 +40,8 @@
     <!-- 表格容器 -->
     <div class="wd-table-wrap">
       <TableComponent
-        :list="imageDisposes"
-        :thead="['图片', '跳转链接', '所属', '描述']"
+        :list="bannerDisposes"
+        :thead="['配置链接', '跳转链接', '所属', '描述']"
         :columns="['url', 'href', 'typeDesc', 'description']"
         :operate="{ select: '编辑', delete: '删除'}"
         :slots="['url','href', 'description']"
@@ -52,7 +52,7 @@
       >
         <!-- url -->
         <template v-slot:url="{ row }">
-          <img :title="row.url" :src="row.url"/>
+          <span :title="row.url">{{row.url | strCut(12)}}</span>
         </template>
         <!-- href -->
         <template v-slot:href="{ row }">
@@ -68,7 +68,7 @@
     <div class="wd-page-bar-wrap">
       <PageBarComponent :pageInfo="pageInfo" @toPage="toPage($event)" />
     </div>
-    <!-- 增加或修改图片配置 -->
+    <!-- 增加或修改banner配置 -->
     <WindowComponent
       id="id-image-dispose-window"
       ref="window"
@@ -78,36 +78,38 @@
     >
       <div class="wd-window-form">
         <form>
-          <!-- 图片配置-所属模块 -->
+          <!-- banner配置-所属模块 -->
           <div class="wd-form-unit-h">
             <label class="required" for>所属模块</label>
             <SelectComponent
               :force="true"
               :list="typeList"
-              v-model="imageDispose.type"
+              v-model="bannerDispose.type"
             />
           </div>
-          <!-- 图片配置-链接-->
+          <!-- banner配置-链接-->
           <div class="wd-form-unit-h">
-            <label class="required">图片链接</label>
+            <label class="required">链接链接</label>
+            <!-- 微视频时searchType===5不开放上传文件 -->
             <UploadComponent
+              :disabled="searchType===5"
               :hasBtn="true"
               :text="'本地上传'"
               class="ui-upload-component"
               @onchange="uploadImg($event)"
             >
-              <InputComponent :placeholder="'推荐输入外链~'" v-model="imageDispose.url" />
+              <InputComponent :placeholder="'推荐输入外链~'" v-model="bannerDispose.url" />
             </UploadComponent>
           </div>
-          <!-- 图片配置-跳转链接 -->
+          <!-- banner配置-跳转链接 -->
           <div class="wd-form-unit-h">
             <label class="required" for>跳转链接</label>
-            <input v-model="imageDispose.href" type="text" />
+            <input v-model="bannerDispose.href" type="text" />
           </div>
-          <!-- 图片配置-描述 -->
+          <!-- banner配置-描述 -->
           <div class="wd-form-unit-h">
             <label for>描述</label>
-            <textarea v-model="imageDispose.description" type="text" />
+            <textarea v-model="bannerDispose.description" type="text" />
           </div>
         </form>
         <div class="wd-btn-group">

@@ -25,6 +25,7 @@ const PUBLIC_API = [
   // 话题内容
   "/topicContent/f/select/one",
   "/topicContent/f/select/list",
+  "/topicContent/f/select/tab/list",
   "/topicContent/f/select/recommend/list",
   // 话题回复
   "/topicComment/f/select/one",

@@ -14,12 +14,14 @@
   <div id="id-ui-circle-detail">
     <!-- 帖子头部导航条 -->
     <div class="wd-nav-bar">
+      <!-- 圈子 -->
       <router-link to="/circle">圈子</router-link>
       <i class="icomoon icon-chevron-right"></i>
-      <a @click="$router.push('/circle/content')">{{ topic&&topic.name }}</a>
+      <!-- 话题 -->
+      <router-link :to="'/circle/content?id='+topic.id">{{ topic&&topic.name }}</router-link>
       <i class="icomoon icon-chevron-right"></i>
       <!-- 刷新 -->
-      <a @click="$router.go(0)">{{ topicContent.title }}</a>
+      <router-link :to="'/circle/detail?id='+topicContent.id+'&pid='+topicContent.pid" @click="toCurrentPage" >{{ topicContent.title }}</router-link>
     </div>
     <!-- 帖子作者信息 -->
     <div class="wd-content-head">
@@ -69,7 +71,8 @@
           </div>
           <!-- 正文 -->
           <div class="wd-stair-right-level-0">
-            <div v-html="topicContent.text"></div>
+            <div v-if="topicContent.text" v-html="topicContent.text"></div>
+            <NoResultComponent v-else/>
             <!-- 发表的相关信息 -->
             <p class="wd-stair-right-deliver-level-0">
               <span class="wd-stair-right-tag-level-0">#1楼</span>
@@ -110,7 +113,7 @@
         <!-- 1级回复 -->
         <div class="ui-reply">
           <div class="ui-reply-img">
-            <img :src="curUser&&curUser.avator" :alt="!curUser.id ? '未登录' : '用户头像'" />
+            <img :src="curUser&&curUser.avator" :alt="!curUser ? '未登录' : '用户头像'" />
           </div>
           <div class="ui-reply-wrap">
             <client-only>
@@ -240,7 +243,6 @@
                         :class="'icon-thumbs-' + ((item_ | getThumb) === 2 ? 'down' : 'down-o')"
                       ></i>
                     </a>
-                    <!-- 这里让2级要回复的pid都设为1级回复的id，使2级以上回复成为1级回复的直接子回复 -->
                     <a href="#childReply$" class="wd-stair-right-wrap-deliver-btn-level-2">
                       <label
                         for="childReply"
@@ -255,7 +257,7 @@
             <!-- 2级回复 点击查看更多后可能显示分页 -->
             <p
               v-if="item.commentCount > GTLv1CommentCount && !item.changeToPaging"
-              class="wd-view-more-leve-2"
+              class="wd-view-more-level-2"
             >
               共
               <span class="comment-count">{{ item.commentCount }}</span>条回复,
@@ -291,8 +293,8 @@
         />
       </client-only>
       <!-- 右侧 -->
-      <!-- 侧边栏组件 投影内容的样式会同时加上父子组件的样式标识-->
-      <SidebarComponent class="wd-main-right">
+      <!-- 侧边栏组件 -->
+      <SidebarComponent class="wd-main-right" :bottom="isMoreLv1Comment?'3rem':'0'">
         <!-- 活跃用户 -->
         <div class="wd-sidebar-ctn" id="circle-active-user">
           <h3 class="wd-sidebar-ctn-title">最近活跃</h3>
@@ -317,13 +319,13 @@
             </ul>
           </div>
         </div>
-        <!-- 帖子推荐 -->
+        <!-- 圈子推荐 -->
         <div class="wd-sidebar-ctn">
-          <h3 class="wd-sidebar-ctn-title">帖子推荐</h3>
+          <h3 class="wd-sidebar-ctn-title">圈子推荐</h3>
           <div class="wd-sidebar-recommend-list">
             <ul>
               <li v-for="(v, i) in recommendTopicContents" :key="i">
-                <a @click="toCurrentPage" :href="'/circle/detail?id='+v.id+'&pid='+v.pid">
+                <a @click="toCurrentPage($event)" :href="'/circle/detail?id='+v.id+'&pid='+v.pid">
                   <p class="wd-sidebar-recommend-cover">
                     <!-- 内容封面 -->
                     <img v-if="v.cover" :src="v.cover" alt="内容封面" />

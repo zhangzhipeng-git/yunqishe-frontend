@@ -4,8 +4,8 @@
         <slot/>
         <!-- 文件表单，无上传按钮时position为绝对定位，否则为相对定位 -->
         <div class="wd-upload-file" :style="{'position': hasBtn?'relative':'absolute'}">
-            <input type="file" :accept="accept" ref="file" />
-            <button v-if="hasBtn">{{text}}</button>
+            <input :style="{'cursor': disabled?'not-allowed':'default'}" :disabled="disabled" type="file" @change="onchange($event)" :accept="accept" ref="file" v-if="rebuild"/>
+            <button :style="{'cursor': disabled?'not-allowed':'default'}" :disabled="disabled" v-if="hasBtn">{{text}}</button>
         </div>
     </div>
 </template>

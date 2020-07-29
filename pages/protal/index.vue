@@ -26,7 +26,7 @@
               <a :href="item.href">
                 <img :src="item.url" alt />
               </a>
-              <div class="wiper-img-desc" v-html="item.description"></div>
+              <div v-if="item.description" class="swiper-img-desc" v-html="item.description"></div>
             </li>
           </ul>
         </CarouselComponent>
@@ -66,7 +66,7 @@
       <p class="ui-switch-pannel" v-if="isMoreTop">
         <a href="javascript:void 0" @click="seeMoreTop">
           更多
-          <i class="icommon icon-chevron-down"></i>
+          <i class="icomoon icon-chevron-down"></i>
         </a>
       </p>
     </div>
@@ -114,7 +114,7 @@
       <p class="ui-switch-pannel" v-if="isMoreRecent">
         <a href="javascript:void 0" @click="seeMoreRecent">
           更多
-          <i class="icommon icon-chevron-down"></i>
+          <i class="icomoon icon-chevron-down"></i>
         </a>
       </p>
     </div>
@@ -162,7 +162,7 @@
       <p class="ui-switch-pannel" v-if="isMoreHot">
         <a href="javascript:void 0" @click="seeMoreHot">
           更多
-          <i class="icommon icon-chevron-down"></i>
+          <i class="icomoon icon-chevron-down"></i>
         </a>
       </p>
     </div>
@@ -210,7 +210,7 @@
       <p class="ui-switch-pannel" v-if="isMoreRandom">
         <a href="javascript:void 0" @click="seeMoreRandom">
           更多
-          <i class="icommon icon-chevron-down"></i>
+          <i class="icomoon icon-chevron-down"></i>
         </a>
       </p>
     </div>
@@ -260,7 +260,7 @@
       <p class="ui-switch-pannel" v-if="isMoreUser">
         <a href="javascript:void 0" @click="seeMoreUser">
           更多
-          <i class="icommon icon-chevron-down"></i>
+          <i class="icomoon icon-chevron-down"></i>
         </a>
       </p>
     </div>

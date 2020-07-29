@@ -33,16 +33,18 @@ import { Ref } from 'vue-property-decorator';
     }
 })
 export default class ListComponent extends BaseComponent {
-    /** 所属模块类型（用户配置轮播） */
+    /** 所属模块类型（用户配置banner） */
     typeList: any[] = [
         { id: 1, description: '首页' },
         { id: 2, description: '圈子' },
-        { id: 3, description: '微视频' }
+        { id: 3, description: '问云' },
+        { id: 4, description: '知行' },
+        { id: 5, description: '微视频' }
     ];
     /** 默认所属模块为首页 */
     searchType: number = 1;
-    /** 图片配置列表 */
-    imageDisposes: any[] = [];
+    /** banner配置列表 */
+    bannerDisposes: any[] = [];
     /** 分页信息 */
     pageInfo: any = {};
     /** 分页查询参数 */
@@ -51,8 +53,8 @@ export default class ListComponent extends BaseComponent {
     operate: string = 'update';
     /** 操作标题 */
     operateTitle: string = '';
-    /** 某个图片配置 */
-    imageDispose: any = {};
+    /** 某个banner配置 */
+    bannerDispose: any = {};
     /** 窗体 */
     @Ref('window')
     window!: any;
@@ -70,16 +72,16 @@ export default class ListComponent extends BaseComponent {
     }
 
     /**
-     * 查询图片配置列表
+     * 查询banner配置列表
      */
     selectList() {
         const queryStr = '?searchType=' + this.searchType + '&' + this.pageQueryStr;
-        return this.httpRequest(this.http.get('/imageDispose/b/select/list' + queryStr), {
+        return this.httpRequest(this.http.get('/bannerDispose/b/select/list' + queryStr), {
             success: (data: any) => {
                 const pageInfo = data.pageInfo;
                 this.handleList(pageInfo.list);
-                // 获取图片配置列表
-                this.imageDisposes = pageInfo.list;
+                // 获取banner配置列表
+                this.bannerDisposes = pageInfo.list;
                 const o: any = {};
                 o.pages = pageInfo.pages;
                 o.total = pageInfo.total;
@@ -100,10 +102,10 @@ export default class ListComponent extends BaseComponent {
      */
     handleList(list: any[]) {
         list.forEach((e: any) => {
-            switch(e.type) {
-                case 1: e.typeDesc = '首页';break;
-                case 2: e.typeDesc = '圈子';break;
-                case 3: e.typeDesc = '微媒体';break;
+            switch (e.type) {
+                case 1: e.typeDesc = '首页'; break;
+                case 2: e.typeDesc = '圈子'; break;
+                case 3: e.typeDesc = '微媒体'; break;
             }
         })
     }
@@ -118,12 +120,12 @@ export default class ListComponent extends BaseComponent {
     }
 
     /**
-     * 点击添加按钮，添加图片配置
+     * 点击添加按钮，添加banner配置
      */
     insert$() {
         this.operate = 'insert';
-        this.operateTitle = '添加图片配置';
-        this.imageDispose = {type:1, url:''};
+        this.operateTitle = '添加banner配置';
+        this.bannerDispose = { type: this.searchType, url: '' };
         this.window.open();
     }
 
@@ -162,10 +164,10 @@ export default class ListComponent extends BaseComponent {
      */
     selectOne({ row }: any) {
         this.operate = 'select';
-        this.operateTitle = '编辑图片配置';
-        this.httpRequest(this.http.get('/imageDispose/b/select/one?id=' + row.id), {
+        this.operateTitle = '编辑banner配置';
+        this.httpRequest(this.http.get('/bannerDispose/b/select/one?id=' + row.id), {
             success: (data: any) => {
-                this.imageDispose = data.imageDispose;
+                this.bannerDispose = data.bannerDispose;
                 this.window.open();
             }
         });
@@ -180,13 +182,13 @@ export default class ListComponent extends BaseComponent {
     }
 
     /**
-     * 添加或修改图片配置
+     * 添加或修改banner配置
      * 单个插入，单个或批量更新
      */
-    insertOrUpdate(imageDispose: any | any[]) {
+    insertOrUpdate(bannerDispose: any | any[]) {
         const insert = this.operate === 'insert';
-        imageDispose = insert ? imageDispose : (imageDispose.length ? imageDispose : [imageDispose]);
-        this.httpRequest(this.http.post('/imageDispose/b/' + (!insert ? 'batch/update' : 'insert/one'), imageDispose), {
+        bannerDispose = insert ? bannerDispose : (bannerDispose.length ? bannerDispose : [bannerDispose]);
+        this.httpRequest(this.http.post('/bannerDispose/b/' + (!insert ? 'batch/update' : 'insert/one'), bannerDispose), {
             success: (data: any) => {
                 this.window.close();
                 this.handler.toast({ text: data.tip });
@@ -200,7 +202,7 @@ export default class ListComponent extends BaseComponent {
      *根据id数组单个或批量删除
      */
     delete(ids: number[]) {
-        this.httpRequest(this.http.post('/imageDispose/b/batch/delete', ids), {
+        this.httpRequest(this.http.post('/bannerDispose/b/batch/delete', ids), {
             success: (data: any) => {
                 this.selectList();
                 this.handler.toast({ text: data.tip });
@@ -217,8 +219,8 @@ export default class ListComponent extends BaseComponent {
     /** 确认并关闭弹窗 */
     confirm() {
         this.window.close();
-        this.imageDispose.type = this.searchType;
-        this.insertOrUpdate(this.imageDispose);
+        this.bannerDispose.type = this.searchType;
+        this.insertOrUpdate(this.bannerDispose);
     }
 
     /**
@@ -226,18 +228,24 @@ export default class ListComponent extends BaseComponent {
      */
     uploadImg(e: any) {
         this.handler.load();
-        const file = e.currentTarget.files[0];
+        const current = e.currentTarget
+        const file = current.files[0];
         // 未选择文件
         if (!file) return;
         const param = new FormData();
         param.append('file', file);
         const config = {
-            headers:{"Content-Type": "multipart/form-data"},
+            headers: { "Content-Type": "multipart/form-data" },
         };
-        this.httpRequest(this.http.$post('/bucket/b/upload/img',param, {config}), {
+        this.httpRequest(this.http.$post('/bucket/b/upload/img', param, { config }), {
             success: (data: any) => {
                 this.handler.unload();
-                this.imageDispose.url = data.url;
+                this.bannerDispose.url = data.url;
+
+            },
+            error: () => {
+
+                return true;
             }
         });
     }

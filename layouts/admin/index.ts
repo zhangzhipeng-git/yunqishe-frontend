@@ -99,13 +99,8 @@ export default class AdminComponent extends BaseComponent {
                     level: 2
                 },
                 {
-                    name: "图片配置",
-                    url: '/admin/system/image-api',
-                    level: 2
-                },
-                {
-                    name:'风控管理',
-                    url:'/admin/system/risk-manage',
+                    name: "banner配置",
+                    url: '/admin/system/banner-dispose',
                     level: 2
                 }
             ]

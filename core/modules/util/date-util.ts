@@ -1,7 +1,7 @@
 export default class DateUtil{
 
     /** 默认pattern */
-    static DEFUALT_PATTERN = 'yyyy-MM-dd HH:mm:ss';
+    static DEFAULT_PATTERN = 'yyyy-MM-dd HH:mm:ss';
 
     constructor() {};
 
@@ -10,7 +10,7 @@ export default class DateUtil{
      * @param p pattern {string} ? - 默认'yyyy-MM-dd HH:mm:ss'
      */
     public static now(p?: string): string {
-        p = p || DateUtil.DEFUALT_PATTERN;
+        p = p || DateUtil.DEFAULT_PATTERN;
         const now = new Date();
         const year = now.getFullYear()+'';
         const month = (now.getMonth()+1)+'';

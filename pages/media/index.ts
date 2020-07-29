@@ -3,30 +3,51 @@ import BaseComponent from '~/core/base-component';
 import VideoComponent from '~/core/modules/components/commons/video/video.vue';
 import defaultImg from "@/core/modules/filters/defaultImg";
 import { Context } from '@nuxt/types';
+import MediaClassService from '../../service/media-class/index';
+import BannerDisposeService from '../../service/banner-dispose/index';
 @Component({
-    layout:'app',
+    layout: 'app',
     components: {
         VideoComponent
     },
-    filters:{
+    filters: {
         defaultImg
     },
     async asyncData(context: Context) {
+        if (MediaPageComponent.activated) return;
+        const app = BaseComponent.getSingleton();
+        app.handler.load();
+        let src: string = '';
         let lists: any = [];
-        const util = BaseComponent.getSingleton();
-        /** 每个分类最多查8条 */
-        await util.httpRequest(util.http.get('/mediaClass/f/select/top2lv/list?maxSize=8'), {
-            success: (data: any) => {
-                lists = data.mediaClasses;
+        await Promise.all([
+            app.httpRequest(BannerDisposeService.selectList({ type: 5 }, '/f'), {context}),
+            app.httpRequest(MediaClassService.selectTop2LvList({ maxSize: 8 }, '/f'), {context})
+        ]).then((datas: any) => {
+            const data0 = datas[0];
+            const data1 = datas[1];
+            const bannerDisposes = data0.bannerDisposes;
+            if (bannerDisposes && bannerDisposes.length) {
+                src = bannerDisposes[0].url;
             }
-        },context); 
-        return {lists}
+            const mediaClasses = data1.mediaClasses;
+            if (mediaClasses && mediaClasses.length) {
+                lists = mediaClasses;
+            }
+        });
+        app.handler.unload();
+        return {src, lists }
     }
 })
-export default class mediaPageComponent extends BaseComponent {
-    src: string = 'https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo/248_5d5692fcd2892d6dc58638d137974c87.mp4';
+export default class MediaPageComponent extends BaseComponent {
+    src!: string;
     constructor() {
         super();
     }
-    
+    activated() {
+        MediaPageComponent.activated = true;
+    }
+    destoryed() {
+        MediaPageComponent.activated = false;
+    }
+
 }

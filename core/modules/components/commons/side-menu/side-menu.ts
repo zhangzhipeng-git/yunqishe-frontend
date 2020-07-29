@@ -1,18 +1,19 @@
 /*
- * Project: nuxt-ssr
- * FileName: side-menu.ts
- * Author: zzp-dog
- * File Created: Saturday, 22nd February 2020 8:16:02 pm
- * description: 菜单树列表(本组件已全局注册，否则生产环境不渲染)
- * Last Modified: Friday, 10th April 2020 4:23:22 pm
- * Modified By: zzp-dog
- * Copyright © zzp-dog, All rights reserved.
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\core\modules\components\commons\side-menu\side-menu.ts
+ * Created Date: Saturday, February 22nd 2020, 8:16:02 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 菜单树
+ * Last Modified: Monday July 27th 2020 10:01:23 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
+
 
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
-
 @Component({
     name: 'SideMenuComponent',
     components: {
@@ -21,16 +22,22 @@ import { Prop, Watch } from 'vue-property-decorator';
 })
 export default class SideMenuComponent extends Vue {
     /** 传入的菜单树 */
-    @Prop({
-        type: Array,
-        default: function() {
-            return []
-        } 
-    })
-    trees!: Tree[];
+    @Prop({type: Array,default: function() {return []} })trees!: Tree[];
     /** child的key，默认'child' */
-    @Prop({type: String, default: 'child'})
-    childKey!: string;
+    @Prop({type: String, default: 'child'})childKey!: string;
+    /** 激活的那个节点 */
+    @Prop({type: Object, default: () => {}})active!: any;
+    /** height, 默认2.5rem */
+    @Prop({type: String, default: '2.5rem'})height!: string;
+
+    get heightValue() {
+        return parseFloat(this.height);
+    }
+
+    get heightUnit() {
+        // @ts-ignore
+        return this.height.match(/[a-zA-Z]+$/)[0] || 'rem';
+    }
 
     constructor() {
         super();
@@ -41,11 +48,14 @@ export default class SideMenuComponent extends Vue {
         /**
          * 备注：如第一个树列表进入，将父组件状态标记为已初始化
          * 其子树列表发现父组件已进行递归初始化，则不再进行初始化
+         * 为什么要设置全局公用的激活节点?
+         * 因为这里使用的递归组件，如果不使用公用激活节点，比如只改变其中一个组件的激活节点，其他组件的激活节点不会变，此时就会出现多个激活节点的现象！！！
          */
         (<any>this).HAS_INIT = true;
         if (this.$parent && (<any>this).$parent.HAS_INIT) return;
         if (!nv||!nv.length) return;
-        let active = {node: (<any>nv).active}; // 所有树公用激活状态
+        // 所有树公用激活状态，原因见注释！active.node即为全局共享的激活节点
+        let active = {node: (<any>nv).active};
         nv.forEach((n: any) => {
             // 如果没有parent则初始化parent
             if (n[this.childKey] && n[this.childKey][0].parent !== n)this.setParent(n);
@@ -83,7 +93,7 @@ export default class SideMenuComponent extends Vue {
 
     /**
      * 父节点展开
-     * @param node 节点
+     * @param node 激活的节点
      */
     setParentSpread(node: any) {
         node.spread = true;
@@ -92,7 +102,7 @@ export default class SideMenuComponent extends Vue {
     }
 
     /**
-     * 初始化激活类
+     * 初始化激活类，所有节点都会引用的对象 - 被激活的节点
      * @param node 节点
      * @param o 激活对象
      */
@@ -162,10 +172,11 @@ export default class SideMenuComponent extends Vue {
      */
     setParentHeight(tree: any) {
         const c = this.getSpreadChildCount(tree, 0);
+        const height = (c*this.heightValue)+this.heightUnit;
         if (!tree.height) {
-            this.$set(tree, 'height', c*2.5+'rem');
+            this.$set(tree, 'height', height);
         } else {
-            tree.height = c*2.5+'rem';
+            tree.height = height;
         }
         if (!tree.parent) return;
         this.setParentHeight(tree.parent);

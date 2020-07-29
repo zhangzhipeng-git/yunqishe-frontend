@@ -4,7 +4,7 @@
       <ul class="wd-exchange-list">
         <li v-for="(v, i) in exchangeArgs" :key="i" @click="exchangeArg=v">
           <a href="javascript: void 0" :class="{active: exchangeArg === v}">
-            <i class="icommon icon-bitcoin"></i>&nbsp;{{v.coin}}
+            <i class="icomoon icon-bitcoin"></i>&nbsp;{{v.coin}}
             <br />
             <span>{{v.price+'元'}}</span>
           </a>
@@ -19,7 +19,7 @@
           @click="exchangePayType=i"
           :class="{active: exchangePayType===i}"
         >
-          <i class="icommon" :class="'icon-'+v.icon"></i>
+          <i class="icomoon" :class="'icon-'+v.icon"></i>
           {{v.text}}
         </a>
       </div>

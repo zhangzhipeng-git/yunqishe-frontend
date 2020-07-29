@@ -17,7 +17,86 @@ import BaseComponent from "@/core/base-component.ts";
 import { Ref } from "vue-property-decorator";
 import DateUtil from "~/core/modules/util/date-util";
 import { Throttle } from '../../../core/modules/annotations/index';
-const options: any = {
+import { Context } from "@nuxt/types";
+
+import UserService from '../../../service/user/index';
+import TopicContentService from '../../../service/topic-content/index';
+import TopicCommentService from '../../../service/topic-comment/index';
+import TopicClassService from '~/service/topic-class';
+
+const asyncData = async (context: Context) => {
+  const app = BaseComponent.getSingleton();
+  const query = <any>(context.route.query);
+  const id = query.id;
+  const pid = query.pid;
+  let topic = {};
+  let topicContent: any = {};
+  let Lv1CommentsPageNum = 0;
+  let Lv1Comments: any = [];
+  let isMoreLv1Comment;
+  let hasSideContent = !0;
+  let activeUsers: any = [];
+  let recommendTopicContents: any = [];
+  app.handler.load();
+  await Promise.all([
+    // 根据pid查所属类别
+    app.httpRequest(TopicClassService.selectOne({ id: pid }, '/f'), {context}),
+    // 根据id查话题内容详情
+    app.httpRequest(TopicContentService.selectOne({ id }, '/f'), {context})
+  ]).then((datas: any) => {
+    const data0: any = datas[0];
+    const data1: any = datas[1];
+    if (data0.topicClass) { topic = data0.topicClass; }
+    if (data1.topicContent) {
+      app.cleanVHtml(data1.topicContent.text);
+      app.getUserLevel(data1.topicContent.user);
+      topicContent = data1.topicContent;
+    }
+  });
+
+  // 如果查到话题内容,则查询一级评论和其一页二级评论
+  if (topicContent) {
+    const tcid = (<any>topicContent).id;
+    await app.httpRequest(TopicCommentService.selectList({ tcid, pid: -1, pageNum1: 1, pageSize1: 10, pageNum2: 1, pageSize2: 4 }, '/f'), {
+      success: (data: any) => {
+        /** 一级评论/回复 */
+        Lv1Comments = data.topicComments;
+        /** 一级评论/回复是否满一页 */
+        isMoreLv1Comment = Lv1Comments.length === 10;
+        // 计算父级回复者等级
+        Lv1Comments.forEach((topReply: any) => {
+          app.getUserLevel(topReply.user);
+          // 计算二级回复回复者等级
+          topReply.comments.forEach((comment: any) => {
+            app.getUserLevel(comment.user);
+          });
+        });
+      },
+      context
+    });
+  }
+
+  const o = { topic, topicContent, Lv1CommentsPageNum, Lv1Comments, isMoreLv1Comment };
+  //  需要查活跃用户和推荐内容）
+  if (hasSideContent) {
+    await Promise.all([
+      // 查活跃用户
+      app.httpRequest(UserService.selectList({ pageNum: 1, pageSize: 15 }, '/f'), {context}),
+      // 查推荐话题内容
+      app.httpRequest(TopicContentService.selectRecommendList({ type: 0, pageNum: 1, pageSize: 10 }, '/f'), {context})
+    ]).then((datas: any) => {
+      const data0 = datas[0];
+      const data1 = datas[1];
+      if (data0.users) { activeUsers = data0.users; }
+      if (data1.topicContents) { recommendTopicContents = data1.topicContents; }
+    });
+    Object.assign(o, { activeUsers, recommendTopicContents });
+  }
+  app.setAsyncData(o);
+  app.handler.unload();
+  return o;
+}
+@Component({
   layout: "app",
   components: {
     ReplyComponent,
@@ -27,32 +106,32 @@ const options: any = {
   filters: {
     vip,
     strCut
-  }
-};
-@Component(options)
+  },
+  asyncData
+})
 export default class DetailComponent extends BaseComponent {
+  @Ref("childReply")
+  childReplyRef!: any;
   /** 话题内容id */
   id: number = -1;
   /** 话题内容详情 */
-  wy: any = {};
+  topicContent: any = {};
   /** 所属话题 */
   topic: any = {};
   /** 回复 */
   reply: string = "";
   /** 顶级评论 */
-  topReplys: any = [];
+  Lv1Comments: any = [];
   /** 是否显示2级回复输入框，默认不显示 */
   showChildReply: boolean = false;
-  @Ref("childReply")
-  childReplyRef!: any;
   /** 获取楼层作者信息 */
   get user() {
-    return this.wy.user || {};
+    return this.topicContent.user || {};
   }
   /** 获取楼层作者角色 */
   get roles() {
-    if (!this.wy.user || !this.wy.user.roles) return [];
-    return this.wy.user.roles;
+    if (!this.topicContent.user || !this.topicContent.user.roles) return [];
+    return this.topicContent.user.roles;
   }
 
   /** 获取vip或svip */
@@ -98,7 +177,7 @@ export default class DetailComponent extends BaseComponent {
   parentComment: any = {};
   /** 对谁回复 */
   toWho: any = {};
-  /** 1级回复当前页，默认0 */
+  /** 1级回复当前页，默认1 */
   Lv1CommentPageNum = 1;
   /** 1级回复分页大小，默认10 */
   Lv1CommentPageSize = 10;
@@ -107,7 +186,7 @@ export default class DetailComponent extends BaseComponent {
   /** 2级及以上回复分页大小，默认5 */
   GTLv1CommentPageSize = 5;
   /** 是否有更多 */
-  noMore: boolean = false;
+  isMoreLv1Comment: boolean = false;
   /** 活跃用户 */
   activeUsers: any[] = [];
   /** 推荐话题内容 */
@@ -117,32 +196,8 @@ export default class DetailComponent extends BaseComponent {
     super();
   }
 
-  async activated() {
-    // 接收话题内容id
-    const id = parseInt(<string>this.$route.query.id, 10);
-    this.init(id);
-  }
-
-  async init(id: number) {
-    this.noMore = false;
-    this.Lv1CommentPageNum = 0;
-    this.topReplys = [];
-    this.id = id;
-    this.topic = this.localStorage.getItem('topic-qa');
-    // 查询话题内容详情
-    await this.getWYDetail();
-    // 查询话题内容评论
-    this.getFirstComments();
-    this.getActiveUsers();
-    this.getRecommendTopicContents();
-    this.getLocation({
-      success: (data: any) => {
-        console.log(data);
-      },
-      error: (error: any) => {
-        console.log(error);
-      }
-    })
+  activated() {
+    this.getAsyncDataToThisInActivated();  
   }
 
   /**
@@ -165,50 +220,33 @@ export default class DetailComponent extends BaseComponent {
     v.mask = false;
   }
 
-  /**
-   * 话题封面隐藏遮罩
-   * 查询话题内容详情
-   */
-  getWYDetail() {
-    return this.httpRequest(
-      this.http.get("/topicContent/f/select/one?id=" + this.id),
-      {
-        success: (data: any) => {
-          this.wy = data.topicContent;
-          // 计算用户等级
-          this.getUserLevel(this.user);
-        }
-      }
-    );
-  }
 
   /**
    * 查询话题内容顶级评论带4条回复
    */
   getFirstComments() {
-    if (this.noMore)return;
-    const queryStr =
-      "?tcid=" +
-      this.wy.id +
-      "&pid=-1&pageNum1="+this.Lv1CommentPageNum+"&pageSize1=10&pageNum2=1&pageSize2=4";
-    this.httpRequest(this.http.get("/topicComment/f/select/list" + queryStr), {
+    const obj = {
+      tcid: this.topicContent.id,
+      pid: -1,
+      pageNum1: this.Lv1CommentPageNum,
+      pageNum2: 1,
+      pageSize1: this.Lv1CommentPageSize,
+      pageSize2: this.GTLv1CommentPageSize
+    }
+      this.httpRequest(TopicCommentService.selectList(obj, '/f'), {
       success: (data: any) => {
-        if (data.topicComments.length) 
-          this.noMore = false;
-        else {
-          this.noMore = true;
-          return;
-        }
-        const comments = data.topicComments as [];
+        const topicComments = data.topicComments;
+        if (!topicComments.length) return;
+        this.isMoreLv1Comment = topicComments.length === this.Lv1CommentPageSize;
         // 计算父级回复者等级
-        comments.forEach((topReply: any) => {
+        topicComments.forEach((topReply: any) => {
           this.getUserLevel(topReply.user);
           // 计算二级回复回复者等级
           topReply.comments.forEach((comment: any) => {
             this.getUserLevel(comment.user);
           });
         });
-        this.topReplys = this.topReplys.concat(comments);
+        this.Lv1Comments = this.Lv1Comments.concat(topicComments);
       }
     });
   }
@@ -218,9 +256,12 @@ export default class DetailComponent extends BaseComponent {
    * @param v {any} 父级回复
    */
   getSecondeComments(v: any) {
-    const queryStr = "?pid=" + v.id + "&pageNum2="+(v.pageNum||1) 
-    + "&pageSize2=" + this.GTLv1CommentPageSize;
-    this.httpRequest(this.http.get("/topicComment/f/select/list" + queryStr), {
+    const obj = {
+      pid: v.id,
+      pageNum2: v.pageNum || 1,
+      pageSize2: this.GTLv1CommentPageSize
+    }
+    this.httpRequest(TopicCommentService.selectList(obj, '/f'), {
       success: (data: any) => {
         const pageInfo = data.pageInfo;
         const comments = pageInfo.list;
@@ -260,6 +301,8 @@ export default class DetailComponent extends BaseComponent {
   /**
    * 点击1级回复或其子回复的回复按钮
    * 
+   * 这里让2级要回复的pid都设为1级回复的id，使2级以上回复成为1级回复的直接子回复
+   * 
    * 在一级回复中，把回复组件追加到ref中(已追加则不追加)，
    * 设置对一级或二级回复的父级回复信息
    * @param ref 回复组件的父容器
@@ -288,7 +331,7 @@ export default class DetailComponent extends BaseComponent {
       this.toWho = v.user;
       this.replyObj1.placeholder = "@" + v.user.nickname + ":";
     }
-    this.replyObj1.pid = pid; // v.id总为1级回复的id template 中 item_.id=item.id
+    this.replyObj1.pid = pid;
     this.replyObj1.wid = v.uid;
     this.replyObj1.tcid = v.tcid;
   }
@@ -296,7 +339,7 @@ export default class DetailComponent extends BaseComponent {
   /**
    * 提交回复
    * @param  {string} reply - 回复
-   * @pran type 0 - 对问题回复，1 - 对1级回复或2级及以上回复
+   * @param type 0 - 对问题回复，1 - 对1级回复或2级及以上回复
    */
   submit(reply: any, type: number) {
     if (!reply.text) return;
@@ -304,14 +347,14 @@ export default class DetailComponent extends BaseComponent {
     reply.device = this.$$.isMB()?2:1;
     // 要提交的回复实体
     const reply$ = this.clone(reply);
+    reply$.createTime = DateUtil.now();
     reply$.text = this.xss(reply$.text);
     this.httpRequest(this.http.post("/topicComment/f/insert/one", reply$), {
       success: () => {
         this.handler.toast({ text: "回复成功" });
         reply$.user = this.curUser;
-        reply$.createTime = DateUtil.now();
         if(type === 0) { // 对贴回复
-          this.topReplys.unshift(reply$);
+          this.Lv1Comments.unshift(reply$);
         } else if (type === 1) { // 对1级或2级及以上回复
           reply$.who = this.toWho;
           this.parentComment.commentCount++;
@@ -404,9 +447,6 @@ export default class DetailComponent extends BaseComponent {
           v.concernCount++;
           v.concernInfo.concern = 1;
         }
-        if (type===2){
-          this.localStorage.setItem('block',v);
-        }
       }
     });
   }
@@ -440,7 +480,7 @@ export default class DetailComponent extends BaseComponent {
         } else { // 点赞
           v.thumbupCount++;
           if (v.thumbInfo.thumb === 2) { // 之前反对了，取消反对
-            v.thumbdonw--;
+            v.thumbdown--;
           }
           v.thumbInfo.thumb = 1;
         }
@@ -485,52 +525,21 @@ export default class DetailComponent extends BaseComponent {
     });
   }
 
+  /**
+   * 查看更多一级评论
+   */
   seeMore() {
     this.Lv1CommentPageNum++;
     this.getFirstComments();
   }
-    
-  /**
-   * 获取活跃用户
-   */
-  getActiveUsers() {
-    this.httpRequest(this.http.get('/user/f/select/active/list?pageSize=15'), {
-      success: (data: any) => {
-        this.activeUsers = data.users;
-      }
-    })
-  }
 
   /**
-   * 获取推荐话题内容
+   * 取当前页
    */
-  getRecommendTopicContents() {
-    this.httpRequest(this.http.get('/topicContent/f/select/recommend/list?type=1&pageSize=10'), {
-      success: (data: any) => {
-        this.recommendTopicContents = data.topicContents;
-      }
-    })
-  }
-
-  /**
-   * 去个人中心
-   * @param user 用户
-   */
-  goUserCenter(user: any) {
-    this.$router.push('/user?id=' + user.id);
-  }
-
-  /**
-   * 去推荐的帖子
-   * @param invitation 帖子 
-   */
-  goTopicContent(v: any) {
-    const pid = v.pid;
-    this.httpRequest(this.http.get('/topicClass/f/select/one?id='+pid), {
-      success: (data: any) => {
-          this.localStorage.setItem('topic-qa', data.topicClass);
-          this.init(v.id);
-      }
+  toCurrentPage(e: any) {
+    e.preventDefault();
+    asyncData(this.context).then(() => {
+      this.getAsyncDataToThisInActivated();
     });
   }
 }

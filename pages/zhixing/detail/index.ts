@@ -10,16 +10,99 @@ import SideMenuComponent from '@/core/modules/components/commons/side-menu/side-
 import SidebarNavComponent from '@/core/modules/components/projections/sidebar-nav/sidebar-nav.vue';
 import BaseComponent from '~/core/base-component';
 import { Ref } from 'vue-property-decorator';
+import { Context } from '@nuxt/types';
+import DocClass from '../../../service/doc-class/index';
+import DocContentService from '~/service/doc-content';
+/**
+ * 处理菜单树
+ * @param data 响应数据
+ * @param pid 章的父id，即二级分类的id
+ * @param name 上一页过来的分类名称如“H5”
+ * @param id 节id
+ */
+const handleTree = (data: any, pid: string, name: string, id: number) => {
+    const docClasses = data.docClasses;
+    if (!docClasses) return <any>[];
+    // 默认第一章第一节聚焦
+    docClasses.active = docClasses[0].docClasses[0];
+    docClasses.forEach((doc: any) => {
+        doc.level = 1;
+        doc.rightIcon = ["icon-caret-left", "icon-caret-down"];
+        doc.docClasses.forEach((doc$: any) => {
+            if (Number(id) === doc$.id) {
+                docClasses.active = doc$;
+            }
+            doc$.level = 2;
+            doc$.parent = doc;
+            doc$.url = '/zhixing/detail?pid=' + pid + '&name=' + name + '&id=' + doc$.id + '&zname=' + doc.name + '&jname=' + doc$.name;
+        });
+    });
+    return docClasses;
+}
+const asyncData = async (context: Context) => {
+    const app = BaseComponent.getSingleton();
+    app.handler.load();
+    /** 菜单树 */
+    let trees: any = [];
+    /** 文档内容html */
+    let vhtml: string = '';
+    /** 路由查询参数对象 */
+    const query = context.route.query;
+    /** 文档内容id */
+    let id: any = query.id || -1;
+    /** 章的父id，根据这个id查章和节 */
+    const pid: any = query.pid;
+    /** 章的父类名称 */
+    const name: string = query.name + '';
+    /** 章名称 */
+    let zname: string = '';
+    /** 节名称 */
+    let jname: string = '';
+    /** 上一页url */
+    const pre = context.from && context.from.fullPath;
+    await app.httpRequest(DocClass.selectEnd2LvList({ pid }, '/f'), {
+        success: (data: any) => {
+            trees = handleTree(data, pid, name, id);
+            const active = trees.active;
+            id = active.id;
+            jname = active.name;
+            zname = active.parent.name;
+        },
+        error: async (data: any) => {
+            await app.handleError(data, () => { context.redirect(pre) });
+        },
+        context
+    });
+    // 没有章节则退出
+    if (!trees.length) { app.handler.unload(); return; }
+    await app.httpRequest(DocContentService.selectOne({ id }, '/f'), {
+        success: (data: any) => {
+            if (data.docContent) { vhtml = app.cleanVHtml(data.docContent.text); }
+        },
+        error: async (data: any) => {
+            await app.handleError(data, () => { context.redirect(pre) });
+        },
+        context
+    });
+    const o = { name, zname, jname, trees, vhtml };
+    app.setAsyncData(o);
+    app.handler.unload();
+    return o;
+}
+
 const options = {
     layout: 'app2',
     components: {
         SidebarNavComponent,
         SideMenuComponent
-    }
+    },
+    asyncData
 }
 @Component(options)
 export default class DetailComponent extends BaseComponent {
-
+    /** 文档内容容器 */
+    @Ref('doc')
+    doc!: any;
     /** 文档名称 */
     name: string = '';
     /** 章名称 */
@@ -32,10 +115,7 @@ export default class DetailComponent extends BaseComponent {
     vhtml = '';
     /** 节标题 */
     hs: any[] = [];
-    /** 文档内容容器 */
-    @Ref('doc')
-    doc!: any;
-    /** 激活下标 */
+    /** 右侧导航栏激活下标 */
     activeIndex: number = -1;
     /** 计时器 */
     timer!: any;
@@ -46,43 +126,11 @@ export default class DetailComponent extends BaseComponent {
     }
 
     activated() {
-        this.name = this.$route.query.name+'';
-        const id = parseInt((<any>this).$route.query.id);
-        // 根据id找章和其对应的的节
-        this.selectListByPid(id);
-    }
-
-    /**
-     * 查询后两级分类
-     * @param id 父id
-     */
-    selectListByPid(id: number) {
-        this.httpRequest(this.http.get('/docClass/f/select/end2lv/list?pid='+id), {
-            success: (data: any) => {
-                const docClasses = data.docClasses;
-                docClasses.forEach((doc: any) => {
-                    doc.level = 1;
-                    doc.rightIcon = ["icon-caret-left", "icon-caret-down"];
-                    doc.docClasses&&doc.docClasses.forEach((doc$: any) => {
-                        doc$.level = 2;
-                        doc$.parent = doc;
-                    });
-                });
-                // 默认第一章第一节聚焦
-                docClasses.active = docClasses[0].docClasses[0];
-                this.trees= docClasses;
-                this.$nextTick(() => {
-                    this.navigate(docClasses.active);
-                });
-            },
-            error: (data: any) => {
-                this.handler.alert({
-                    content:data.tip,
-                    buttons: ['取消']
-                }).then(() => {
-                    this.$router.back();
-                });
-            }
+        this.getAsyncDataToThisInActivated();
+        this.$nextTick(() => {
+            this.Hljs().then(() => {
+                this.getDocNav();
+            });
         });
     }
 
@@ -93,9 +141,9 @@ export default class DetailComponent extends BaseComponent {
     navigate(e: any) {
         this.zname = e.parent.name;
         this.jname = e.name;
-        this.httpRequest(this.http.get('/docContent/f/select/one?id='+e.id), {
+        this.httpRequest(DocContentService.selectOne({ id: e.id }, '/f'), {
             success: (data: any) => {
-                this.vhtml = data.docContent.text;
+                this.vhtml = this.cleanVHtml(data.docContent.text);
                 this.$nextTick(() => {
                     this.Hljs().then(() => {
                         this.getDocNav();
@@ -104,20 +152,21 @@ export default class DetailComponent extends BaseComponent {
             }
         });
     }
-    
+
 
     /**
      * 初始化获取右侧文档标题导航model
      */
     getDocNav() {
+        if (!this.doc) { return; }
         this.hs = [];
         const hs = this.doc.querySelectorAll('h1,h1~h2');
-        if (!hs.length||hs.length<2) return;
-        for (let i = 0, len=hs.length; i < len; i++) {
+        if (!hs || !hs.length || hs.length < 2) return;
+        for (let i = 0, len = hs.length; i < len; i++) {
             const h = hs[i];
-            const text = h.textContent||h.innerText;
-            if (!text||text.length<2)continue;
-            const id = 'doc-'+i;
+            const text = h.textContent || h.innerText;
+            if (!text || text.length < 2) continue;
+            const id = 'doc-' + i;
             h.id = id;
             this.hs.push({
                 text,
@@ -134,13 +183,13 @@ export default class DetailComponent extends BaseComponent {
      * 滚动事件
      * @param e scroll
      */
-    onScroll(e:Event) {
+    onScroll(e: Event) {
         // 必须等点击事件完成才能触发onscroll
         if (!this.isClickOver) return;
         const curScrollTop = this.doc.scrollTop;
-        for(let i = 0, len = this.hs.length; i < len; i++) {
+        for (let i = 0, len = this.hs.length; i < len; i++) {
             const h = this.hs[i];
-            if (Math.abs(h.scrollTop - curScrollTop)<20) {
+            if (Math.abs(h.scrollTop - curScrollTop) < 20) {
                 this.activeIndex = h.index;
                 return;
             }
@@ -153,13 +202,13 @@ export default class DetailComponent extends BaseComponent {
      */
     getScrollValue(anchor: any) {
         // 计算max scrollTop
-        const maxScrollTop = parseInt(this.doc.scrollHeight) 
-                           - parseInt(this.doc.offsetHeight);
+        const maxScrollTop = parseInt(this.doc.scrollHeight)
+            - parseInt(this.doc.offsetHeight);
         // 计算锚点到this.doc的距离
         const doc2Top = parseFloat(this.$$.getElementRect(this.doc)['top']);
         const anc2Top = parseFloat(this.$$.getElementRect(anchor)['top']);
         const anc2doc = anc2Top - doc2Top;
-        const v = anc2doc - 16 ; // 16：锚点定位后距离容器顶部的最小距离
+        const v = anc2doc - 16; // 16：锚点定位后距离容器顶部的最小距离
         if (v < maxScrollTop) {
             return v;
         }
@@ -171,7 +220,7 @@ export default class DetailComponent extends BaseComponent {
      * @param v 导航标题model
      * @param e 事件
      */
-    toAnchor(v: any,e: Event) {
+    toAnchor(v: any, e: Event) {
         clearInterval(this.timer);
         this.isClickOver = false;
         this.activeIndex = v.index;
@@ -181,15 +230,15 @@ export default class DetailComponent extends BaseComponent {
         // 位移
         const x = nextScrollTop - curScrollTop;
         // 计划在300ms内完成,每60ms位移一次
-        const dixs = x/(300/60);
+        const dixs = x / (300 / 60);
         this.timer = setInterval(() => {
-            const value = this.doc.scrollTop+dixs;
-            if ((dixs>0 && value > nextScrollTop) || (dixs<0 && value < nextScrollTop)) {
+            const value = this.doc.scrollTop + dixs;
+            if ((dixs > 0 && value > nextScrollTop) || (dixs < 0 && value < nextScrollTop)) {
                 this.doc.scrollTop = nextScrollTop;
                 clearInterval(this.timer);
                 this.isClickOver = true;
                 return;
-            } 
+            }
             this.doc.scrollTop = value;
         }, 60);
     }

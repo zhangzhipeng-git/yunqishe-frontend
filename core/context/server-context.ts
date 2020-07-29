@@ -80,7 +80,7 @@ export default class Server {
         this.http.setAjax(ajax);
     }
 
-    /** 返回undifined，服务端不会用到公用组件管理器！！！ */
+    /** 服务端不会用到公用组件管理器！！！ */
     getHandler(): any {
         return {
             load: () => null,
@@ -89,7 +89,7 @@ export default class Server {
     }
 
     /**
-     *获取服务端context
+     * 获取服务端context
      */
     public static getServerContext(): Server {
         if ((<any>Server).serverContext) {

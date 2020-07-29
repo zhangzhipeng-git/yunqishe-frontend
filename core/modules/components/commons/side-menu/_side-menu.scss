@@ -1,12 +1,13 @@
 /*
- * Project: nuxt-ssr
- * FileName: _side-menu.scss
- * Author: zzp-dog
- * File Created: Saturday, 22nd February 2020 8:16:02 pm
- * description:
- * Last Modified: Friday, 10th April 2020 4:24:09 pm
- * Modified By: zzp-dog
- * Copyright © zzp-dog, All rights reserved.
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\core\modules\components\commons\side-menu\_side-menu.scss
+ * Created Date: Saturday, February 22nd 2020, 8:16:02 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 菜单树
+ * Last Modified: Monday July 27th 2020 10:01:37 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
 
 // 菜单层级
@@ -28,7 +29,6 @@ $side-menu-level: 3;
             display: inline-block;
             width: 100%;
             padding-left: 1.5rem + $i*.4;
-            line-height: 2.5rem;
             font-size: $font-size-small;
             color: $black-light;
             @if $i==1 {
@@ -43,7 +43,7 @@ $side-menu-level: 3;
             i {
                 font-size: $font-size-small;
                 font-weight: bold;
-                line-height: 2.5rem;
+                line-height: inherit;
                 margin-right: 1rem;
             }
         }

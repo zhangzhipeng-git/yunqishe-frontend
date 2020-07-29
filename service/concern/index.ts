@@ -21,4 +21,13 @@ export default class ConcernService {
     }, channel: string = '') {
         return http.post('/concern' + channel + '/insertOrUpdate/one', data);
     }
+    /**
+     * 批量关注话题
+     * @param  {number} type 0-圈子，1-问云
+     * @param  {number[]} data 话题id集合
+     * @param  {string=''} channel
+     */
+    static batchInsert(type: number, data: number[], channel: string = '') {
+        return http.post('/concern' + channel + '/batch/insert?type='+ type, data);
+    }
 }

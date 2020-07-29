@@ -31,7 +31,8 @@ import ButtonComponent from '@/core/modules/components/commons/form/button/butto
             error: () => {
                 type = 'login';
             }
-        },context);
+            ,context
+        });
         return {type};
     }
 })

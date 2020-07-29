@@ -1,15 +1,14 @@
-import SideMenuComponent from './side-menu.vue';
 /*
- * Project: nuxt-ssr
- * FileName: side-menu.vue
- * Author: zzp-dog
- * File Created: Saturday, 22nd February 2020 8:16:02 pm
- * description:
- * Last Modified: Friday, 10th April 2020 4:24:19 pm
- * Modified By: zzp-dog
- * Copyright © zzp-dog, All rights reserved.
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\core\modules\components\commons\side-menu\side-menu.vue
+ * Created Date: Saturday, February 22nd 2020, 8:16:02 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 菜单树
+ * Last Modified: Monday July 27th 2020 10:01:52 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
-
 <template>
   <ul v-if="trees" class="wd-side-menu" :class="{ 'wd-side-menu-level1': trees && trees[0] && !trees[0].parent }">
     <!-- 递归显示子节点开始 -->
@@ -23,6 +22,7 @@ import SideMenuComponent from './side-menu.vue';
           :id="node.id"
           :to="node.url || $route.fullPath"
           :class="{ 'wd-active': node.active.node === node }"
+          :style="{'line-height': height}"
         >
           <i
             v-if="node.leftIcon"

@@ -72,9 +72,9 @@ export default class InputComponent extends Vue {
         /** 电话 */
         cellPhone: {reg: /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/, tip: '手机号码格式不正确'},
         /** 手机 */
-        telePnone: {reg: /^(([0+]d{2,3}-)?(0d{2,3})-)?(d{7,8})(-(d{3,}))?$/, tip: '电话号码格式不正确'},
+        telePhone: {reg: /^(([0+]d{2,3}-)?(0d{2,3})-)?(d{7,8})(-(d{3,}))?$/, tip: '电话号码格式不正确'},
         /** 车牌号 */
-        carPlante: {reg: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/, tip: '车牌号码格式不正确'}
+        carPlate: {reg: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/, tip: '车牌号码格式不正确'}
     };
 
     // 获取v-model（不立即在页面显示错误信息）
@@ -170,7 +170,7 @@ export default class InputComponent extends Vue {
 
     /**
      * 获取本组件的父表单容器
-     * form标签或添加了'formgroup'的标签
+     * form标签或添加了'formgroup'属性的标签（如<div formgroup></div）
      */
     get formGroup(): any|null {
         if (!this.$el) return null;

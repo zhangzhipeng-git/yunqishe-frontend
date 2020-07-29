@@ -46,7 +46,9 @@
     </div>
     <!-- 右侧 -->
     <div class="wd-sys-main" :class="isShow?'origin-width':'full-width'">
-      <Nuxt keep-alive ref="nuxt" />
+      <keep-alive>
+        <router-view ref="nuxt" />
+      </keep-alive>
     </div>
     <!-- 弹出层 -->
     <WindowComponent
@@ -176,7 +178,7 @@
       <ul>
         <li v-for="(v, i) in [1]" :key="i">
           <a href="javascript: void 0" @click="togglePageSet(i)" :class="{active: showPageSet}">
-            <i class="icommon icon-t-shirt"></i>
+            <i class="icomoon icon-t-shirt"></i>
           </a>
         </li>
       </ul>
@@ -184,7 +186,7 @@
     <!-- 主题样式设置 -->
     <div class="ui-page-set" :class="showPageSet?'show':'hide'">
       <div class="ui-mask"></div>
-      <div class="ui-close" @click="togglePageSet"><i class="icommon icon-chevrons-down"></i></div>
+      <div class="ui-close" @click="togglePageSet"><i class="icomoon icon-chevrons-down"></i></div>
       <!-- 改变页眉和页脚 -->
       <div class="ui-bg">
        <span>头部/底部背景</span><SwitchComponent class="ui-switch" v-model="bg" @click="changeBg($event)" />

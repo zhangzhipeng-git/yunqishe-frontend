@@ -16,9 +16,10 @@ import BaseComponent from '../../core/base-component';
 import strCut from '../../core/modules/filters/strCut';
 import SelectComponent from '../../core/modules/components/commons/form/select/select';
 import NoResultComponent from '../../core/modules/components/commons/no-result/no-result';
-import ImageDisposeService from '~/service/image-dispose';
+import BannerDisposeService from '~/service/banner-dispose';
 import TopicContentService from '~/service/topic-content';
 import UserService from '~/service/user';
+import { Context } from '@nuxt/types';
 /** 内容详情页url */
 const contentDetailUrl = (item: any) => {
     return (item.type === 0 ? '/circle' : '/qa')+'/detail?id='+item.id+'&pid='+item.pid;
@@ -36,7 +37,7 @@ const options: any = {
         contentDetailUrl    // 内容详情页url
     },
     /** 服务端请求和客户端请求通用代码 */
-    async asyncData(context: any) {
+    async asyncData(context: Context) {
         if (ProtalIndexComponent.activated) return;
         const app = BaseComponent.getSingleton();
         let imgList = <any>null,
@@ -59,17 +60,17 @@ const options: any = {
         app.handler.load();
         await Promise.all([
             // 轮播图
-            app.httpRequest(ImageDisposeService.selectList({type:1}, '/f'), context),
+            app.httpRequest(BannerDisposeService.selectList({type:1}, '/f'), {context}),
             // 分页查询置顶内容 type2=6&pageNum=1&pageSize=5
-            app.httpRequest(TopicContentService.selectList({type2:1, isFree: true, pageNum: 1, pageSize: 5}, '/f'), context),
+            app.httpRequest(TopicContentService.selectList({type2:1, isFree: true, pageNum: 1, pageSize: 5}, '/f'), {context}),
             // 分页查询最近内容 type2=2&pageNum=1&pageSize=24
-            app.httpRequest(TopicContentService.selectList({type2:2, isFree: true, pageNum: 1, pageSize: 24}, '/f'), context),
+            app.httpRequest(TopicContentService.selectList({type2:2, isFree: true, pageNum: 1, pageSize: 24}, '/f'), {context}),
             // 分页查询热点内容
-            app.httpRequest(TopicContentService.selectList({type2:4, isFree: true, pageNum: 1, pageSize: 24}, '/f'), context),
+            app.httpRequest(TopicContentService.selectList({type2:4, isFree: true, pageNum: 1, pageSize: 24}, '/f'), {context}),
             // 分页查询随机内容
-            app.httpRequest(TopicContentService.selectList({type2:5, isFree: true, pageNum: 1, pageSize: 24}, '/f'), context),
+            app.httpRequest(TopicContentService.selectList({type2:5, isFree: true, pageNum: 1, pageSize: 24}, '/f'), {context}),
             // 分页查询用户列表（sex不送值-默认为全部，type不送值-默认也是全部）
-            app.httpRequest(UserService.selectList({pageNum:1, pageSize: 32}, '/f'), context)
+            app.httpRequest(UserService.selectList({pageNum:1, pageSize: 32}, '/f'), {context})
         ]).then((datas: any[]) => {
             const data0 = datas[0];
             const data1 = datas[1];
@@ -77,8 +78,8 @@ const options: any = {
             const data3 = datas[3];
             const data4 = datas[4];
             const data5 = datas[5];
-            if (data0 && data0.imageDisposes) {
-                imgList = data0.imageDisposes;
+            if (data0 && data0.bannerDisposes) {
+                imgList = data0.bannerDisposes;
                 imgHasData = !app.isEmpty(imgList);
             }
             if (data1 && data1.topicContents) {
@@ -215,6 +216,9 @@ export default class ProtalIndexComponent extends BaseComponent {
 
     activated() {
         ProtalIndexComponent.activated = true;
+    }
+    destoryed() {
+        ProtalIndexComponent.activated = false;
     }
 
     /**

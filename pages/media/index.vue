@@ -12,7 +12,7 @@
             <img :src="vv.cover|defaultImg" alt="视频封面" />
             <div class="ui-mask">
               <p>
-                <i class="icommon icon-play"></i>
+                <i class="icomoon icon-play"></i>
               </p>
             </div>
           </router-link>
@@ -23,7 +23,7 @@
               {{vv.user&&vv.user.nickname}}
             </span>
             <span class="fr">
-              <i class="icommon icon-eye"></i>
+              <i class="icomoon icon-eye"></i>
               {{vv.viewCount}}
             </span>
           </p>

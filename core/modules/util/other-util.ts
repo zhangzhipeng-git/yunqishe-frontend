@@ -12,17 +12,9 @@ export default class CommonUtil {
         const v1len = v1.length;
         const v2len = v2.length;
         const len = Math.abs(v1len-v2len);
-        const suf = '0'.repeat(len);
+        const suf = new Array(len).join('0');
         if (v1len > v2len) v2+=suf;
         if (v1len < v2len) v1+=suf;
         return Number(v1) > Number(v2);
-    }
-
-    /**
-     * 将竖向排列转为横向排列
-     */
-
-    public static v2h(list: any[] , col: number) {
-
     }
 }

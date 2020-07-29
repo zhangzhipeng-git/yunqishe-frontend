@@ -128,7 +128,7 @@ export default class FilterSpreadComponent extends Vue {
      * 取消，修改并点击确认后，如果不重新传入改变后的classify，则确认操作表现为失败！！！
      */
     cancel() {
-        this.activeIndex = 0;
+        // this.activeIndex = 0;
         this.copy_classify = this.copy(this.classify);
         this.isSpread = false;
         // 若在此前修改并点击了确定，请确保重新传入prop！！！
