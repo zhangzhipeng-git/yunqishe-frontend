@@ -185,8 +185,8 @@ export default class WindowComponent extends Vue {
         // “投影”内容，默认传入字符串-'什么也没有~'
         const content = o.content;
         if (typeof content === 'function') { // 如果传入组件类
-            $options.data.handler = o.handler || {};
-            $options.components = { child: content };
+            $options.data.handler = o.handler || {}; // 宿主组件引用
+            $options.components = { child: content }; // 组件
         }
         const window = new WindowComponent($options);
         // 进入

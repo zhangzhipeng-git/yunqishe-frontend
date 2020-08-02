@@ -1,26 +1,29 @@
-<!--
- * @Author: your name
- * @Date: 2020-01-05 22:04:28
- * @LastEditTime : 2020-01-09 00:16:28
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \nuxt-ssr\components\commons\editor\ui-annex\ui-annex.vue
- -->
+/*
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\core\modules\components\commons\editor\ui-annex\ui-annex.ts
+ * Created Date: Saturday, February 22nd 2020, 8:16:01 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 上传文件弹出层
+ * Last Modified: Sunday August 2nd 2020 7:17:07 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
+ */
 <template>
   <div class="wd-ui-annex">
     <ul>
       <li>
         <button class="wd-upload-local" @click="selectFile">
-          本地上传图片 +
+          本地上传{{typeName}} +
         </button>
         <input ref="file" class="wd-edit-file" type="file" />
       </li>
       <li>
         <label>类型</label>
         <RadioGroupComponent
-          class="wd-radio-group-type"
           v-model="type"
           :radioGroup="radioGroup"
+          class="wd-radio-group-type"
         />
       </li>
       <li>

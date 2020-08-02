@@ -16,15 +16,12 @@
 - 引入组件和_edit.scss样式
 
 ``` html
-<EditComponent :options="options" @recieveContent="recieveContent(obj)"/>
+<EditComponent v-model="text" :options="options" @recieveContent="recieveContent(obj)"/>
 ```
 
 - xss攻击请在后台采取措施，前端不做处理，请不要对所有<,>进行转义,不要对code标签内的内容进行处理。
 应过滤以下非code标签内的，正则匹配的内容
 
-``` js
-/<javascript\/?>|.+\.js|on.+=.*|javascript:.+|cookie|localStorage|sessionStorage|window|this|document|eval|location|send\(.*\)/
-```
 
 - 只有图片支持本地上传,若觉得该组件有参考价值可自行改造
 
@@ -41,14 +38,6 @@
         echo: '<p>🚀我是一个编辑器,快来点我吧~</p>', // 回显
         count:5, // 图片上传最大张数
         base64:1024*1024*100, // 单位字节，图片大小小于该数值使用base64转义图片，不传该参数时或传入0时，走图床地址server.api
-        // 未实现，需后台造接口
-        server: {
-            enable: false, // true-server可用，false-不可用
-            api:xxx, // 上传url
-            filename: "file", // 文件name
-            error:{code:400},// 默认400上传失败
-            success:{code:200} // 默认200上传成功
-        }
     }
 }
 

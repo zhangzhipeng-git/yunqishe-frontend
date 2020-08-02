@@ -7,23 +7,20 @@
  * Copyright (c) 2019 Your Company
  */
 <template>
-  <div class="wd-editor">
+  <div class="wd-editor" ref="editor" @click="hideSwitchPannel($event)">
     <!-- 编辑条开始 -->
-    <!-- mousedown事件判断命令是否支持，不支持则弹出提示，且某些命令在代码区设置无效 -->
-    <div class="wd-editor-bar" @mousedown="querySupportCMD($event)">
+    <div class="wd-editor-bar" ref="header">
       <!-- 事件执行富文本命令[失焦时，命令执行无效，所以要阻止失焦，或者在事件执行前聚焦] -->
-
       <!-- 备注!!!! -->
       <!-- mousedown事件在自身聚焦之前[即其他元素失焦聚焦之前]执行 -->
       <!-- 下面使用mousedown事件是因为可以使用e.preventDefault()阻止默认事件[聚焦]，阻止编辑面板失焦 -->
       <!-- 当然不用上述方法的话，如果只会点击到a标签！！！，也可以将事件绑定在a标签上，因为点击a标签不会失去焦点哦 -->
       <!-- 而针对必定要失焦的情况（如点击了编辑器之外的元素[除了a标签元素]），则采用记住光标，再设置上次记住的光标的方式来做到伪失焦。 -->
-
       <!-- 字体 -->
       <div
+        ref="fontName"
         class="wd-edit-link-box fontName"
         @mousedown="setFontName($event)"
-        @mouseleave="hidePannel($event, 'switchFontFamilyPannel')"
       >
         <a data-tip="字体" class="wd-edit-link" href="javascript:void 0">
           <span :style="{'font-family': fontFamily.value}">{{fontFamily.key}}</span>
@@ -41,9 +38,9 @@
       </div>
       <!-- 字号 -->
       <div
+        ref="fontSize"
         class="wd-edit-link-box fontSize"
-        @mousedown="setFontSzie($event)"
-        @mouseleave="hidePannel($event, 'switchFontSizePannel')"
+        @mousedown="setFontSize($event)"
       >
         <a data-tip="字号" class="wd-edit-link" href="javascript:void 0">
           <span>{{fontSize.key}}</span>
@@ -51,16 +48,16 @@
         </a>
         <ul v-show="switchFontSizePannel" class="wd-font-size-list">
           <li v-for="(fs, i) in fontSizes" :key="i">
-            <!-- 注意这里sytle的fontSize绑定的是x-small，small这种值 -->
+            <!-- 注意这里style的fontSize绑定的是x-small，small这种值 -->
             <a href="javascript:void 0" :data-index="i" :style="{'font-size': fs.key}">{{fs.key}}</a>
           </li>
         </ul>
       </div>
       <!-- 文本格式 -->
       <div
+        ref="formatBlock"
         class="wd-edit-link-box formatBlock"
         @mousedown="setFormatBlock($event)"
-        @mouseleave="hidePannel($event, 'switchFormatBlockPannel')"
       >
         <a data-tip="文本格式" class="wd-edit-link" href="javascript:void 0">
           <span>{{formatBlock}}</span>
@@ -74,9 +71,9 @@
       </div>
       <!-- 文本色 -->
       <div
+        ref="foreColor"
         class="wd-edit-link-box foreColor"
         @mousedown="setForeColor($event)"
-        @mouseleave="hidePannel($event, 'switchForeColorPannel')"
       >
         <a data-tip="字色" class="wd-edit-link" href="javascript:void 0">
           <i class="iconmoon icon-font-color" :style="{'border-bottom-color': foreColor}"></i>
@@ -101,9 +98,9 @@
       </div>
       <!-- 高亮色 -->
       <div
+        ref="backColor"
         class="wd-edit-link-box backColor"
         @mousedown="setBackColor($event)"
-        @mouseleave="hidePannel($event, 'switchBackColorPannel')"
       >
         <a data-tip="高亮" class="wd-edit-link" href="javascript:void 0">
           <i class="iconmoon icon-pencil" :style="{'border-bottom-color': backColor}"></i>
@@ -165,7 +162,7 @@
       <!-- 居左 - 不可关-->
       <div class="wd-edit-link-box justifyLeft" @mousedown="justifyLeft">
         <a
-          :class="{'wd-edit-link-active': justifyActive.left}"
+          :class="{'wd-edit-link-active': justifyActive === 'justifyLeft'}"
           data-tip="居左"
           class="wd-edit-link"
           href="javascript: void 0"
@@ -176,7 +173,7 @@
       <!-- 居中 - 不可关-->
       <div class="wd-edit-link-box justifyCenter" @mousedown="justifyCenter">
         <a
-          :class="{'wd-edit-link-active': justifyActive.center}"
+          :class="{'wd-edit-link-active': justifyActive === 'justifyCenter'}"
           data-tip="居中"
           class="wd-edit-link"
           href="javascript: void 0"
@@ -187,7 +184,7 @@
       <!-- 居右 - 不可关-->
       <div class="wd-edit-link-box justifyRight" @mousedown="justifyRight">
         <a
-          :class="{'wd-edit-link-active': justifyActive.right}"
+          :class="{'wd-edit-link-active': justifyActive === 'justifyRight'}"
           data-tip="居右"
           class="wd-edit-link"
           href="javascript: void 0"
@@ -198,7 +195,7 @@
       <!-- 左右对齐 - 不可关-->
       <div class="wd-edit-link-box justifyFull" @mousedown="justifyFull">
         <a
-          :class="{'wd-edit-link-active': justifyActive.full}"
+          :class="{'wd-edit-link-active': justifyActive === 'justifyFull'}"
           data-tip="左右对齐"
           class="wd-edit-link"
           href="javascript: void 0"
@@ -255,16 +252,16 @@
         </a>
       </div>
       <!-- 插入文件 -->
-      <div class="wd-edit-link-box insertHTML" @mousedown="insertImage">
+      <div class="wd-edit-link-box insertHTML" @mousedown="insertFile">
         <a data-tip="文件" class="wd-edit-link" href="javascript: void 0">
           <i class="iconmoon icon-upload-cloud"></i>
         </a>
       </div>
       <!-- 插入代码 -->
       <div
+        ref="code"
         class="wd-edit-link-box insertHTML"
         @mousedown="insertCode($event)"
-        @mouseleave="hidePannel($event, 'switchCodePannel')"
       >
         <a data-tip="代码" class="wd-edit-link" href="javascript:void 0">
           <!-- <span>{{code}}</span> -->
@@ -319,6 +316,18 @@
           <i class="iconmoon icon-eraser"></i>
         </a>
       </div>
+      <!-- 全屏 -->
+      <div class="wd-edit-link-box history" @mousedown.stop="history">
+        <a data-tip="历史输入" class="wd-edit-link" href="javascript: void 0">
+          <i class="iconmoon icon-database"></i>
+        </a>
+      </div>
+      <!-- 全屏 -->
+      <div class="wd-edit-link-box full" @mousedown.stop="fullScreen">
+        <a data-tip="全屏/取消全屏" class="wd-edit-link" href="javascript: void 0">
+          <i class="iconmoon" :class="full?'icon-minimize':'icon-maximize'"></i>
+        </a>
+      </div>
     </div>
     <!-- 编辑条结束 -->
     <!-- 编辑体开始 -->
@@ -326,8 +335,8 @@
     <!-- mousedown事件在鼠标按下，判断是否要设置聚焦并设置上次光标和重设编辑样式 -->
 
     <div
-      ref="edit_pannel"
-      @mousedown="edit($event)"
+      ref="pannel"
+      @mousedown="startEdit"
       @click="saveLastRange"
       @input="saveLastRangeAndEmitValue"
       class="wd-deitor-content"
@@ -335,7 +344,7 @@
       v-html="vhtml$"
     ></div>
     <!-- 编辑体结束 -->
-    <div class="wd-edit-footer">
+    <div class="wd-edit-footer" ref="footer">
       <span><i class="icomoon icon-smile-o"></i></span>
       <div class="wd-edit-footer-btn" v-if="hasBtn"><button @click="emitContent">保存</button></div>
     </div>

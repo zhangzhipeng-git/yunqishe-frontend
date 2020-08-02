@@ -10,7 +10,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { Model, Prop, Emit } from "vue-property-decorator";
 
-@Component({ data() { return { model: (<any>this)._modle } } })
+@Component({ data() { return { model: (<any>this)._model } } })
 export default class CheckBoxComponent extends Vue {
     /** id */
     @Prop({ type: String, default: "" })

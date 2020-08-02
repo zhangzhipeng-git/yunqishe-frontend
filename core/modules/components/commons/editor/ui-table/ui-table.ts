@@ -20,9 +20,6 @@ export default class UITableComponent extends Vue {
         super();
     }
 
-    private mounted(): void {
-    }
-
     emitTableHTML() {
         const reg = /[1-9]{1,2}/;
         if (!reg.test(this.row)) {
@@ -37,8 +34,7 @@ export default class UITableComponent extends Vue {
             });
             return;
         }
-        // const input = '<input type="text"></input>';
-        let html = '<div><table style="wdith:100%"><tbody>';
+        let html = '<div><table style="width:100%"><tbody>';
         const r = Number(this.row);
         const c = Number(this.col);
         for (let i = 0; i < r; i++) {
@@ -48,7 +44,7 @@ export default class UITableComponent extends Vue {
             }
             html += tr + "</tr>";
         }
-        html += "</tbody></table></div>";
+        html += "</tbody></table></div><p><br/></p>";
         if((<any>this.$attrs.handler).recieveTableHTML(html)) {
             (<any>this.$parent).close();
         }

@@ -14,8 +14,8 @@
         <input id="ui-table-row" type="text" v-model="row" />
       </li>
       <li>
-        <label for="ui-ltable-col">列数</label>
-        <input id="ui-ltable-col" type="text" v-model="col" />
+        <label for="ui-table-col">列数</label>
+        <input id="ui-table-col" type="text" v-model="col" />
       </li>
     </ul>
     <div class="wd-btn-group">

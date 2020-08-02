@@ -1,11 +1,15 @@
 /*
- * @Author: your name
- * @Date: 2020-01-05 22:04:23
- * @LastEditTime : 2020-01-10 21:52:18
- * @LastEditors  : Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \nuxt-ssr\components\commons\editor\ui-annex\ui-annex.ts
+ * Project: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr
+ * File: d:\ZX_WORK\FRONTEND\vue\nuxt-ssr\core\modules\components\commons\editor\ui-annex\ui-annex.ts
+ * Created Date: Saturday, February 22nd 2020, 8:16:01 pm
+ * Author: 张志鹏
+ * Contact: 1029512956@qq.com
+ * Description: 上传文件弹出层
+ * Last Modified: Sunday August 2nd 2020 7:17:07 pm
+ * Modified By: 张志鹏
+ * Copyright (c) 2020 ZXWORK
  */
+
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Radio } from "../_form/radio-group/radio-group";
@@ -21,44 +25,37 @@ export default class UIAnnexComponent extends Vue {
     url: string = "https://";
     width: string = "100%";
     height: string = "200px";
-    type: string = "image";
-    radioGroup: Radio[] = [
-        { value: "image", text: "图片" },
-        { value: "audio", text: "音频" },
-        { value: "video", text: "视频" }
-    ];
+    type: 'image' | 'audio' | 'video' = "image";
+    /** 获取类型对应的名称 */
+    typeName: string = '图片';
+    radioGroup: Radio[] = [{ value: "image", text: "图片" }, { value: "audio", text: "音频" }, { value: "video", text: "视频" }];
     /** 图片类型 */
-    static IMGARR = [
-        "image/gif",
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/svg"
-    ];
+    static IMAGEARR = ["image/gif", "image/jpeg", "image/jpg", "image/png", "image/svg"];
     static AUDIOARR = ["audio/mp3", "audio/ogg", "audio/wav"];
     static VIDEOARR = ["video/mp4", "video/ogg", "video/webm"];
     constructor() {
         super();
     }
-
-    private mounted(): void {
-
-    }
     /**
      * 观测type变化
-     * @param _new type的新值
-     * @param _old type的旧值
+     * @param nv type的新值
+     * @param ov type的旧值
      */
     @Watch('type')
-    watchType(_new: any, _old: any) {
-        if (_new === 'audio') {
+    watchType(nv: any, ov: any) {
+        if (nv === 'audio') {
             this.width = '300px';
             this.height = '30px';
-        } else if (_new === 'video') {
+            this.typeName = '音频';
+        } else if (nv === 'video') {
             this.width = '400px';
             this.height = '200px';
+            this.typeName = '视频';
+        } else if (nv === 'image') {
+            this.typeName = '图片';
         }
     }
+
     /**
      * 点击本地上传
      */
@@ -67,12 +64,17 @@ export default class UIAnnexComponent extends Vue {
         const num = /^[1-9]\d{1,3}(px|rem|em|vw|vh|%)?$/i;
         if (!num.test(this.width + "") || !num.test(this.height + "")) {
             TipComponent.showTip({
-                text: "上传图片前请填写合适的高度和宽度~"
+                text: `上传${this.typeName}前请填写合适的高度和宽度~`
             });
             return;
         }
         const file: any = this.$refs.file;
-        file.accept = UIAnnexComponent.IMGARR.join(",");
+        const arr = {
+            image: UIAnnexComponent.IMAGEARR,
+            audio: UIAnnexComponent.AUDIOARR,
+            video: UIAnnexComponent.VIDEOARR,
+        }[this.type];
+        file.accept = arr.join(",");
         file.click();
         file.onchange = this.fileChange;
     }
@@ -81,45 +83,36 @@ export default class UIAnnexComponent extends Vue {
      * 选择文件
      */
     fileChange() {
-        const file: any = this.$refs.file;
-        const files = file.files;
-        const img = files[0];
+        const files = (<any>this.$refs.file).files;
+        const file = files[0];
         if (!files.length) return;
         // 编辑器实例
         const handler: any = this.$attrs.handler;
         // 获取编辑器banner配置参数
-        const imgOption = handler.options$.image;
-        // 判断图片是否超过数量
-        if (
-            handler.$refs.edit_pannel.getElementsByTagName("IMG").length ===
-            imgOption.count
-        ) {
+        const option = handler.options$[this.type];
+        // 标签
+        const tag = { 'image': 'IMG', 'audio': 'AUDIO', 'video': 'VIDEO' }[this.type];
+        // 判断文件是否超过数量
+        if (handler.$refs.edit_pannel.getElementsByTagName(tag).length === option.count) {
             TipComponent.showTip({
-                text: "图片已超出最大数量"
+                text: `${this.typeName}已超出最大数量`
             });
             return;
         }
         // 判断图片是否需转成base64
-        const base64size = imgOption.base64;
-        if (base64size && img.size <= base64size) {
+        const base64size = option.base64;
+        if (base64size && file.size <= base64size) {
             // 转成base64
             const fr = new FileReader();
-            fr.readAsDataURL(img);
+            fr.readAsDataURL(file);
             fr.onload = (event: any) => {
-                if (handler.recieveImageHTML(this.getImageHTML(event.target.result)))
+                if (handler.recieveLocalFileHTML(this.getImageHTML(event.target.result))) {
                     (<any>this.$parent).close();
+                }
             };
         } else {
-            const server = imgOption.server; // 图片服务器
-            const enable = server.enable; // 服务器是否可用
-            if (!enable) {
-                TipComponent.showTip({
-                    text: "文件过大,无法上传,请使用外链~"
-                });
-                return;
-            } else {
-                // to-do
-            }
+            // 交给外部进行处理
+            handler.emitUploadFile && handler.emitUploadFile(this.type, file);
         }
     }
     /**
@@ -158,8 +151,8 @@ export default class UIAnnexComponent extends Vue {
                 html = this.getVideoHTML(this.url);
                 break;
         }
-        if((<any>this.$attrs.handler).recieveOutLinkHTML(html))
-        (<any>this.$parent).close();
+        if ((<any>this.$attrs.handler).recieveFileLinkHTML(html))
+            (<any>this.$parent).close();
     }
 
     /**
@@ -173,8 +166,8 @@ export default class UIAnnexComponent extends Vue {
             ';">' +
             '<img src="' +
             src +
-            '" style="height:'+
-            this.height+
+            '" style="height:' +
+            this.height +
             ';width:' +
             this.width +
             ';object-fit:cover;" />' +
@@ -187,27 +180,27 @@ export default class UIAnnexComponent extends Vue {
      */
     getAudioHTML(src: string) {
         const arr = UIAnnexComponent.AUDIOARR;
-        let html = '<p style="text-align:center;height:'+ this.height +';"><audio controls style="display:inline-block;height:'+'100%'+';width:'+this.width+';">'
+        let html = '<p style="text-align:center;height:' + this.height + ';"><audio controls style="display:inline-block;height:' + '100%' + ';width:' + this.width + ';">'
         for (let i = 0, len = arr.length; i < len; i++) {
-            html += '<source src="'+src+'" type="' +arr[i]+ '">';
+            html += '<source src="' + src + '" type="' + arr[i] + '">';
         }
-        html +='您的浏览器不支持Audio标签。';
+        html += '您的浏览器不支持Audio标签。';
         html += '</audio>&#8205;&zwj;</p><br/>';
         return html;
-     }
+    }
 
-     /**
-     * 获取插入视频的HTML
-     * @param src url
-     */
+    /**
+    * 获取插入视频的HTML
+    * @param src url
+    */
     getVideoHTML(src: string) {
         const arr = UIAnnexComponent.VIDEOARR;
-        let html = '<p style="text-align:center;height:'+ this.height +';"><video controls style="display:inline-block;height:'+'100%'+';width:'+this.width+';">'
+        let html = '<p style="text-align:center;height:' + this.height + ';"><video controls style="display:inline-block;height:' + '100%' + ';width:' + this.width + ';">'
         for (let i = 0, len = arr.length; i < len; i++) {
-            html += '<source src="'+src+'" type="' +arr[i]+ '">';
+            html += '<source src="' + src + '" type="' + arr[i] + '">';
         }
-        html +='您的浏览器不支持Video标签。';
+        html += '您的浏览器不支持Video标签。';
         html += '</video>&#8205;&zwj;</p><br/>';
         return html;
-     }
+    }
 }
