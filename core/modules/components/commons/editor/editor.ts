@@ -200,7 +200,7 @@ export default class EditorComponent extends Vue {
     /** 选中的字样 */
     fontFamily: any = { key: "微软雅黑", value: "Microsoft Yahei" };
     /** 选中的字号 */
-    fontSize: any = { key: "small", value: 3 };
+    fontSize: any = { key: "small", value: 3 }; // 默认1rem;
     /** 文本格式 */
     formatBlock = "p";
     /** 字体颜色 */
@@ -235,7 +235,7 @@ export default class EditorComponent extends Vue {
         full: false
     };
     /** 编辑面板 */
-    @Ref('edit_pannel')
+    @Ref('pannel')
     pannel!: any;
     /** 配置参数，应该从后台查配置参数 ！！！*/
     @Prop({
@@ -270,23 +270,39 @@ export default class EditorComponent extends Vue {
     /** 当输入值有值的时候，取消vhtml$的重新赋值，避免重新赋值导致光标丢失！！！ */
     /** 如果确实要重新输入绑定，请设置一次vhtml为空！！！ */
     vhtml$: string = '';
-    /** 是否取消对vhtml$的重新赋值,默认false */
-    noChange: boolean = false;
+    /** 是否对vhtml$的重新赋值,默认true */
+    reset: boolean = true;
     @Watch('vhtml')
-    watchVHTML(nv: string) {
-        if (nv && !this.noChange) { // 重新输入绑定
+    watchVHTML(nv: string, ov: string) {
+        if (nv && this.reset) { // 重新输入绑定
+            this.reset = false;
             this.vhtml$ = this.vhtml;
-            this.noChange = true;
             return;
         }
         if (!nv) { // 标记需要重新输入绑定
+            this.reset = true;
             this.vhtml$ = '';
-            this.noChange = false;
         };
+    }
+    /** 是否全屏 */
+    full: boolean = false;
+    /** window之前绑定的resize事件 */
+    resize: any;
+    /** 是否支持全屏 */
+    get isSupportFullScreen() {
+        if (process && process.server) {
+            return !false;
+        }
+        // @ts-ignore
+        return !!(document.fullscreenEnabled || document.mozFullScreenEnabled || document.msFullscreenEnabled || document.webkitSupportsFullscreen || document.webkitFullscreenEnabled || document.createElement('div').webkitRequestFullScreen);
     }
 
     constructor() {
         super();
+    }
+
+    mounted() {
+        this.resize = window.onresize;
     }
 
     /**
@@ -295,16 +311,13 @@ export default class EditorComponent extends Vue {
     querySupportCMD(e: any) {
         e = e || window.event;
         let t = e.target || e.srcElement;
-
         // 找到类wd-edit-link-box的元素
         const tn = t.tagName;
         if (tn === "A") t = t.parentNode;
         if (tn === "I") t = t.parentNode.parentNode;
-
         const tcls = t.className;
         if (!tcls || tcls.indexOf("wd-edit-link-box") < 0) return;
         const cmd = tcls.split(/\s+/)[1];
-
         // 查全部命令是否支持
         if (!this.isSupport(cmd)) {
             TipComponent.showTip({
@@ -323,12 +336,10 @@ export default class EditorComponent extends Vue {
     }
 
     /**
-     * 当用户点击头部编辑条时调用或点击编辑面板时调用
-     * 先判断编辑面板是否聚焦，如果聚焦直接退出
+     * mousedown触发 判断编辑面板是否聚焦，如果聚焦直接退出
      * ,获取上次光标位置,设置当前编辑样式
      */
     edit(e: any) {
-        e = e || window.event;
         const editPannel: any = this.pannel;
         // 判断是否聚焦
         if (document.activeElement === editPannel) return;
@@ -366,7 +377,8 @@ export default class EditorComponent extends Vue {
      */
     setFontName(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e); // 阻止编辑面板失焦
+        e.preventDefault();
+        this.edit(e); // 阻止编辑面板失焦
         const t = e.target;
         this.switchFontFamilyPannel = !this.switchFontFamilyPannel;
         const index = t.getAttribute("data-index");
@@ -378,9 +390,10 @@ export default class EditorComponent extends Vue {
     /**
      * 设置字号
      */
-    setFontSzie(e: any) {
+    setFontSize(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e); this.edit(e); // 阻止编辑面板失焦
+        e.preventDefault();
+        this.edit(e); // 阻止编辑面板失焦
         const t = e.target;
         this.switchFontSizePannel = !this.switchFontSizePannel;
         const index = t.getAttribute("data-index");
@@ -396,7 +409,8 @@ export default class EditorComponent extends Vue {
      */
     setFormatBlock(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e); // 阻止编辑面板失焦
+        e.preventDefault();
+        this.edit(e); // 阻止编辑面板失焦
         const t = e.target;
         this.switchFormatBlockPannel = !this.switchFormatBlockPannel;
         const index = t.getAttribute("data-index");
@@ -412,7 +426,8 @@ export default class EditorComponent extends Vue {
      */
     setForeColor(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e); // 阻止编辑面板失焦
+        e.preventDefault();
+        this.edit(e); // 阻止编辑面板失焦
         const t = e.target;
         this.switchForeColorPannel = !this.switchForeColorPannel;
         const x = t.getAttribute("data-dim1");
@@ -428,7 +443,8 @@ export default class EditorComponent extends Vue {
      */
     setBackColor(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e); // 阻止编辑面板失焦
+        e.preventDefault();
+        this.edit(e); // 阻止编辑面板失焦
         const t = e.target;
         this.switchBackColorPannel = !this.switchBackColorPannel;
         const x = t.getAttribute("data-dim1");
@@ -444,8 +460,7 @@ export default class EditorComponent extends Vue {
      */
     insertCode(e: any) {
         e = e || window.event;
-        e.preventDefault();
-        // 阻止编辑面板失焦
+        e.preventDefault(); // 阻止编辑面板失焦
         this.edit(e);
         if (!this.canExecCMD()) return;
         this.switchCodePannel = !this.switchCodePannel;
@@ -466,7 +481,7 @@ export default class EditorComponent extends Vue {
 
     getPreNode(n: any) {
         let pre = n.previousSibling;
-        while(pre&&pre.nodeType!==1) {
+        while (pre && pre.nodeType !== 1) {
             pre = pre.previousSibling;
         }
         return pre;
@@ -477,7 +492,7 @@ export default class EditorComponent extends Vue {
      */
     switchBold(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
         this.cmd("bold", false, "");
     }
 
@@ -486,7 +501,8 @@ export default class EditorComponent extends Vue {
      */
     switchItalic(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("italic", false, "");
     }
 
@@ -495,7 +511,8 @@ export default class EditorComponent extends Vue {
      */
     switchUnderline(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("underline", false, "");
     }
 
@@ -504,7 +521,8 @@ export default class EditorComponent extends Vue {
      */
     switchStrikeThrough(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("strikeThrough", false, "");
     }
 
@@ -513,7 +531,8 @@ export default class EditorComponent extends Vue {
      */
     superscript(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("superscript", false, "");
     }
 
@@ -522,7 +541,8 @@ export default class EditorComponent extends Vue {
      */
     subscript(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("subscript", false, "");
     }
 
@@ -546,7 +566,8 @@ export default class EditorComponent extends Vue {
      */
     justifyLeft(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.setJustifyactive("left");
         this.cmd("justifyLeft", false, "");
     }
@@ -556,7 +577,8 @@ export default class EditorComponent extends Vue {
      */
     justifyRight(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.setJustifyactive("right");
         this.cmd("justifyRight", false, "");
     }
@@ -566,7 +588,8 @@ export default class EditorComponent extends Vue {
      */
     justifyCenter(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.setJustifyactive("center");
         this.cmd("justifyCenter", false, "");
     }
@@ -576,7 +599,8 @@ export default class EditorComponent extends Vue {
      */
     justifyFull(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.setJustifyactive("full");
         this.cmd("justifyFull", false, "");
     }
@@ -586,7 +610,8 @@ export default class EditorComponent extends Vue {
      */
     indent(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("indent", false, "");
     }
 
@@ -595,7 +620,8 @@ export default class EditorComponent extends Vue {
      */
     outdent(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("outdent", false, "");
     }
 
@@ -604,7 +630,8 @@ export default class EditorComponent extends Vue {
      */
     insertOrderedList(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("insertOrderedList", false, "");
     }
 
@@ -613,7 +640,8 @@ export default class EditorComponent extends Vue {
      */
     insertUnorderedList(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("insertUnorderedList", false, "");
     }
 
@@ -622,7 +650,8 @@ export default class EditorComponent extends Vue {
      */
     insertTable(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.canExecCMD() &&
             WindowComponent.showWindow({
                 title: "插入表格",
@@ -646,7 +675,8 @@ export default class EditorComponent extends Vue {
      */
     insertLink(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.canExecCMD() &&
             WindowComponent.showWindow({
                 title: "插入链接",
@@ -673,7 +703,8 @@ export default class EditorComponent extends Vue {
      */
     insertImage(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.canExecCMD() &&
             WindowComponent.showWindow({
                 title: "插入文件",
@@ -707,7 +738,8 @@ export default class EditorComponent extends Vue {
      */
     insertHorizontalRule(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("insertHorizontalRule", false, "");
     }
 
@@ -716,7 +748,8 @@ export default class EditorComponent extends Vue {
      */
     paste(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("paste", false, "");
     }
 
@@ -725,7 +758,8 @@ export default class EditorComponent extends Vue {
      */
     cut(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("cut", false, "");
     }
 
@@ -734,7 +768,8 @@ export default class EditorComponent extends Vue {
      */
     copy(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("copy", false, "");
     }
 
@@ -743,7 +778,8 @@ export default class EditorComponent extends Vue {
      */
     selectAll(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("selectAll", false, "");
     }
 
@@ -752,7 +788,8 @@ export default class EditorComponent extends Vue {
      */
     redo(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("redo", false, "");
     }
 
@@ -761,7 +798,8 @@ export default class EditorComponent extends Vue {
      */
     undo(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("undo", false, "");
     }
 
@@ -770,7 +808,8 @@ export default class EditorComponent extends Vue {
      */
     deleteSelect(e: any) {
         e = e || window.event;
-        e.preventDefault(); this.edit(e);
+        e.preventDefault();
+        this.edit(e);
         this.cmd("delete", false, "");
     }
 
@@ -779,7 +818,7 @@ export default class EditorComponent extends Vue {
      */
     removeFormat(e: any) {
         e = e || window.event;
-        e.preventDefault(); 
+        e.preventDefault();
         this.edit(e);
         // 选中文字清除格式
         this.cmd("removeFormat", false);
@@ -860,7 +899,7 @@ export default class EditorComponent extends Vue {
      * @returns {boolean} true-设置成功，false-设置失败
      */
     cmd(k: string, ui: boolean, v?: any) {
-        if('paste,cut,copy,delete,selectAll,removeFormat,redo,undo'.indexOf(k) < 0 && !this.canExecCMD())return false;
+        if ('paste,cut,copy,delete,selectAll,removeFormat,redo,undo'.indexOf(k) < 0 && !this.canExecCMD()) return false;
         document.execCommand(k, ui, v || "");
         return true;
     }
@@ -924,13 +963,24 @@ export default class EditorComponent extends Vue {
     }
 
     /**
-     * 输入时记住光变位置 && input事件发射value
+     * 输入时记住光变位置 && input事件发射value && 记住输入
      */
-    @Emit('input')
-    saveLastRangeAndEmitValue(): string {
+    saveLastRangeAndEmitValue() {
         this.saveLastRange();
-        this.setHistoryFormat();
-        return this.pannel.innerHTML;
+        const innerHTML = this.pannel.innerHTML;
+        if (this.vhtml$ === innerHTML) return;
+        // 有内容且内容变化时才保存到本地
+        if ((this.pannel.innerText || this.pannel.textContent).length > 1) {
+            window.localStorage.setItem('editor_input', innerHTML);
+        }
+        this.$emit('input', innerHTML);
+    }
+
+    /**
+     * 获取历史输入
+     */
+    history() {
+        this.vhtml$ = window.localStorage.getItem('editor_input')||'';
     }
 
     /**
@@ -1107,6 +1157,47 @@ export default class EditorComponent extends Vue {
         if (elem === null) return false;
         this.setRangeToElement(elem);
         return true;
+    }
+
+    fullScreen() {
+        const editor: any = this.$refs.editor;
+        const pannel: any = this.$refs.pannel;
+        if (this.full) { // 还原
+            this.full = false;
+            editor.style.cssText = '';
+            pannel.style.cssText = '';
+            // 恢复window上之前监听的resize事件
+            window.onresize = this.resize;
+            const doc: any = document;
+            if (doc.exitFullscreen) doc.exitFullscreen();
+            else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
+            else if (doc.webkitCancelFullScreen) doc.webkitCancelFullScreen();
+            else if (doc.msExitFullscreen) doc.msExitFullscreen();
+
+        } else {        // 全屏
+            this.full = true;
+            if (editor.requestFullscreen) editor.requestFullscreen();
+            else if (editor.mozRequestFullScreen) editor.mozRequestFullScreen();
+            else if (editor.webkitRequestFullScreen) editor.webkitRequestFullScreen();
+            else if (editor.msRequestFullscreen) editor.msRequestFullscreen();
+            const header: any = this.$refs.header;
+            const footer: any = this.$refs.footer;
+            const height = (window.innerHeight - (header.offsetHeight + footer.offsetHeight));
+            editor.style.cssText = 'position:fixed;z-index:9999999999;top:0;left:0;width:100%;height:100%';
+            pannel.style.cssText = 'max-height:unset;height:'+height+'px';
+            // 全屏后监听窗口还原事件
+            window.onresize = this.minimize;
+        }
+    }
+
+    /**
+     * 还原窗口
+     */
+    minimize() {
+        if (this.full) {
+            this.full = false;
+            (<any>this.$refs.editor).style.cssText = '';
+        }
     }
 
     /**
