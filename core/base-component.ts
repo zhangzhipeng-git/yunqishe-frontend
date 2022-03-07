@@ -10,42 +10,40 @@
  * Copyright (c) 2020 ZXWORK
  */
 
-import Vue from 'vue';
-import Component from "vue-class-component";
+import Vue from 'vue'
+import Component from 'vue-class-component'
 
-import App from "./context/app-context";
-import AppDB from "./modules/db/AppDB";
-import DomUtil from "./modules/util/dom-util";
-import AppHttp from "./modules/http/app-http";
-import AppSecure from "./modules/secure/app-secure";
-import Cookie from "./modules/db/Cookie";
-import LocalStorage from "./modules/db/LocalStorage";
-import ThirdSource from "./modules/util/js-util";
-import ComponentsHandler from "./modules/components/components-handler";
+import { Context } from '@nuxt/types'
+import App, { AppContext } from './context/app-context'
+import AppDB from './modules/db/AppDB'
+import DomUtil from './modules/util/dom-util'
+import AppHttp, { HTTP_ERRORS } from './modules/http/app-http'
+import AppSecure from './modules/secure/app-secure'
+import Cookie from './modules/db/Cookie'
+import LocalStorage from './modules/db/LocalStorage'
+import ThirdSource from './modules/util/js-util'
+import ComponentsHandler from './modules/components/components-handler'
 
-import consts from "./consts";
-import { Context } from "@nuxt/types";
-import { AppContext, context } from './context/app-context';
-import { HTTP_ERRORS } from "./modules/http/app-http";
+import consts from './consts'
 
 // 服务端引入xss，客户端同步式引入cdn的xss
 if (process && process.server) {
   if (!(<any>global).filterXss) {
-    (<any>global).filterXss = require('xss');
+    (<any>global).filterXss = require('xss')
   }
 }
 
 @Component({
   mixins: [{
-    beforeMount() {
-      const _this: any = this;
-      const ctx = App.getAppContext();
-      _this.$$ = DomUtil;
-      _this.secure = ctx.getSecure();
+    beforeMount () {
+      const _this: any = this
+      const ctx = App.getAppContext()
+      _this.$$ = DomUtil
+      _this.secure = ctx.getSecure()
       // @ts-ignore
-      _this.cookie = ctx.getCookie();
+      _this.cookie = ctx.getCookie()
       // @ts-ignore
-      _this.localStorage = ctx.getLocalStorage();
+      _this.localStorage = ctx.getLocalStorage()
     }
   }]
 })
@@ -75,49 +73,48 @@ export default class BaseComponent extends Vue {
   /**
    * 服务端和客户端都会执行
    */
-  constructor() {
-    super();
-    const ctx: AppContext = App.getAppContext();
+  constructor () {
+    super()
+    const ctx: AppContext = App.getAppContext()
     // 服务端也要用到全局db，用于存储公用的后台的响应数据，如经验等级表
-    this.db = ctx.getDB();
-    this.http = ctx.getHttp();
-    this.context = ctx.getContext();
+    this.db = ctx.getDB()
+    this.http = ctx.getHttp()
+    this.context = ctx.getContext()
     // 服务端的handler为undefined，服务端不会用到handler，这里只有客户端有handler
     // 由于asyncData的存在，客户端会在beforeMount前就用到handler！！！
-    this.handler = ctx.getHandler();
+    this.handler = ctx.getHandler()
   }
 
-
-  //////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////client（仅客户端可用）开始/////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////////////////////
+  /// //////////////////////////////client（仅客户端可用）开始/////////////////////
+  /// ///////////////////////////////////////////////////////////////////////////
 
   /**
    * 判断当前用户是否svip
    * @returns {boolean} true - 是，false - 否
    */
-  protected isSVip(): boolean {
-    if (!this.curUser) return false;
-    return (this.curUser.roleNames || []).includes('svip') > -1;
+  protected isSVip (): boolean {
+    if (!this.curUser) { return false }
+    return (this.curUser.roleNames || []).includes('svip') > -1
   }
 
   /**
    * 判断当前用户是否vip
    * @returns {boolean} true - 是，false - 否
    */
-  protected isVip(): boolean {
-    if (!this.curUser) return false;
-    return (this.curUser.roleNames || []).indexOf('vip') > -1;
+  protected isVip (): boolean {
+    if (!this.curUser) { return false }
+    return (this.curUser.roleNames || []).includes('vip')
   }
 
   /**
    * 计算用户等级和段位
    * @param user 用户
    */
-  public getUserLevelAndDan(user: any) {
+  public getUserLevelAndDan (user: any) {
     return this.getUserLevel(user).then(() => {
-      this.getUserDan(user);
-    });
+      this.getUserDan(user)
+    })
   }
 
   /**
@@ -125,172 +122,164 @@ export default class BaseComponent extends Vue {
    * @param  {any} user - 用户
    * @param {boolean} force - 是否强制计算用户等级
    */
-  public async getUserLevel(user: any, force: boolean = false) {
-    if (!user || !user.nickname) return;
-    if (user.level && !force) return;
-    const experience = user.experience || 0;
-    let levels = this.db.get("userLevels");
+  public async getUserLevel (user: any, force: boolean = false) {
+    if (!user || !user.nickname) { return }
+    if (user.level && !force) { return }
+    const experience = user.experience || 0
+    let levels = this.db.get('userLevels')
     if (!levels) {
-      await this.http.get("/level/f/select/list").then((data: any) => {
-        levels = data.data.levels;
-        this.db.set("userLevels", levels);
-      });
+      await this.http.get('/level/f/select/list').then((data: any) => {
+        levels = data.data.levels
+        this.db.set('userLevels', levels)
+      })
     }
-    let i = 0;
-    let lv = 0;
-    let len = levels.length;
+    let i = 0
+    let lv = 0
+    const len = levels.length
     // 计算等级
     for (; i < len; i++) {
-      const level = levels[i];
+      const level = levels[i]
       if (level.experience > experience && i - 1 >= 0) {
-        lv = levels[i - 1].level;
+        lv = levels[i - 1].level
       }
     }
-    if (i === len) lv = levels[len - 1].level;
-    this.$set(user, 'level', lv);
+    if (i === len) { lv = levels[len - 1].level }
+    this.$set(user, 'level', lv)
   }
 
   /**
    * 黑铁，黄铜，白银，黄金，铂金，钻石，大师，星耀，王者，神行
    */
-  public getUserDan(user: any) {
-    if (!user) return ''
-    if (!user.level) return '黑铁';
-    const level = user.level;
-    let d = '';
-    if (0 <= level && level <= 10) d = '黑铁';
-    else if (level <= 20) d = '黄铜';
-    else if (level <= 30) d = '白银';
-    else if (level <= 40) d = '黄金';
-    else if (level <= 50) d = '铂金';
-    else if (level <= 60) d = '钻石';
-    else if (level <= 70) d = '大师';
-    else if (level <= 80) d = '星耀';
-    else if (level <= 90) d = '王者';
-    else if (level <= 100) d = '神行';
-    this.$set(user, 'dan', d);
+  public getUserDan (user: any) {
+    if (!user) { return '' }
+    if (!user.level) { return '黑铁' }
+    const level = user.level
+    let d = ''
+    if (level >= 0 && level <= 10) { d = '黑铁' } else if (level <= 20) { d = '黄铜' } else if (level <= 30) { d = '白银' } else if (level <= 40) { d = '黄金' } else if (level <= 50) { d = '铂金' } else if (level <= 60) { d = '钻石' } else if (level <= 70) { d = '大师' } else if (level <= 80) { d = '星耀' } else if (level <= 90) { d = '王者' } else if (level <= 100) { d = '神行' }
+    this.$set(user, 'dan', d)
   }
 
   /**
    * 获取登录或记住登录的用户
    */
-  public isRecord(): Promise<any> {
+  public isRecord (): Promise<any> {
     // 请求是否已登录或记住我
-    let config: any = {};
+    const config: any = {}
     if (this.curUser && this.curUser.id) {
-      return new Promise(res => res(this.curUser));
+      // eslint-disable-next-line promise/param-names
+      return new Promise(res => res(this.curUser))
     };
-    this.handler.load();
-    return this.httpRequest(this.http.get("/user/isrecord", config), {
+    this.handler.load()
+    return this.httpRequest(this.http.get('/user/isrecord', config), {
       success: async (data: any) => {
-        this.$store.commit('setUser', data.user);
-        await this.secure.secureInit();
-        this.handler.unload();
+        this.$store.commit('setUser', data.user)
+        await this.secure.secureInit()
+        this.handler.unload()
       },
       error: () => {
-        this.db.set("user", null);
-        this.$store.commit('setUser', null);
+        this.db.set('user', null)
+        this.$store.commit('setUser', null)
       }
-    }).then((data: any) => { return data.user ? data.user : data });
+    }).then((data: any) => { return data.user ? data.user : data })
   }
 
   /**
    * 仅限客户端执行
-   * 
+   *
    * 用于asyncData无法在客户端路由复用时设置组件数据的问题
-   * 
+   *
    * 设置数据
    * @param data 设置的数据
    */
-  setAsyncData(data: any) {
-    if (process && process.server) return;
+  setAsyncData (data: any) {
+    if (process && process.server) { return }
     (<any>BaseComponent).data = null;
-    (<any>BaseComponent).data = data;
+    (<any>BaseComponent).data = data
   }
 
   /**
    * 仅限客户端activated内执行，用于通用代码返回的响应数据刷新到路由复用的组件中！！！
    */
-  getAsyncDataToThisInActivated() {
-    const data = (<any>BaseComponent).data;
-    if (!data) return;
-    const keys = Object.keys(data);
+  getAsyncDataToThisInActivated () {
+    const data = (<any>BaseComponent).data
+    if (!data) { return }
+    const keys = Object.keys(data)
     keys.forEach((key: string) => {
-      const value = data[key];
-      if (!(<any>this)[key]) {
-        this.$set(this, key, value);
+      const value = data[key]
+      if (!(<any> this)[key]) {
+        this.$set(this, key, value)
       } else {
-        (<any>this)[key] = value;
+        (<any> this)[key] = value
       }
     });
-    (<any>BaseComponent).data = null;
+    (<any>BaseComponent).data = null
   }
 
   /**
    * 懒加载Echarts，执行f
    * @param f 回调
    */
-  protected loadEcharts(f: any) {
-    ThirdSource.loadJS(consts.JS_MAPS.echarts, f);
+  protected loadEcharts (f: any) {
+    ThirdSource.loadJS(consts.JS_MAPS.echarts, f)
   }
 
   /**
    * 懒加载Amap，执行f
    * @param f 回调
    */
-  private loadAMap(f: any) {
-    ThirdSource.loadJS(consts.JS_MAPS.amap, f);
+  private loadAMap (f: any) {
+    ThirdSource.loadJS(consts.JS_MAPS.amap, f)
   }
 
   /**
    * 懒加载hljs，执行f
    * @param f 回调
    */
-  private loadHljs(f: any) {
-    ThirdSource.loadJS(consts.JS_MAPS.hljs, f);
+  private loadHljs (f: any) {
+    ThirdSource.loadJS(consts.JS_MAPS.hljs, f)
   }
 
   /**
    * 重置当前页为1，没有更多为false即查看更多为true，当前显示列表为空
    */
-  protected reset() {
-    const _this: any = this;
-    _this.pageNum = 1;
-    _this.noMore = false;
-    _this.list = [];
+  protected reset () {
+    const _this: any = this
+    _this.pageNum = 1
+    _this.noMore = false
+    _this.list = []
   }
 
   /**
    * 去登陆页
    */
-  protected toLogin(nextPath?: string) {
-    let path = '';
+  protected toLogin (nextPath?: string) {
+    let path = ''
     if (nextPath) {
-      path = nextPath;
+      path = nextPath
     } else {
-      path = location.pathname;
-      let query = location.href.split('?')[1];
+      path = location.pathname
+      const query = location.href.split('?')[1]
       if (query) {
-        path += '?' + query;
+        path += '?' + query
       }
     }
-    const loginUrl = "/login";
+    const loginUrl = '/login'
     this.$router.push({
       path: loginUrl,
       query: {
         fromPath: path
       }
-    });
+    })
   }
 
   /**
    * 处理图片请求错误
    */
-  protected defaultImg(ref: any): void {
-    const imgs = ref.getElementsByTagName('IMG');
+  protected defaultImg (ref: any): void {
+    const imgs = ref.getElementsByTagName('IMG')
     imgs.forEach((img: any) => {
       img.onerror = function () {
-        this.src = consts.ERROR_IMG;
+        this.src = consts.ERROR_IMG
       }
     })
   }
@@ -299,84 +288,87 @@ export default class BaseComponent extends Vue {
    * 对所有html进行转义和过滤，用于用户的回复等
    * @param v 字符串
    */
-  public xss(v: string) {
-    if (!v || (process && process.server)) return '';
-    let myxss1 = (<any>this).myxss1;
+  public xss (v: string) {
+    if (!v || (process && process.server)) { return '' }
+    let myxss1 = (<any> this).myxss1
     if (!myxss1) {
-      if (!(<any>global || window).filterXSS) return v;
+      if (!(<any>global || window).filterXSS) { return v }
       myxss1 = new (<any>global || window).filterXSS.FilterXSS({
         whiteList: [], // 白名单为空，表示过滤所有标签，stripIgnoreTag: true时会去掉tag
         // stripIgnoreTag: true, // 过滤所有非白名单标签的HTML
-        stripIgnoreTagBody: ["script"] // script标签较特殊，需要过滤标签中间的内容
+        stripIgnoreTagBody: ['script'] // script标签较特殊，需要过滤标签中间的内容
       });
-      (<any>this).myxss1 = myxss1;
+      (<any> this).myxss1 = myxss1
     }
-    return myxss1.process(v);
+    return myxss1.process(v)
   }
 
   /**
    * 高亮代码
    * @param  {any} ...args 参数
-   * 
+   *
    * 1.不传参数：自动找pre code，对textContent进行代码高亮
-   * 
+   *
    * 2.传入pre或code标签对象：对该对象的textContent进行代码高亮
-   * 
+   *
    * 3.传入字符串和回调：对字符串进行html转义
-   * 
+   *
    * 如：'>' -> '\&gt;' ， '<' -> '\&lt;' ， '&' -> '\&amp;'
-   * 
+   *
    * 后返回代码高亮字符串，作为回调的参数
    */
-  protected Hljs(...args: any) {
-    return new Promise(res => {
+  protected Hljs (...args: any) {
+    // eslint-disable-next-line promise/param-names
+    return new Promise<void>((res) => {
       this.loadHljs(() => {
-        const hljs = (<any>window).hljs;
-        const b = args[0];
-        const f = args[1];
+        const hljs = (<any>window).hljs
+        const b = args[0]
+        const f = args[1]
         if (b) {
           if (typeof f === 'function') {
-            f(hljs.highlightAuto(b).value); // 字符串转高亮html
+            f(hljs.highlightAuto(b).value) // 字符串转高亮html
           } else {
             hljs.highlightBlock(b)
           }
         } else {
           // 确保每次都会执行
-          hljs.initHighlighting.called = false; // 标记为未调用
-          hljs.initHighlighting();
+          hljs.initHighlighting.called = false // 标记为未调用
+          hljs.initHighlighting()
         }
-        res();
+        res()
         // 在页面加载后执行，不适用于单页应用！！！
         // hljs.initHighlightingOnLoad();
-      });
-    });
+      })
+    })
   }
 
   /**
  * 获取vip时长配置参数
  * @param {number} type vip类型：1-vip,2-svip，默认vip
  */
-  protected getVipArgs(type: number = 1): Promise<any> {
-    let vipArgs = this.db.get('vipArgs');
-    if (vipArgs) return new Promise(res => res(vipArgs));
+  protected getVipArgs (type: number = 1): Promise<any> {
+    let vipArgs = this.db.get('vipArgs')
+    // eslint-disable-next-line promise/param-names
+    if (vipArgs) { return new Promise(res => res(vipArgs)) }
     return this.httpRequest(this.http.get('/vipArg/u/select/list?type=' + type)).then((data: any) => {
-      vipArgs = data.vipArgs || [];
-      this.db.set('vipArgs', vipArgs);
-      return vipArgs;
-    });
+      vipArgs = data.vipArgs || []
+      this.db.set('vipArgs', vipArgs)
+      return vipArgs
+    })
   }
 
   /**
   * 获取兑换云币的配置参数
   */
-  protected getExchangeArgs(): Promise<any> {
-    let exchangeArgs = this.db.get('exchangeArgs');
-    if (exchangeArgs) return new Promise(res => res(exchangeArgs));
+  protected getExchangeArgs (): Promise<any> {
+    let exchangeArgs = this.db.get('exchangeArgs')
+    // eslint-disable-next-line promise/param-names
+    if (exchangeArgs) { return new Promise(res => res(exchangeArgs)) }
     return this.httpRequest(this.http.get('/exchangeArg/u/select/list')).then((data: any) => {
-      exchangeArgs = data.exchangeArgs || [];
-      this.db.set('exchangeArgs', exchangeArgs);
-      return exchangeArgs;
-    });
+      exchangeArgs = data.exchangeArgs || []
+      this.db.set('exchangeArgs', exchangeArgs)
+      return exchangeArgs
+    })
   }
 
   /**
@@ -384,75 +376,73 @@ export default class BaseComponent extends Vue {
    * @param {{success: Function; error: Function}} 定位成功和失败回调
    * @param id 地图容器
    */
-  protected getLocation(options: { success: Function, error: Function }, id: string = '') {
+  protected getLocation (options: { success: Function, error: Function }, id: string = '') {
     if (!id) {
-      const e = document.createElement("div");
-      e.id = "iCenter";
-      id = "iCenter";
+      const e = document.createElement('div')
+      e.id = 'iCenter'
+      id = 'iCenter'
     }
     this.loadAMap(() => {
-      const AMap: any = (<any>window).AMap;
+      const AMap: any = (<any>window).AMap
       if (!AMap) {
-        options.error({ status: 504, message: '请求超时，请检查网络是否可用~' });
-        return;
+        options.error({ status: 504, message: '请求超时，请检查网络是否可用~' })
+        return
       }
-      const mapObj = new AMap.Map(id);
-      mapObj.plugin("AMap.Geolocation", function () {
+      const mapObj = new AMap.Map(id)
+      mapObj.plugin('AMap.Geolocation', function () {
         const geolocation = new AMap.Geolocation({
-          enableHighAccuracy: true, //是否使用高精度定位，默认:true
-          timeout: 10000, //超过10秒后停止定位，默认：无穷大
-          maximumAge: 1000, //定位结果缓存1000毫秒，默认：0
-          convert: true, //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
-          showButton: true, //显示定位按钮，默认：true
-          buttonPosition: "LB", //定位按钮停靠位置，默认：'LB'，左下角
-          buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-          showMarker: true, //定位成功后在定位到的位置显示点标记，默认：true
-          showCircle: true, //定位成功后用圆圈表示定位精度范围，默认：true
-          panToLocation: true, //定位成功后将定位到的位置作为地图中心点，默认：true
-          zoomToAccuracy: true //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-        });
-        mapObj.addControl(geolocation);
-        geolocation.getCurrentPosition();
-        AMap.event.addListener(geolocation, "complete", options.success); //返回定位信息
-        AMap.event.addListener(geolocation, "error", options.error); //返回定位出错信息
-      });
-    });
+          enableHighAccuracy: true, // 是否使用高精度定位，默认:true
+          timeout: 10000, // 超过10秒后停止定位，默认：无穷大
+          maximumAge: 1000, // 定位结果缓存1000毫秒，默认：0
+          convert: true, // 自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+          showButton: true, // 显示定位按钮，默认：true
+          buttonPosition: 'LB', // 定位按钮停靠位置，默认：'LB'，左下角
+          buttonOffset: new AMap.Pixel(10, 20), // 定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+          showMarker: true, // 定位成功后在定位到的位置显示点标记，默认：true
+          showCircle: true, // 定位成功后用圆圈表示定位精度范围，默认：true
+          panToLocation: true, // 定位成功后将定位到的位置作为地图中心点，默认：true
+          zoomToAccuracy: true // 定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+        })
+        mapObj.addControl(geolocation)
+        geolocation.getCurrentPosition()
+        AMap.event.addListener(geolocation, 'complete', options.success) // 返回定位信息
+        AMap.event.addListener(geolocation, 'error', options.error) // 返回定位出错信息
+      })
+    })
   }
-  //////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////client（仅客户端可用）结束/////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////////////////////
+  /// //////////////////////////////client（仅客户端可用）结束/////////////////////
+  /// ///////////////////////////////////////////////////////////////////////////
 
-
-
-  //////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////universal（两端通用）开始/////////////////////
-  /////////////////////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////////////////////
+  /// //////////////////////////////universal（两端通用）开始/////////////////////
+  /// //////////////////////////////////////////////////////////////////////////
 
   /**
    * 获取当前用户
-   * 
+   *
    * this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
    */
-  get curUser() {
-    const user = this.$store.state.user;
-    const user$ = this.db.$get('user');
+  get curUser () {
+    const user = this.$store.state.user
+    const user$ = this.db.$get('user')
     // this.db.$set会导致db变化，然后再次调用本函数！！！，所以如果不加判断条件会导致死循环计算！！！
-    if (!!user$) return user$;
-    const clone = this.clone(user);
-    this.db.$set('user', clone);
-    return clone;
+    if (user$) { return user$ }
+    const clone = this.clone(user)
+    this.db.$set('user', clone)
+    return clone
   }
 
   /**
    * 获取占位图
    * @param clz {string} - css类名
    */
-  getDefaultImg(clz: string) {
-    const num1 = ~~(Math.random() * 255);
-    const num2 = ~~(Math.random() * 255);
-    const num3 = ~~(Math.random() * 255);
-    const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ@#'[~~(Math.random() * 28)];
-    return `<span ${!!clz ? 'class="' + clz + '"' : ''} style="display:block;width:100%;height:100%;font-weight:bold;text-align:center;background-color:rgb(${num1},${num2},${num3});color:rgb(${255 - num1},${255 - num2},${255 - num3});">${letter}</span>`;
+  getDefaultImg (clz: string) {
+    const num1 = ~~(Math.random() * 255)
+    const num2 = ~~(Math.random() * 255)
+    const num3 = ~~(Math.random() * 255)
+    const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ@#'[~~(Math.random() * 28)]
+    return `<span ${clz ? 'class="' + clz + '"' : ''} style="display:block;width:100%;height:100%;font-weight:bold;text-align:center;background-color:rgb(${num1},${num2},${num3});color:rgb(${255 - num1},${255 - num2},${255 - num3});">${letter}</span>`
   }
 
   /**
@@ -460,34 +450,34 @@ export default class BaseComponent extends Vue {
    * @param tip 错误提示
    * @param f? 回调
    */
-  handleError(data: { code: number, tip: string }, f?: Function) {
+  handleError (data: { code: number, tip: string }, f?: Function) {
     if (process && process.server) {
       this.context.error({
         statusCode: data.code,
         message: data.tip
-      });
-      return;
+      })
+      return
     }
     return this.handler.alert({
       content: data.tip,
       buttons: ['确认']
-    }).then(() => f && f());
+    }).then(() => f && f())
   }
 
   /**
    * 判断数组列表是否为空，返回true时为空
    * @param list 数组列表
    */
-  public isEmpty(list: any[]): boolean {
-    return !list || !list.length;
+  public isEmpty (list: any[]): boolean {
+    return !list || !list.length
   }
 
   /**
    * 深复制
    * @param o 源对象
    */
-  public clone(o: any) {
-    return JSON.parse(JSON.stringify(o));
+  public clone (o: any) {
+    return JSON.parse(JSON.stringify(o))
   }
 
   /**
@@ -495,53 +485,57 @@ export default class BaseComponent extends Vue {
    * @param v html字符串
    * @param options 设置,可配置白名单
    */
-  cleanVHtml(v: string, options?: any) {
-    if (!v) return '';
-    let myxss2 = (<any>this).myxss2;
+  cleanVHtml (v: string, options?: any) {
+    if (!v) { return '' }
+    let myxss2 = (<any> this).myxss2
     if (!myxss2) {
-      if (!(<any>global || window).filterXSS) return v;
+      if (!(<any>global || window).filterXSS) { return v }
       // js-xss有默认的白名单
       myxss2 = new (<any>global || window).filterXSS.FilterXSS(consts.JSXSS_OPTIONS || options);
-      (<any>this).myxss2 = myxss2;
+      (<any> this).myxss2 = myxss2
     }
-    return myxss2.process(v);
+    return myxss2.process(v)
   }
 
   /**
    * 兼容客户端和node端的http请求wrapper
    * @param context? Nuxt api Context
    */
-  public httpRequest<T>(promise: Promise<any>, options?: { success?: Function; error?: Function; context?: Context }): Promise<T> {
+  public httpRequest<T> (promise: Promise<any>, options?: { success?: Function; error?: Function; context?: Context }): Promise<T> {
     if (process && process.server) { // server
-      const context = options?.context || this.context;
-      return promise.then(async data => {
+      const context = options?.context || this.context
+      return promise.then(async (data) => {
         if (!data) { // 后台未返回数据
-          context?.error({ statusCode: 500 });
-          return data;
+          // eslint-disable-next-line no-unused-expressions
+          context?.error({ statusCode: 500 })
+          return data
         }
-        const status = data.status;
-        const data$ = data.data ? data.data : data;
+        const status = data.status
+        const data$ = data.data ? data.data : data
         if (status === 200 && options && options.success) { // 成功且有成功回调
-          await options.success(data$);
-          return data$;
+          await options.success(data$)
+          return data$
         }
         // 失败
         if (status === 400) {
-          let flag = true;
+          let flag = true
           if (options && options.error) {
-            flag = await options.error(data$);
+            flag = await options.error(data$)
           }
           if (flag) {
-            context?.error({ statusCode: 400, message: data$.tip });
+            // eslint-disable-next-line no-unused-expressions
+            context?.error({ statusCode: 400, message: data$.tip })
           }
         }
-        return data$;
-      }).catch(error => {
-        console.error(error);
-        const r = { statusCode: 500, message: error };
-        context?.error(r);
-        return r;
-      });
+        return data$
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        const r = { statusCode: 500, message: error }
+        // eslint-disable-next-line no-unused-expressions
+        context?.error(r)
+        return r
+      })
     }
     // client
     return promise.then(async (data: any) => {
@@ -549,71 +543,70 @@ export default class BaseComponent extends Vue {
         this.handler.alert({
           content: '响应失败~',
           buttons: ['确认']
-        });
-        return data;
+        })
+        return data
       }
 
       // 是否要走默认流程,默认false - 不走
-      let result = false;
-      const status = data.status;
-      const data$ = data.data ? data.data : data;
+      let result = false
+      const status = data.status
+      const data$ = data.data ? data.data : data
       if (status === 200) { // 成功
         if (options && options.success) { // 成功回调
-          const result$ = await options.success(data$);
-          result = result$ === true; // 是否要走成功默认流程
+          const result$ = await options.success(data$)
+          result = result$ === true // 是否要走成功默认流程
         }
       } else if (status === 400) { // 失败
-        result = true; // 报错走默认流程流程
+        result = true // 报错走默认流程流程
         if (options && options.error) { // 失败回调
-          const result$ = await options.error(data$);
-          result = result$ === true; // 是否要走失败默认流程
+          const result$ = await options.error(data$)
+          result = result$ === true // 是否要走失败默认流程
         }
       } else { // 未知状态，系统错误
-        this.handler.unload();
+        this.handler.unload()
         this.handler.alert({
           content: '系统错误，请稍后重试',
           buttons: ['确认']
-        });
-        return data$;
+        })
+        return data$
       }
       // 走默认流程
-      this.handler.unload();
+      this.handler.unload()
       if (result) {
         this.handler.alert({
           content: data$.message || data.tip, // 优先取内层提示
           buttons: ['确认']
         })
       }
-      return data$;
+      return data$
     }).catch((error: Error) => {
-      console.error(error);
-      this.handler.unload();
+      console.error(error)
+      this.handler.unload()
       // 频繁请求
       if (error.message === HTTP_ERRORS.HTTP_ERROR_04) {
-        this.handler.toast({ text: error.message, duration: 1000 });
-        return;
+        this.handler.toast({ text: error.message, duration: 1000 })
+        return
       }
       // 其他错误
       this.handler.alert({
-        content: error.message || "抱歉，应用出现了点小问题~",
-        buttons: ["确认"]
-      });
-      console.error(error);
-    });
+        content: error.message || '抱歉，应用出现了点小问题~',
+        buttons: ['确认']
+      })
+      console.error(error)
+    })
   }
 
   /**
    * 获取单例
    */
-  static getSingleton(): BaseComponent {
+  static getSingleton (): BaseComponent {
     if (!(<any>BaseComponent).instance) {
-      (<any>BaseComponent).instance = new BaseComponent();
+      (<any>BaseComponent).instance = new BaseComponent()
     }
-    return (<any>BaseComponent).instance;
+    return (<any>BaseComponent).instance
   }
 
-  //////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////universal（两端通用）结束////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-
+  /// ///////////////////////////////////////////////////////////////////////////
+  /// //////////////////////////////universal（两端通用）结束////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////////////////////
 }

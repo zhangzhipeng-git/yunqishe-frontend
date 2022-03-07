@@ -71,7 +71,7 @@
           <li v-for="(v, i) in [
             {des: '少女粉', clz: 'r'},
             {des: '天空蓝', clz: 'b'},
-            {des: '基佬紫', clz: 'p'},
+            {des: '尊贵紫', clz: 'p'},
             {des: '护眼绿', clz: 'g'}
           ]" :key="i" @click="chooseTheme(v, i)">
             <a href="javascript: void 0" :class="'ui-'+v.clz + (theme === v.clz?' active':'')">

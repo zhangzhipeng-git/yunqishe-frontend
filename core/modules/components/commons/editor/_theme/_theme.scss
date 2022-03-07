@@ -3,7 +3,7 @@
 // 引入继承
 @import './%';
 /**
- * r - 少女粉，p - 基佬紫，b - 天空色，g - 绿到你发慌
+ * r - 少女粉，p - 尊贵紫，b - 天空色，g - 绿到你发慌
  */
 $themes: r p b g;
 // 少女粉
@@ -27,7 +27,7 @@ $colors-r: (
     common:#444444,  // 通用色
     warn: $red-deep,   // 警示色
 );
-// 基佬紫
+// 尊贵紫
 $colors-p: (
     main-deep: $purple-deep, // 深主色
     main: $purple-middle,   // 主色

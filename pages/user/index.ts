@@ -39,11 +39,11 @@ const asyncData = async (context: Context) => {
         const data0 = datas[0];
         const data1 = datas[1];
         // 用户详细信息
-        user = data0.user;
-        fansCount = data0.fansCount;        // 粉丝数
-        giftRecords = data0.giftRecords;    // 礼物列表
-        concernCount = data0.concernCount;  // 关注数
-        dynamicCount = data0.dynamicCount;  // 动态数
+        user = data0.user || {};
+        fansCount = data0.fansCount || 0;        // 粉丝数
+        giftRecords = data0.giftRecords || [];    // 礼物列表
+        concernCount = data0.concernCount || 0;  // 关注数
+        dynamicCount = data0.dynamicCount || 0;  // 动态数
         app.getUserLevelAndDan(user);
         // 计算魅力值
         let value = 0;

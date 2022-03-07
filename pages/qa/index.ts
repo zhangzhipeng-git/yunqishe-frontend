@@ -156,6 +156,7 @@ export default class QAComponent extends BaseComponent {
         this.handler.load();
         if (!this.curUser) {
             this.toLogin();
+            return;
         }
         this.httpRequest(ConcernService.batchInsert(1, ids, '/f'), {
             success: () => this.handler.unload(),

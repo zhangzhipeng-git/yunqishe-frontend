@@ -27,7 +27,7 @@
     "nuxt": "^2.11.0"
   },
   "devDependencies": {
-    "@bigbigbird/mock": "^1.0.6",
+    "eslint": "^6.1.0",
     "@nuxt/types": "^0.7.5",
     "@nuxt/typescript-build": "^0.5.6",
     "@nuxtjs/eslint-config": "^1.0.1",
@@ -39,7 +39,6 @@
     "add": "^2.0.6",
     "cross-env": "^6.0.3",
     "eruda": "^2.0.2",
-    "eslint": "^6.1.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
