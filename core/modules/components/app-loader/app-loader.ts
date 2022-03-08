@@ -10,10 +10,6 @@ export default class LoaderComponent extends Vue {
     /** 是否有定時器 */
     static timer: NodeJS.Timeout;
 
-    constructor (o: any) {
-      super()
-    }
-
     public static timeoutUnLoad () {
       LoaderComponent.timer = setTimeout(() => {
         LoaderComponent.unload()
